@@ -94,6 +94,12 @@ class AskRequest(BaseModel):
     question: str = Field(..., min_length=2, max_length=2000)
 
 
+class AnswerOut(BaseModel):
+    """Saída estruturada da geração ancorada (response_schema do Gemini — sem json.loads manual)."""
+    answer: str = Field(..., description="Resposta em português, ancorada nos livros fornecidos.")
+    cited_ids: list[str] = Field(default_factory=list, description="IDs dos livros citados (ex.: BK0001).")
+
+
 class BookRef(BaseModel):
     id: str
     titulo: str

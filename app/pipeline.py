@@ -6,9 +6,10 @@ degradação graciosa quando o LLM/embeddings não estão disponíveis.
 from __future__ import annotations
 
 import hashlib
-import json
 import time
 from typing import Optional
+
+import numpy as np
 
 from . import config, tools
 from .catalog import Catalog, get_catalog
@@ -16,6 +17,7 @@ from .embeddings import EmbeddingIndex
 from .llm import CostMeter, GeminiClient, get_client
 from .models import (
     Aggregation,
+    AnswerOut,
     AskResponse,
     Behavior,
     BookRef,
@@ -60,6 +62,7 @@ class AskPipeline:
         self.retriever = HybridRetriever(self.catalog, self.index)
         self.planner = Planner(self.catalog, self.client)
         self._cache: dict[str, AskResponse] = {}
+        self._sem_cache: list[tuple[np.ndarray, str]] = []  # (embedding da pergunta, chave)
 
     def _init_index(self) -> EmbeddingIndex:
         """Carrega o cache de embeddings; só (re)constrói se houver como embeddar.
@@ -92,6 +95,12 @@ class AskPipeline:
             cached.retrieval_debug.from_cache = True
             return cached
 
+        # Cache SEMÂNTICO: pega paráfrases que o sha256 (exato) perderia.
+        q_vec = self._maybe_embed_question(q)
+        hit = self._semantic_cache_lookup(q_vec)
+        if hit is not None:
+            return hit
+
         meter = CostMeter()
         timings: dict[str, float] = {}
 
@@ -107,7 +116,7 @@ class AskPipeline:
         if plan.title_lookup and not plan.is_ambiguous:
             resp = self._handle_title_lookup(question, plan, meter, timings, t0)
             if resp is not None:
-                self._cache[key] = resp.model_copy(deep=True)  # cache isolado do objeto retornado
+                self._store(key, resp, q_vec)
                 return resp
 
         # 3) Recuperação (embedding da consulta + híbrido)
@@ -196,10 +205,40 @@ class AskPipeline:
                 notes=notes,
             ),
         )
-        self._cache[key] = resp.model_copy(deep=True)  # cache isolado do objeto retornado
+        self._store(key, resp, q_vec)
         return resp
 
     # ------------------------------------------------------------- helpers
+    def _maybe_embed_question(self, q: str) -> Optional[np.ndarray]:
+        """Embedding da pergunta crua p/ o cache semântico (None se desabilitado/sem índice)."""
+        if not config.SEMANTIC_CACHE_ENABLED or self.index.matrix is None:
+            return None
+        if not (self.client.available or config.EMBEDDINGS_BACKEND == "local"):
+            return None
+        try:
+            return self.index.embed_query(q)
+        except Exception:
+            return None
+
+    def _semantic_cache_lookup(self, q_vec: Optional[np.ndarray]) -> Optional[AskResponse]:
+        if q_vec is None or not self._sem_cache:
+            return None
+        sims = [float(np.dot(q_vec, v)) for v, _ in self._sem_cache]
+        bi = int(np.argmax(sims))
+        if sims[bi] >= config.SEMANTIC_CACHE_THRESHOLD and self._sem_cache[bi][1] in self._cache:
+            cached = self._cache[self._sem_cache[bi][1]].model_copy(deep=True)
+            cached.retrieval_debug.from_cache = True
+            cached.retrieval_debug.notes = list(cached.retrieval_debug.notes) + [
+                f"cache semântico (cos={sims[bi]:.3f})"]
+            return cached
+        return None
+
+    def _store(self, key: str, resp: AskResponse, q_vec: Optional[np.ndarray]) -> None:
+        """Guarda no cache exato (cópia isolada) e, p/ comportamentos estáveis, no semântico.
+        Não cacheia 'clarify' por similaridade (ambíguo: pergunta parecida pode pedir outro contexto)."""
+        self._cache[key] = resp.model_copy(deep=True)
+        if q_vec is not None and resp.retrieval_debug.behavior != Behavior.clarify:
+            self._sem_cache.append((q_vec, key))
     def _embed_queries(self, plan: RetrievalPlan) -> Optional[list]:
         if not self.client.available and config.EMBEDDINGS_BACKEND != "local":
             return None  # sem chave e backend remoto -> cai p/ BM25-only
@@ -254,11 +293,11 @@ class AskPipeline:
                     [b["id"] for b in context_books], "geração degradada: LLM indisponível (sem chave)")
         try:
             prompt = build_answer_prompt(question, context_books, behavior, computed_facts, extra_directive)
-            text, usage = self.client.generate_text(ANSWER_SYSTEM, prompt, model=config.GEMINI_MODEL, as_json=True)
+            # Structured output (response_schema=AnswerOut): JSON garantido pelo schema,
+            # sem json.loads manual — o fallback abaixo fica só p/ falha de rede/indisponibilidade.
+            data, usage = self.client.generate_structured(
+                ANSWER_SYSTEM, prompt, AnswerOut, model=config.GEMINI_MODEL)
             meter.add(usage)
-            data = json.loads(text)
-            if not isinstance(data, dict):
-                raise ValueError("JSON de geração não é objeto")
             return str(data.get("answer", "")).strip(), _coerce_id_list(data.get("cited_ids", [])), ""
         except Exception as e:
             # LLM falhou/JSON inválido -> degradação graciosa, COM nota p/ observabilidade.

@@ -57,6 +57,18 @@ class Catalog:
         self.books: list[dict] = json.loads(self.raw_bytes.decode("utf-8"))
         self.by_id: dict[str, dict] = {b["id"]: b for b in self.books}
 
+        # Contextual Retrieval: cartões de contexto gerados offline (1-2 frases densas por
+        # livro). Enriquecem o texto indexado (BM25 + embeddings) sem mexer no runtime nem
+        # vazar para as referências. Opcional — funciona sem o arquivo.
+        cards = {}
+        if config.CONTEXT_CARDS_PATH.exists():
+            try:
+                cards = json.loads(config.CONTEXT_CARDS_PATH.read_text(encoding="utf-8"))
+            except Exception:
+                cards = {}
+        for b in self.books:
+            b["_context_card"] = cards.get(b["id"], "")
+
         # Vocabulário controlado (valores REAIS presentes nos dados).
         self.generos_vocab: list[str] = sorted({g for b in self.books for g in b.get("generos", [])})
         self.publico_vocab: list[str] = sorted({b.get("publico_alvo", "") for b in self.books if b.get("publico_alvo")})
@@ -93,10 +105,12 @@ class Catalog:
         mas NÃO ano/idioma — esses ficam só como filtro estruturado."""
         autores = ", ".join(book.get("autores", []))
         generos = ", ".join(book.get("generos", []))
+        card = book.get("_context_card", "")
         return (
             f"{book['titulo']}. {autores}. "
             f"Gêneros: {generos}. Público: {book.get('publico_alvo', '')}. "
             f"{book.get('sinopse', '')}"
+            + (f" {card}" if card else "")
         )
 
     def all_doc_texts(self) -> list[str]:

@@ -30,7 +30,10 @@ def _l2_normalize(mat: np.ndarray) -> np.ndarray:
 
 
 def _catalog_hash(catalog: Catalog) -> str:
-    return hashlib.sha256(catalog.raw_bytes).hexdigest()[:16]
+    # Hash sobre os TEXTOS indexados (não só books.json): assim mudar os cartões de
+    # contexto (Contextual Retrieval) também invalida o cache e força re-embeddar.
+    blob = "␟".join(catalog.all_doc_texts()).encode("utf-8")
+    return hashlib.sha256(blob).hexdigest()[:16]
 
 
 class EmbeddingIndex:

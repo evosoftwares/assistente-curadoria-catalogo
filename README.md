@@ -28,6 +28,8 @@ cp .env.example .env          # Windows: copy .env.example .env
 #   edite .env e preencha GEMINI_API_KEY=...   (https://aistudio.google.com/app/apikey)
 
 # 3) Construir o índice de embeddings (cacheado; roda uma vez)
+#    (Os "cartões de contexto" do Contextual Retrieval já vêm gerados e commitados em
+#     data/context_cards.json. Para regenerá-los: python scripts/build_context_cards.py)
 python scripts/build_index.py
 
 # 4) Subir a API
@@ -83,6 +85,12 @@ e usamos **ferramentas determinísticas** para o que o LLM erraria.
 | **Verificação de `cited_ids`** | Toda referência é um livro real recuperado (citação não-alucinada) | Confiar no texto livre do modelo |
 | **Abstenção por curto-circuito (Q10)** | Remove a superfície de alucinação em "vocês têm o livro X?" | Deixar o gerador decidir com resultados fuzzy |
 | **`temperature=0`** | Determinismo p/ avaliação e demo ao vivo | Amostragem (resposta instável) |
+
+**Técnicas avançadas (2026) incluídas:** **Contextual Retrieval** (cartões de contexto por livro
+concatenados ao texto indexado — +recall, ataca o dado templado); **Structured Outputs** na geração
+(`response_schema`, JSON garantido); **cache semântico** (reusa resposta de paráfrases, cos ≥0,92) além
+do exact-match. Reranking/ColBERT/GraphRAG/pgvector foram avaliados e **adiados** como overkill para 200
+livros (gatilhos de migração documentados).
 
 **Modelos (jun/2026, centralizados em `.env`):** geração `gemini-2.5-flash`; planner `gemini-2.5-flash-lite`;
 embeddings `gemini-embedding-001` (768d). ⚠️ `text-embedding-004` (desligado 14/jan/2026) e

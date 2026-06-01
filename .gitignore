@@ -9,10 +9,17 @@ venv/
 *.egg-info/
 .pytest_cache/
 
-# Saídas de avaliação geradas
+# Saídas de avaliação geradas (dumps brutos grandes — regeneráveis pelos scripts de eval)
 eval/results_manual.json
 eval/results_judge.json
 
-# IMPORTANTE: NÃO ignoramos data/embeddings.npy nem data/embeddings_meta.json.
-# Eles são commitados de propósito para que o revisor rode a recuperação OFFLINE,
-# sem chave e sem re-embeddar o catálogo.
+# Dashboard de KPIs: HTML 100% gerado por scripts/build_dashboard.py.
+# Reconstruído sob demanda em GET /kpis, então não precisa ser versionado.
+dashboard/
+
+# COMMITADOS DE PROPÓSITO (baseline p/ o revisor abrir o dashboard OFFLINE, sem chave):
+#   - data/embeddings.npy + data/embeddings_meta.json -> recuperação offline, sem re-embeddar
+#   - eval/gold.json                                   -> gold-set curado (anti-circular)
+#   - eval/results_retrieval.json                      -> métricas de recuperação (gerado, mas fixado)
+#   - eval/results_manual.md                           -> contém os RÓTULOS MANUAIS humanos
+# Por isso esses NÃO entram no .gitignore.

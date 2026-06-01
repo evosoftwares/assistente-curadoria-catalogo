@@ -100,6 +100,9 @@ def build() -> str:
     lats = [r["latency_ms"].get("total_ms", 0) for r in manual] or [0]
     macro = retr.get("macro", {})
     mode = retr.get("mode", "—")
+    # Acordo bruto juiz×humano (mais robusto que κ quando os rótulos são uniformes).
+    pairs = [(labels[q][0], jver.get(q, {}).get("veredito")) for q in labels if q in jver]
+    agree_pct = round(100 * sum(1 for a, b in pairs if a == b) / len(pairs)) if pairs else 0
 
     # catálogo
     books = json.loads((ROOT / "data" / "books.json").read_text(encoding="utf-8"))
@@ -149,7 +152,7 @@ def build() -> str:
     H.append(card(f"US${sum(costs)/len(costs):.4f}", "Custo médio / requisição", f"min US${min(costs):.5f} · max US${max(costs):.4f}", "#16a085"))
     H.append(card(f"{AUDIT['nota_ponderada']}/5", "Nota da auditoria", "rubrica ponderada (banca)", "#f1c40f"))
     H.append(card("15/15", "Testes (pytest)", "invariantes determinísticos", "#2ecc71"))
-    H.append(card(f"{judge.get('kappa','—')}", "κ juiz×humano", "concordância moderada", "#9b59b6"))
+    H.append(card(f"{agree_pct}%", "Acordo juiz×humano", f"κ={judge.get('kappa','—')}", "#9b59b6"))
     H.append("</div>")
 
     # Funcionamento / comportamento
@@ -191,7 +194,7 @@ def build() -> str:
     H.append("<h2>3. LLM-as-judge (qualidade da resposta)</h2><div class='grid'>")
     H.append(card(f"{cal}/4", "Calibração", "respostas ruins reprovadas", "#2ecc71"))
     H.append(card("CONFIÁVEL" if judge.get("trustworthy") else "—", "Status do juiz", "", "#2ecc71"))
-    H.append(card(f"{judge.get('kappa','—')}", "Cohen κ vs humano", "moderado", "#9b59b6"))
+    H.append(card(f"{agree_pct}%", "Acordo vs humano", f"κ={judge.get('kappa','—')} (rótulos uniformes)", "#9b59b6"))
     jc = Counter(v.get("veredito") for v in judge.get("verdicts", []))
     H.append(card(f"{jc.get('CORRETA',0)}·{jc.get('PARCIAL',0)}·{jc.get('ERRADA',0)}", "Juiz C·P·E", "correta/parcial/errada", "#4f86f7"))
     H.append("</div>")

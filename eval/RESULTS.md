@@ -22,7 +22,11 @@ Macro-médias (8 perguntas pontuáveis):
 | Modo | MRR | nDCG@8 | recall@5 | recall@8 | recall@20 | prec@5 |
 |------|-----|--------|----------|----------|-----------|--------|
 | BM25-only (sem chave) | 0.89 | 0.86 | 0.67 | 0.77 | 0.94 | 0.80 |
-| **Híbrido (sem.+BM25+RRF)** | **1.00** | **0.96** | **0.76** | **0.87** | **0.97** | **0.90** |
+| Híbrido (sem.+BM25+RRF) | 1.00 | 0.96 | 0.76 | 0.87 | 0.97 | 0.90 |
+| **Híbrido + Contextual Retrieval** | **1.00** | **0.97** | **0.76** | **0.89** | **0.97** | **0.90** |
+
+(Contextual Retrieval = "cartões de contexto" gerados por LLM e concatenados ao texto indexado;
+maior ganho em Q1 "IA ou sistemas distribuídos": recall@8 0,67→0,78 e prec@8 0,75→0,88.)
 
 **O híbrido fecha a lacuna semântica.** O maior ganho é **Q3** (romances de "memória familiar"),
 a armadilha das cidades pequenas, onde o lexical falha porque os termos da pergunta não aparecem
@@ -37,7 +41,7 @@ Tabela por pergunta (híbrido) em [`results_retrieval.json`](results_retrieval.j
 recall@8=1.0 e MRR=1.0; Q6 (26 relevantes) tem recall@20=0.77 — todos os 26 são usados na resposta
 (o agrupamento usa o conjunto filtrado inteiro, não só o top-k).
 
-## 2. Classificação manual das 10 perguntas — **9 CORRETA, 1 PARCIAL**
+## 2. Classificação manual das 10 perguntas — **10 CORRETA**
 
 Comportamento observado bateu com o esperado em **10/10** (incl. as 4 armadilhas). Detalhes e
 respostas completas em [`results_manual.md`](results_manual.md).
@@ -47,8 +51,8 @@ respostas completas em [`results_manual.md`](results_manual.md).
 | 1 | semantic | answer | CORRETA | Distribuídos (BK0064/0014) + IA; cita público. |
 | 2 | filter+diversity | acknowledge_limitation | CORRETA | Sugere 5 e explicita que só há 1 faixa etária (não inventa subfaixas). |
 | 3 | semantic | answer | CORRETA | Reconhece ausência de cidades pequenas; oferece romances brasileiros de memória. |
-| 4 | filter | answer | **PARCIAL** | Lista os 5 didáticos certos, mas as **matérias vêm da sinopse, que conflita com o título** (dado sintético). |
-| 5 | semantic+filter | answer | CORRETA | Trata títulos enganosos ("apesar do título, a sinopse trata do cérebro"). |
+| 4 | filter | answer | CORRETA | Lista os 5 didáticos e **sinaliza o conflito título×sinopse** ("título indica Física, sinopse descreve Literatura") — ver §3c. |
+| 5 | semantic+filter | answer | CORRETA | Destaca o on-topic e sinaliza que os demais têm sinopse de cérebro apesar do título. |
 | 6 | filter+group | answer | CORRETA | 26 livros ≥2023, agrupados por categoria. |
 | 7 | semantic | answer | CORRETA | 6 livros de liderança em incerteza. |
 | 8 | aggregation | answer | CORRETA | Mais antigo único (1986) + **sinaliza o empate de 13 em 2024**. |
@@ -58,14 +62,23 @@ respostas completas em [`results_manual.md`](results_manual.md).
 ## 3. LLM-as-judge (bônus)
 - **Calibração: 4/4** respostas propositalmente ruins (alucinação de título, citação de id
   inexistente, falha em abster, resposta irrelevante) foram **reprovadas** → juiz **CONFIÁVEL**.
-- Vereditos: **7 CORRETA, 3 PARCIAL** (Q4, Q9, Q10). Notas 0-3 por dimensão em [`results_judge.json`](results_judge.json).
-- **Concordância com o humano:** acordo bruto **70%** e **κ de Cohen = 0,41** (concordância
-  moderada). As divergências são todas **CORRETA↔PARCIAL** de fronteira: o juiz é mais severo em
-  Q9 (clarify) e Q10 (abstenção) por ver contexto estreito. Com só 10 itens, κ é sensível à
-  distribuição — reporto acordo bruto + as divergências em vez de tratar κ como absoluto.
+- Vereditos: **9 CORRETA, 1 PARCIAL** (Q10), com groundedness=3 em Q1-Q9. Notas 0-3 por dimensão em [`results_judge.json`](results_judge.json).
+- **Concordância com o humano:** acordo bruto **90% (9/10)** — a única divergência é Q10. **κ de Cohen = 0,0**,
+  porém é um caso **degenerado**: como os rótulos humanos ficaram todos CORRETA (sem variância), o κ colapsa
+  por construção mesmo com 90% de acordo. É exatamente a limitação do κ que documentamos — por isso reporto
+  o **acordo bruto** como métrica primária. (Antes das melhorias de Q4/Q5 a distribuição era 7/3 e o κ dava 0,41.)
 - **Limitação conhecida:** no Q10 o juiz dá `behavior_match=0` porque a abstenção é por
   **curto-circuito** (contexto vazio) — o juiz, cego ao catálogo, não tem como validar "não consta".
   Correção futura: passar ao juiz a evidência de que o título foi checado contra o catálogo inteiro.
+
+## 3c. Conflito título×sinopse no dado (Q4/Q5) — tratado, não escondido
+O catálogo sintético tem **contradições internas**: o título diz "Física" mas a sinopse diz "currículo de
+Literatura" (idem Biologia/Química etc.); e livros como "A vida secreta das florestas" têm a sinopse do
+"cérebro humano". Isso desestabilizava Q4/Q5 (o gerador ora seguia o título, ora a sinopse, e o juiz, estrito
+em grounding, marcava alucinação). **Solução geral (não-overfit):** uma regra no prompt manda o gerador, ao
+detectar contradição entre campos, **expor ambos e sinalizar a divergência** em vez de escolher em silêncio.
+Resultado: Q4/Q5 viraram respostas ideais ("o título indica Física, mas a sinopse descreve Literatura") e o
+juiz subiu para groundedness=3. A raiz é **qualidade do dado** — a correção certa seria limpeza na ingestão.
 
 ## 3b. Auditoria adversarial & correções
 Uma auditoria multiagente (4 lentes de bug com **verificação adversarial** + nota por rubrica +
@@ -86,6 +99,17 @@ correções no histórico do git.
 - **Latência:** média ~6,7 s, máx ~9,8 s; a **geração** domina (~3,5–7,4 s). Q10 responde em ~0,8 s.
   Para a demo, `temperature=0` + cache de resposta tornam repetições instantâneas. Reduzir latência
   (streaming, planner+geração concorrentes onde possível) é trabalho futuro.
+
+## 4b. Técnicas avançadas adicionadas (após pesquisa de mercado 2026)
+Selecionadas por ROI para 200 livros (reranking/ColBERT/GraphRAG/pgvector foram avaliados e adiados como
+overkill nesta escala — ver discussão na conversa):
+- **Contextual Retrieval** (técnica da Anthropic, adaptada a docs curtos): cartões de contexto por livro
+  gerados offline (`scripts/build_context_cards.py`), concatenados ao texto indexado. Ganho medido:
+  macro recall@8 0,87→0,89, nDCG@8 0,96→0,97; Q1 prec@8 0,75→0,88. Custo único ~US$0,047 (cacheado).
+- **Structured Outputs no path de resposta**: geração via `response_schema=AnswerOut` (constrained decoding),
+  eliminando a classe "JSON inválido"; o fallback degradado fica só para indisponibilidade de rede.
+- **Cache semântico**: além do exact-match (sha256), reusa a resposta quando a pergunta nova é uma
+  paráfrase (cosseno ≥ 0,92, calibrado: paráfrases ~0,85-0,98 vs tópicos distintos ~0,64). Não cacheia `clarify`.
 
 ## 5. Modos de falha identificados (taxonomia)
 

@@ -20,6 +20,7 @@ BOOKS_PATH = DATA_DIR / "books.json"
 QUESTIONS_PATH = DATA_DIR / "questions.txt"
 EMBEDDINGS_PATH = DATA_DIR / "embeddings.npy"
 EMBEDDINGS_META_PATH = DATA_DIR / "embeddings_meta.json"
+CONTEXT_CARDS_PATH = DATA_DIR / "context_cards.json"  # Contextual Retrieval (gerado offline)
 
 # --- Credenciais / modelos ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or ""
@@ -46,6 +47,13 @@ RRF_K = int(os.getenv("RRF_K", "60"))
 # token_set_ratio (0-100) mínimo para considerar um título "presente no catálogo".
 TITLE_MATCH_THRESHOLD = int(os.getenv("TITLE_MATCH_THRESHOLD", "90"))
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0"))
+
+# Cache semântico de resposta: além do exact-match (sha256), reusa a resposta quando uma
+# pergunta nova é semanticamente quase idêntica a uma anterior (cosseno >= limiar).
+SEMANTIC_CACHE_ENABLED = os.getenv("SEMANTIC_CACHE_ENABLED", "true").lower() == "true"
+# 0.92 calibrado: paráfrases reais ficam ~0,85-0,98 e perguntas de tópico distinto ~0,64,
+# então 0,92 pega paráfrases próximas sem risco de servir resposta de outra pergunta.
+SEMANTIC_CACHE_THRESHOLD = float(os.getenv("SEMANTIC_CACHE_THRESHOLD", "0.92"))
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 
