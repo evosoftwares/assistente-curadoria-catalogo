@@ -106,15 +106,22 @@ def build_answer_prompt(
     return "\n".join(parts)
 
 
+def _san(s: str) -> str:
+    """Neutraliza caracteres que poderiam fechar o delimitador <LIVRO> ou injetar
+    instruções (defesa ESTRUTURAL além da regra textual #5). O conteúdo do catálogo é
+    dado não-confiável; uma sinopse com '</LIVRO>' ou aspas não deve escapar do bloco."""
+    return (str(s).replace("<", "‹").replace(">", "›").replace('"', "'").replace("\n", " "))
+
+
 def _book_block(b: dict) -> str:
-    autores = ", ".join(b.get("autores", []))
-    generos = ", ".join(b.get("generos", []))
+    autores = _san(", ".join(b.get("autores", [])))
+    generos = _san(", ".join(b.get("generos", [])))
     return (
-        f'<LIVRO id="{b["id"]}">'
-        f'título="{b["titulo"]}" | autores="{autores}" | gêneros="{generos}" | '
-        f'público="{b.get("publico_alvo","")}" | ano={b.get("ano_publicacao","")} | '
-        f'idioma="{b.get("idioma","")}" | isbn="{b.get("isbn","")}" | '
-        f'sinopse="{b.get("sinopse","")}"'
+        f'<LIVRO id="{_san(b["id"])}">'
+        f'título="{_san(b["titulo"])}" | autores="{autores}" | gêneros="{generos}" | '
+        f'público="{_san(b.get("publico_alvo",""))}" | ano={b.get("ano_publicacao","")} | '
+        f'idioma="{_san(b.get("idioma",""))}" | isbn="{_san(b.get("isbn",""))}" | '
+        f'sinopse="{_san(b.get("sinopse",""))}"'
         f"</LIVRO>"
     )
 

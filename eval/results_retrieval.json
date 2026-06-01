@@ -32,13 +32,13 @@
       "type": "semantic",
       "n_rel": 6,
       "mrr": 1.0,
-      "recall@5": 0.667,
-      "prec@5": 0.8,
+      "recall@5": 0.5,
+      "prec@5": 0.6,
       "recall@8": 1.0,
       "prec@8": 0.75,
       "recall@20": 1.0,
       "prec@20": 0.3,
-      "ndcg@8": 0.944
+      "ndcg@8": 0.949
     },
     {
       "qid": 4,
@@ -109,10 +109,10 @@
   "macro": {
     "mrr": 1.0,
     "ndcg@8": 0.964,
-    "recall@5": 0.755,
+    "recall@5": 0.734,
     "recall@8": 0.872,
     "recall@20": 0.971,
-    "prec@5": 0.9,
+    "prec@5": 0.875,
     "prec@8": 0.703,
     "prec@20": 0.375
   }

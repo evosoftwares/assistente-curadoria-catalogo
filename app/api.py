@@ -6,10 +6,12 @@
 """
 from __future__ import annotations
 
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 from . import config
 from .logging_conf import log_event, new_request_id
@@ -36,8 +38,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Assistente de Curadoria do Catálogo", version="1.0.0", lifespan=lifespan)
+# CORS restrito à UI local (cada /ask custa tokens — não deixamos qualquer origem chamar).
+# Ajuste CORS_ORIGINS no .env para outros hosts.
+_origins = [o.strip() for o in os.getenv(
+    "CORS_ORIGINS", "http://localhost:8501,http://127.0.0.1:8501").split(",") if o.strip()]
 app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
+    CORSMiddleware, allow_origins=_origins, allow_methods=["GET", "POST"], allow_headers=["*"],
 )
 
 
@@ -52,6 +58,19 @@ def health() -> dict:
         "model": config.GEMINI_MODEL,
         "embeddings_backend": config.EMBEDDINGS_BACKEND,
     }
+
+
+@app.get("/kpis", response_class=HTMLResponse)
+def kpis() -> str:
+    """Dashboard web com todos os KPIs do projeto (gerado de eval/*.json)."""
+    html_path = config.BASE_DIR / "dashboard" / "index.html"
+    if html_path.exists():
+        return html_path.read_text(encoding="utf-8")
+    try:
+        from scripts.build_dashboard import build
+        return build()
+    except Exception as e:
+        return f"<h1>Dashboard indisponível</h1><p>Rode <code>python scripts/build_dashboard.py</code>. ({e})</p>"
 
 
 @app.post("/ask", response_model=AskResponse)

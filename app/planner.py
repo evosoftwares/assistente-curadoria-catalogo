@@ -45,14 +45,18 @@ def _to_plan(out: PlannerLLMOutput, catalog: Catalog, source: str) -> RetrievalP
     generos = catalog.match_generos(out.generos)
     publico = catalog.match_publico(out.publico_alvo)
     semantic = [q.strip() for q in out.semantic_queries if q and q.strip()]
+    # Valida idioma contra os idiomas REAIS: descarta extrações espúrias (ex.: o LLM
+    # tirar 'brasileiro'/'português' de 'cidades brasileiras'), que zerariam o conjunto.
+    idioma = out.idioma_contains if (out.idioma_contains and catalog.valid_idioma(out.idioma_contains)) else None
     return RetrievalPlan(
         semantic_queries=semantic,
         generos=generos,
         publico_alvo=publico,
-        idioma_contains=out.idioma_contains,
+        idioma_contains=idioma,
         ano_min=ano_min,
         ano_max=ano_max,
         aggregation=out.aggregation,
+        aggregations=([out.aggregation] if out.aggregation != Aggregation.none else []),
         group_by=out.group_by,
         diversity=out.diversity,
         title_lookup=out.title_lookup,
@@ -136,15 +140,27 @@ def _detect_signals(question: str, catalog: Catalog) -> PlannerLLMOutput:
 
 def fallback_plan(question: str, catalog: Catalog) -> RetrievalPlan:
     """Planner 100% determinístico (sem LLM)."""
-    return _to_plan(_detect_signals(question, catalog), catalog, source="fallback")
+    det = _detect_signals(question, catalog)
+    return _augment_with_rules(_to_plan(det, catalog, source="fallback"), det, question)
 
 
-def _augment_with_rules(plan: RetrievalPlan, det: PlannerLLMOutput) -> RetrievalPlan:
+def _augment_with_rules(plan: RetrievalPlan, det: PlannerLLMOutput, question: str) -> RetrievalPlan:
     """Reconcilia o plano do LLM com sinais determinísticos. Para padrões inequívocos
     (agregação, data relativa, título entre aspas, idioma, ambiguidade), o determinístico
     PREENCHE lacunas do LLM — evita que um plano malformado do LLM quebre tudo."""
-    if plan.aggregation == Aggregation.none and det.aggregation != Aggregation.none:
-        plan.aggregation = det.aggregation
+    nq = normalize(question)
+
+    # Agregação: detecta min e/ou max DIRETO do texto (a pergunta pode pedir os dois).
+    aggs: list[Aggregation] = []
+    if re.search(r"mais\s+(antig|velh)", nq):
+        aggs.append(Aggregation.min_year)
+    if re.search(r"mais\s+(recent|nov)", nq):
+        aggs.append(Aggregation.max_year)
+    if not aggs and plan.aggregation != Aggregation.none:
+        aggs = [plan.aggregation]  # só o LLM sinalizou
+    plan.aggregations = aggs
+    plan.aggregation = aggs[0] if aggs else Aggregation.none
+
     if plan.ano_min is None and det.years_back is not None:
         plan.ano_min, _ = resolve_year_bounds(det.years_back, None, None)
     if plan.ano_min is None and det.ano_min is not None:
@@ -153,20 +169,23 @@ def _augment_with_rules(plan: RetrievalPlan, det: PlannerLLMOutput) -> Retrieval
         plan.group_by = det.group_by
     if not plan.diversity and det.diversity:
         plan.diversity = True
-    if not plan.idioma_contains and det.idioma_contains:
+    if not plan.idioma_contains and det.idioma_contains:  # det só usa idiomas reais conhecidos
         plan.idioma_contains = det.idioma_contains
-    # Ambiguidade: vale se o determinístico achou "hedges" (Q9). Mas se há uma INTENÇÃO
-    # concreta (agregação/grupo/data/título/diversidade) e nenhum hedge, o LLM marcar
-    # is_ambiguous é provavelmente ruído — limpamos para não cair em 'clarify' à toa.
-    strong_intent = (
-        det.aggregation != Aggregation.none or det.group_by != GroupBy.none
-        or det.years_back is not None or det.ano_min is not None
-        or bool(det.title_lookup) or det.diversity
-    )
-    plan.is_ambiguous = det.is_ambiguous or (plan.is_ambiguous and not strong_intent)
-    if not plan.title_lookup and det.title_lookup and not plan.is_ambiguous:
+
+    # Título de pertencimento: copia do detector se o LLM não pegou (decidido ANTES da
+    # ambiguidade, para que o título conte como intenção forte).
+    if not plan.title_lookup and det.title_lookup:
         plan.title_lookup = det.title_lookup
         plan.author_lookup = plan.author_lookup or det.author_lookup
+
+    # Ambiguidade: vale se houver "hedge" (Q9), MAS uma INTENÇÃO concreta no plano JÁ
+    # MESCLADO (agregação/grupo/data/título/diversidade) suprime a ambiguidade — assim um
+    # title_lookup entre aspas sempre vence o hedge e o curto-circuito de abstenção (Q10) atua.
+    strong_intent = bool(
+        plan.aggregations or plan.group_by != GroupBy.none or plan.ano_min is not None
+        or plan.title_lookup or plan.diversity
+    )
+    plan.is_ambiguous = (det.is_ambiguous or plan.is_ambiguous) and not strong_intent
     return plan
 
 
@@ -186,7 +205,7 @@ class Planner:
             out = PlannerLLMOutput.model_validate(data)
             plan = _to_plan(out, self.catalog, source="llm")
             # Reconcilia com sinais determinísticos (datas/agregação/título/idioma/ambiguidade).
-            plan = _augment_with_rules(plan, _detect_signals(question, self.catalog))
+            plan = _augment_with_rules(plan, _detect_signals(question, self.catalog), question)
             # Se o LLM não extraiu nenhuma query semântica, garanta ao menos a pergunta.
             if not plan.semantic_queries:
                 plan.semantic_queries = [question.strip()]

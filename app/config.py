@@ -39,8 +39,10 @@ EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "768"))
 CURRENT_YEAR = int(os.getenv("CURRENT_YEAR", "2026"))
 TOP_K = int(os.getenv("TOP_K", "8"))
 RRF_K = int(os.getenv("RRF_K", "60"))
-# Abaixo deste cosseno máximo, tratamos como "nada fortemente relevante" (abstenção).
-ABSTENTION_COSINE_THRESHOLD = float(os.getenv("ABSTENTION_COSINE_THRESHOLD", "0.55"))
+# NOTA: um limiar de cosseno para abstenção foi AVALIADO e DESCARTADO — neste catálogo
+# templado os cossenos in-scope (0,64-0,75) e fora-de-escopo (0,60-0,63) se sobrepõem,
+# então o cosseno não separa bem. A abstenção vem do title-lookup (Q10) + geração ancorada
+# (que já responde "não consta" quando nada serve). top_cosine segue exposto p/ observabilidade.
 # token_set_ratio (0-100) mínimo para considerar um título "presente no catálogo".
 TITLE_MATCH_THRESHOLD = int(os.getenv("TITLE_MATCH_THRESHOLD", "90"))
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0"))

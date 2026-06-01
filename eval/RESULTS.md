@@ -58,15 +58,26 @@ respostas completas em [`results_manual.md`](results_manual.md).
 ## 3. LLM-as-judge (bônus)
 - **Calibração: 4/4** respostas propositalmente ruins (alucinação de título, citação de id
   inexistente, falha em abster, resposta irrelevante) foram **reprovadas** → juiz **CONFIÁVEL**.
-- Vereditos: **8 CORRETA, 2 PARCIAL** (Q5, Q10). Notas 0-3 por dimensão em [`results_judge.json`](results_judge.json).
-- **Concordância com o humano:** acordo bruto **7/10 = 70%**, mas **κ de Cohen = −0,15** —
-  *negativo por artefato de prevalência* (quase todos os itens são CORRETA, então o acaso esperado
-  é altíssimo e κ fica instável). As 3 divergências são todas **CORRETA↔PARCIAL** de fronteira
-  (Q4, Q5, Q10), nenhuma catastrófica. **Lição:** com 10 itens e distribuição desbalanceada, κ não
-  é a métrica certa; eu usaria acordo bruto + revisão das divergências e um conjunto maior.
-- **Limitação descoberta:** no Q10 o juiz deu `behavior_match=0` porque a abstenção é por
+- Vereditos: **7 CORRETA, 3 PARCIAL** (Q4, Q9, Q10). Notas 0-3 por dimensão em [`results_judge.json`](results_judge.json).
+- **Concordância com o humano:** acordo bruto **70%** e **κ de Cohen = 0,41** (concordância
+  moderada). As divergências são todas **CORRETA↔PARCIAL** de fronteira: o juiz é mais severo em
+  Q9 (clarify) e Q10 (abstenção) por ver contexto estreito. Com só 10 itens, κ é sensível à
+  distribuição — reporto acordo bruto + as divergências em vez de tratar κ como absoluto.
+- **Limitação conhecida:** no Q10 o juiz dá `behavior_match=0` porque a abstenção é por
   **curto-circuito** (contexto vazio) — o juiz, cego ao catálogo, não tem como validar "não consta".
-  Correção: passar ao juiz a evidência de que o título foi checado contra o catálogo inteiro.
+  Correção futura: passar ao juiz a evidência de que o título foi checado contra o catálogo inteiro.
+
+## 3b. Auditoria adversarial & correções
+Uma auditoria multiagente (4 lentes de bug com **verificação adversarial** + nota por rubrica +
+crítico de completude) deu **4,45/5** e veredito "pleno sólido encostando em sênior", com 15 achados
+reais (a maioria de qualidade de fusão/agregação/rigor de avaliação, não de funcionamento). Foram
+**corrigidos**, entre outros: RRF deixou de espalhar ranks na massa BM25=0 (ignora zeros); BM25 passou
+a tratar "A ou B" por OR-máximo (simétrico ao semântico); boost de gênero soft recalibrado; agregação
+narra só o extremo pedido; `is_ambiguous` não sobrescreve mais intenção forte (título vence); abstenção
+de título ficou robusta a fragmentos (token_sort) e a `idioma` espúrio é validado contra o catálogo;
+escape anti-injeção no contexto; CORS restrito; cache isolado por cópia. Adicionados **15 testes
+(`pytest`)** e `eval/check_facts.py` (assert da verdade determinística Q4/Q6/Q8). Detalhe das
+correções no histórico do git.
 
 ## 4. Custo e latência reais (medidos nas 10 perguntas)
 - **Custo médio: US$0,0015 / requisição** (bate com a estimativa do README). Total das 10 ≈ US$0,015.
@@ -87,6 +98,14 @@ respostas completas em [`results_manual.md`](results_manual.md).
 | 5 | **Citação de id não recuperado** | `cited_id ∉ context_ids` | Verificação em Python (`references` só com ids reais) | — (descartado deterministicamente) |
 | 6 | **Sinopses templadas → baixa discriminação semântica** | 87 sinopses p/ 200 livros | Híbrido (BM25 sobre título) + dedup por cluster | Q1 ainda mistura clusters de sinopse próximos |
 | 7 | **Conflito título × sinopse no dado** (observado no Q4) | Sinopse diz "Literatura", título diz "Física" | Grounding fiel à sinopse; honestidade sobre a fonte | Resposta herda a inconsistência do dado; ideal seria sinalizar o conflito |
+
+### Nota de calibração — abstenção por cosseno (avaliada e descartada)
+Medimos o `top_cosine` das consultas in-scope (gold: **0,64–0,75**) e de consultas claramente
+fora do acervo (culinária tailandesa, motores diesel, poesia concreta: **0,60–0,63**). As
+distribuições **se sobrepõem** (efeito do corpus templado/denso), então um limiar de cosseno não
+separa relevante de irrelevante de forma confiável. Resultado: **não** usamos limiar — a abstenção
+vem do *title-lookup* (Q10) e da **geração ancorada**, que já respondeu "não consta" corretamente
+nas 3 consultas fora de escopo testadas. `top_cosine` permanece exposto apenas para observabilidade.
 
 ## 6. Conclusão
 O comportamento das 10 perguntas (incl. as 4 armadilhas) está correto (10/10), com recuperação

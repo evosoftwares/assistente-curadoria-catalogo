@@ -19,6 +19,20 @@ from app.pipeline import AskPipeline  # noqa: E402
 EVAL_DIR = Path(__file__).resolve().parent
 
 
+def _load_existing_labels() -> dict[int, tuple[str, str, str]]:
+    """Lê (rótulo, modo de falha, notas) já preenchidos em results_manual.md, por qid."""
+    md = EVAL_DIR / "results_manual.md"
+    out: dict[int, tuple[str, str, str]] = {}
+    if not md.exists():
+        return out
+    for ln in md.read_text(encoding="utf-8").splitlines():
+        cells = [c.strip() for c in ln.split("|")]
+        # | Q | Tipo | Esperado | Observado | Refs | Rótulo | Modo | Notas |  -> 10 partes
+        if len(cells) >= 9 and cells[1].isdigit() and cells[6] in {"CORRETA", "PARCIAL", "ERRADA"}:
+            out[int(cells[1])] = (cells[6], cells[7], cells[8])
+    return out
+
+
 def main() -> int:
     gold = json.loads((EVAL_DIR / "gold.json").read_text(encoding="utf-8"))
     pipe = AskPipeline()
@@ -47,7 +61,11 @@ def main() -> int:
         json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
-    # Tabela markdown para rótulo humano (CORRETA/PARCIAL/ERRADA fica em branco).
+    # PRESERVA rótulos manuais já preenchidos (CORRETA/PARCIAL/ERRADA + modo + notas) —
+    # assim re-rodar este script não destrói a classificação humana / o κ do juiz.
+    existing = _load_existing_labels()
+
+    # Tabela markdown para rótulo humano (em branco só se ainda não houver rótulo).
     lines = [
         "# Resultados — classificação manual",
         "",
@@ -60,9 +78,10 @@ def main() -> int:
     for r in rows:
         refs = ",".join(r["references"]) or "—"
         match = "✅" if r["behavior_observed"] == r["expected_behavior"] else "⚠️"
+        label, modo, notas = existing.get(r["qid"], ("_(preencher)_", "_(preencher)_", ""))
         lines.append(
             f"| {r['qid']} | {r['type']} | {r['expected_behavior']} | "
-            f"{match}{r['behavior_observed']} | {refs} | _(preencher)_ | _(preencher)_ | |"
+            f"{match}{r['behavior_observed']} | {refs} | {label} | {modo} | {notas} |"
         )
     lines += [
         "",

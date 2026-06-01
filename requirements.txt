@@ -16,6 +16,9 @@ rapidfuzz==3.11.0
 streamlit==1.41.1
 httpx==0.28.1
 
+# --- Testes ---
+pytest==8.3.4
+
 # --- Fallback de embeddings OFFLINE (opcional) ---
 # Descomente para rodar sem chave/sem internet (EMBEDDINGS_BACKEND=local).
 # Atenção: puxa o torch (~2,5 GB).

@@ -107,9 +107,15 @@ class Catalog:
         return [b["id"] for b in self.books]
 
     # --- busca de pertencimento (Q10) ---
+    # token_sort mínimo: penaliza diferença de COMPRIMENTO. Evita que um FRAGMENTO
+    # ("Liderança") case com um título maior ("Liderança em tempos incertos") via
+    # token_set_ratio=100 e o sistema afirme posse de uma obra que pode ser outra.
+    _TITLE_SORT_FLOOR = 60
+
     def find_title(self, query: str, threshold: int | None = None) -> list[dict]:
-        """Retorna livros cujo título+autor casam com a consulta acima do limiar
-        (rapidfuzz token_set_ratio). Lista vazia => provavelmente fora do catálogo."""
+        """Retorna livros cujo título+autor casam de forma BALANCEADA com a consulta:
+        token_set_ratio >= threshold (cobertura) E token_sort_ratio >= floor (comprimento
+        compatível). Lista vazia => provavelmente fora do catálogo (ou só fragmento)."""
         threshold = config.TITLE_MATCH_THRESHOLD if threshold is None else threshold
         q = normalize(query)
         if not q:
@@ -117,8 +123,11 @@ class Catalog:
         matches = process.extract(
             q, self._title_author_index, scorer=fuzz.token_set_ratio, limit=5
         )
-        # process.extract com dict retorna (valor, score, chave=id)
-        return [self.by_id[book_id] for _val, score, book_id in matches if score >= threshold]
+        out = []
+        for _val, score, book_id in matches:  # (valor, score, chave=id)
+            if score >= threshold and fuzz.token_sort_ratio(q, self._title_author_index[book_id]) >= self._TITLE_SORT_FLOOR:
+                out.append(self.by_id[book_id])
+        return out
 
     # --- validação de vocabulário (anti-filtro-vazio) ---
     def match_vocab(self, value: str, vocab: list[str], threshold: int = 80) -> Optional[str]:
@@ -134,6 +143,15 @@ class Catalog:
         if best and best[1] >= threshold:
             return norm_vocab[best[0]]
         return None
+
+    def valid_idioma(self, needle: str) -> bool:
+        """True se algum livro tem o idioma contendo `needle` (substring normalizada).
+        Evita que o planner invente um idioma ('brasileiro'/'português') a partir de
+        'cidades brasileiras' e zere o conjunto com um filtro factual sem correspondência."""
+        if not needle:
+            return False
+        n = normalize(needle)
+        return any(n in normalize(b.get("idioma", "")) for b in self.books)
 
     def match_generos(self, values: Iterable[str]) -> list[str]:
         out = []

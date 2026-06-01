@@ -28,6 +28,16 @@ from .prompts import ANSWER_SYSTEM, build_answer_prompt
 from .retriever import HybridRetriever
 
 
+def _coerce_id_list(value) -> list[str]:
+    """Normaliza cited_ids do LLM: aceita lista de strings; string vira [string]
+    (não quebra em caracteres); descarta não-strings."""
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        return [v for v in value if isinstance(v, str)]
+    return []
+
+
 def _book_ref(book: dict, score: Optional[float] = None) -> BookRef:
     return BookRef(
         id=book["id"], titulo=book["titulo"], autores=book.get("autores", []),
@@ -64,7 +74,19 @@ class AskPipeline:
     # ------------------------------------------------------------------ ask
     def ask(self, question: str) -> AskResponse:
         t0 = time.perf_counter()
-        key = hashlib.sha256(question.strip().lower().encode("utf-8")).hexdigest()
+        q = question.strip()
+        # Pergunta vazia/trivial: curto-circuita sem gastar uma ida ao LLM.
+        if len(q) < 2:
+            return AskResponse(
+                answer="Sua pergunta está vazia. Diga o que você procura no catálogo (tema, gênero, público, autor…).",
+                references=[],
+                retrieval_debug=RetrievalDebug(
+                    plan={}, behavior=Behavior.clarify, retrieved_ids=[], candidate_count=0,
+                    latency_ms={"total_ms": round((time.perf_counter() - t0) * 1000, 1)},
+                    notes=["pergunta vazia/trivial -> clarify (sem LLM)"],
+                ),
+            )
+        key = hashlib.sha256(q.lower().encode("utf-8")).hexdigest()
         if key in self._cache:
             cached = self._cache[key].model_copy(deep=True)
             cached.retrieval_debug.from_cache = True
@@ -85,7 +107,7 @@ class AskPipeline:
         if plan.title_lookup and not plan.is_ambiguous:
             resp = self._handle_title_lookup(question, plan, meter, timings, t0)
             if resp is not None:
-                self._cache[key] = resp
+                self._cache[key] = resp.model_copy(deep=True)  # cache isolado do objeto retornado
                 return resp
 
         # 3) Recuperação (embedding da consulta + híbrido)
@@ -108,14 +130,15 @@ class AskPipeline:
                 "A pergunta é ambígua. NÃO afirme um único livro com certeza; liste os candidatos "
                 "abaixo como possibilidades e peça o contexto que falta."
             )
-        elif plan.aggregation in (Aggregation.min_year, Aggregation.max_year):
+        elif plan.aggregations:
             cand = self.retriever.candidates(plan)
             agg = tools.aggregate_min_max(cand)
-            context_books = (agg.get("oldest", []) + agg.get("newest", []))
-            # de-dup mantendo ordem
-            seen = set(); context_books = [b for b in context_books if not (b["id"] in seen or seen.add(b["id"]))]
-            computed_facts = self._facts_aggregation(agg)
-            notes.append("agregação determinística aplicada")
+            want_min = Aggregation.min_year in plan.aggregations
+            want_max = Aggregation.max_year in plan.aggregations
+            ctx = (agg.get("oldest", []) if want_min else []) + (agg.get("newest", []) if want_max else [])
+            seen = set(); context_books = [b for b in ctx if not (b["id"] in seen or seen.add(b["id"]))]
+            computed_facts = self._facts_aggregation(agg, want_min, want_max)
+            notes.append(f"agregação determinística (min={want_min}, max={want_max})")
         elif plan.group_by == GroupBy.genero:
             cand = self.retriever.candidates(plan)
             groups = tools.group_by_genero(cand)
@@ -139,9 +162,11 @@ class AskPipeline:
 
         # 5) Geração ancorada (ou degradação graciosa sem LLM)
         ts = time.perf_counter()
-        answer, cited_ids = self._generate(question, context_books, behavior, computed_facts,
-                                            extra_directive, meter)
+        answer, cited_ids, gen_note = self._generate(question, context_books, behavior,
+                                                     computed_facts, extra_directive, meter)
         timings["generation_ms"] = round((time.perf_counter() - ts) * 1000, 1)
+        if gen_note:
+            notes.append(gen_note)
 
         # 6) Verificação de citações: references só com ids realmente recuperados
         context_ids = {b["id"] for b in context_books}
@@ -171,7 +196,7 @@ class AskPipeline:
                 notes=notes,
             ),
         )
-        self._cache[key] = resp
+        self._cache[key] = resp.model_copy(deep=True)  # cache isolado do objeto retornado
         return resp
 
     # ------------------------------------------------------------- helpers
@@ -189,7 +214,7 @@ class AskPipeline:
         if matches:
             # O livro EXISTE -> responde normalmente com ele como contexto.
             ts = time.perf_counter()
-            answer, cited_ids = self._generate(question, matches, Behavior.answer, None, None, meter)
+            answer, cited_ids, _ = self._generate(question, matches, Behavior.answer, None, None, meter)
             timings["generation_ms"] = round((time.perf_counter() - ts) * 1000, 1)
             context_ids = {b["id"] for b in matches}
             verified = [c for c in cited_ids if c in context_ids]
@@ -223,19 +248,22 @@ class AskPipeline:
         )
 
     def _generate(self, question, context_books, behavior, computed_facts, extra_directive, meter):
+        """Retorna (answer, cited_ids, note). note != '' sinaliza degradação (observabilidade)."""
         if not self.client.available:
-            return self._degraded_answer(context_books, behavior, computed_facts), \
-                   [b["id"] for b in context_books]
+            return (self._degraded_answer(context_books, behavior, computed_facts),
+                    [b["id"] for b in context_books], "geração degradada: LLM indisponível (sem chave)")
         try:
             prompt = build_answer_prompt(question, context_books, behavior, computed_facts, extra_directive)
             text, usage = self.client.generate_text(ANSWER_SYSTEM, prompt, model=config.GEMINI_MODEL, as_json=True)
             meter.add(usage)
             data = json.loads(text)
-            return str(data.get("answer", "")).strip(), list(data.get("cited_ids", []))
-        except Exception:
-            # LLM falhou na geração -> degradação graciosa.
-            return self._degraded_answer(context_books, behavior, computed_facts), \
-                   [b["id"] for b in context_books]
+            if not isinstance(data, dict):
+                raise ValueError("JSON de geração não é objeto")
+            return str(data.get("answer", "")).strip(), _coerce_id_list(data.get("cited_ids", [])), ""
+        except Exception as e:
+            # LLM falhou/JSON inválido -> degradação graciosa, COM nota p/ observabilidade.
+            return (self._degraded_answer(context_books, behavior, computed_facts),
+                    [b["id"] for b in context_books], f"geração degradada: {type(e).__name__}")
 
     @staticmethod
     def _degraded_answer(context_books, behavior, computed_facts) -> str:
@@ -253,17 +281,20 @@ class AskPipeline:
         return "\n".join(lines)
 
     @staticmethod
-    def _facts_aggregation(agg: dict) -> str:
+    def _facts_aggregation(agg: dict, want_min: bool = True, want_max: bool = True) -> str:
         if not agg:
             return ""
-        oldest = agg["oldest"][0]
-        newest = agg["newest"]
-        s = [f"Livro mais ANTIGO: \"{oldest['titulo']}\" ({oldest['id']}), {agg['min_year']}."]
-        if len(newest) == 1:
-            s.append(f"Livro mais RECENTE: \"{newest[0]['titulo']}\" ({newest[0]['id']}), {agg['max_year']}.")
-        else:
-            titulos = "; ".join(f"\"{b['titulo']}\" ({b['id']})" for b in newest)
-            s.append(f"Mais RECENTE: há {len(newest)} livros EMPATADOS em {agg['max_year']}: {titulos}.")
+        s = []
+        if want_min:
+            oldest = agg["oldest"][0]
+            s.append(f"Livro mais ANTIGO: \"{oldest['titulo']}\" ({oldest['id']}), {agg['min_year']}.")
+        if want_max:
+            newest = agg["newest"]
+            if len(newest) == 1:
+                s.append(f"Livro mais RECENTE: \"{newest[0]['titulo']}\" ({newest[0]['id']}), {agg['max_year']}.")
+            else:
+                titulos = "; ".join(f"\"{b['titulo']}\" ({b['id']})" for b in newest)
+                s.append(f"Mais RECENTE: há {len(newest)} livros EMPATADOS em {agg['max_year']}: {titulos}.")
         return " ".join(s)
 
     @staticmethod

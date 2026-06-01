@@ -25,10 +25,10 @@
    │  (curto-circuito,      │                               │               │
    │   sem LLM)             │                  RANQUEIO HÍBRIDO        ATALHOS DETERMINÍSTICOS
    └───────────────────────┘                  cosine + BM25 → RRF     • Q8 mín/máx ano (+empate)
-                                               (mantém scores p/        • Q6 group_by gênero
-                                                abstenção; soft-boost    • Q2 diversidade por faixa
-                                                de gênero quando não       (+ reconhece limitação)
-                                                é filtro duro)          • Q9 idioma + clarify
+                                               (soft-boost de gênero    • Q6 group_by gênero
+                                                quando não é filtro      • Q2 diversidade por faixa
+                                                duro; top_cosine p/        (+ reconhece limitação)
+                                                observabilidade)        • Q9 idioma + clarify
                                  │                               │
                                  └───────────────┬───────────────┘
                                                  ▼
@@ -50,7 +50,7 @@
 | `app/catalog.py` | Carrega livros, vocabulário controlado, clusters de edição, busca fuzzy de título |
 | `app/embeddings.py` | `gemini-embedding-001` (768d) + cache em disco (hash do catálogo) + fallback local |
 | `app/planner.py` | NL → `RetrievalPlan` (LLM structured + fallback regex; datas em Python) |
-| `app/retriever.py` | Filtro duro + híbrido cosine/BM25/RRF + scores para abstenção |
+| `app/retriever.py` | Filtro duro + híbrido cosine/BM25/RRF + top_cosine (observabilidade) |
 | `app/tools.py` | Agregação mín/máx, agrupamento por categoria, diversificação |
 | `app/pipeline.py` | Orquestra tudo; abstenção/clarify/limitação; verificação de citações |
 | `app/llm.py` | Wrapper Gemini + contabilidade de tokens/custo |

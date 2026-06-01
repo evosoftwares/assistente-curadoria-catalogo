@@ -76,7 +76,8 @@ class RetrievalPlan(BaseModel):
     idioma_contains: Optional[str] = None
     ano_min: Optional[int] = None
     ano_max: Optional[int] = None
-    aggregation: Aggregation = Aggregation.none
+    aggregation: Aggregation = Aggregation.none  # compat/debug (primeiro extremo)
+    aggregations: list[Aggregation] = Field(default_factory=list)  # extremos pedidos (min e/ou max)
     group_by: GroupBy = GroupBy.none
     diversity: bool = False
     title_lookup: Optional[str] = None

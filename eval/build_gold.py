@@ -87,9 +87,12 @@ def main() -> int:
             "expected_behavior": "answer",
             "relevant_ids": graded(
                 ids1=["BK0051", "BK0053", "BK0062", "BK0090", "BK0096", "BK0145", "BK0164"],
-                ids0=["BK0046", "BK0083", "BK0110", "BK0113", "BK0168"],
+                # Distratores grau-0 em cidades estrangeiras. NÃO usamos BK0046/BK0168 como
+                # distratores porque são EDIÇÕES do mesmo título de itens grau-1 (BK0062/BK0145)
+                # e colidiriam no mesmo cluster, anulando-se na métrica deduplicada por cluster.
+                ids0=["BK0083", "BK0110", "BK0113"],
             ),
-            "notes": "ARMADILHA sutil: NÃO há romances em 'pequenas cidades'. Os de literatura brasileira se passam em cidades GRANDES (Floripa/Curitiba/Salvador/Porto Alegre, grau 1) ou no EXTERIOR (Tóquio/Istambul/Estocolmo/Cidade do Cabo, grau 0). Boa resposta recomenda os brasileiros de memória familiar E ressalva que não são cidades pequenas.",
+            "notes": "ARMADILHA sutil: NÃO há romances em 'pequenas cidades'. Os de literatura brasileira se passam em cidades GRANDES (Floripa/Curitiba/Salvador/Porto Alegre, grau 1) ou no EXTERIOR (Tóquio/Istambul/Estocolmo/Cidade do Cabo, grau 0). Distratores grau-0 escolhidos em clusters distintos dos relevantes (sem colisão de edição). Boa resposta recomenda os brasileiros de memória familiar E ressalva que não são cidades pequenas.",
         },
         {
             "qid": 4,
@@ -97,8 +100,15 @@ def main() -> int:
             "type": "filter",
             "expected_behavior": "answer",
             "relevant_ids": graded(ids2=didatico_em),
-            "expected_fields": ["matérias: Física, História do Brasil, Biologia"],
-            "notes": "Filtro duro gênero=Didático + público=ensino médio. Deve listar as matérias.",
+            # CONFLITO no dado: a matéria do TÍTULO difere da matéria da SINOPSE em 3 dos 5
+            # (ex.: BK0100 título 'Física' / sinopse 'currículo de Literatura'). A rubrica
+            # adota grounding na SINOPSE, então registramos as DUAS visões aqui.
+            "expected_fields": {
+                "materias_por_titulo": ["Física", "História do Brasil", "Biologia"],
+                "materias_por_sinopse": ["Literatura", "Química", "Física", "História do Brasil"],
+                "conflito": "título×sinopse divergem em BK0100/BK0122/BK0074; sistema é ancorado na sinopse",
+            },
+            "notes": "Filtro duro gênero=Didático + público=ensino médio. Deve listar as matérias. ATENÇÃO: dado sintético tem conflito título×sinopse (ver expected_fields).",
         },
         {
             "qid": 5,

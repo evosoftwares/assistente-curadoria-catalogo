@@ -35,6 +35,11 @@ uvicorn app.api:app --reload          # http://127.0.0.1:8000  (GET /health, POS
 
 # 5) UI da demo (em outro terminal, com a API no ar)
 streamlit run ui/streamlit_app.py     # http://localhost:8501
+
+# 6) Dashboard de KPIs (página web autocontida) + testes
+python scripts/build_dashboard.py     # gera dashboard/index.html (abra no navegador) — também em GET /kpis
+python -m pytest -q                   # 15 testes dos componentes determinísticos
+python eval/check_facts.py            # asserta a verdade determinística (Q4/Q6/Q8)
 ```
 
 Exemplo de chamada direta:
@@ -91,6 +96,13 @@ Detalhes e tabelas em [`eval/RESULTS.md`](eval/RESULTS.md). Três camadas:
 
 O gold-set ([`eval/gold.json`](eval/gold.json)) é curado de forma **anti-circular** (independente do
 planner de produção) — método documentado em [`eval/build_gold.py`](eval/build_gold.py).
+Há ainda **15 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos e
+[`eval/check_facts.py`](eval/check_facts.py) que **assere programaticamente** a verdade determinística
+(Q4/Q6/Q8) contra o que o sistema computa. Todos os indicadores são consolidados num **dashboard web**
+([`scripts/build_dashboard.py`](scripts/build_dashboard.py) → `dashboard/index.html`, também em `GET /kpis`).
+
+> **Nota:** o código passou por uma **auditoria adversarial multiagente** (4,45/5), que apontou
+> defeitos reais de fusão/agregação/rigor de avaliação — todos corrigidos (ver [`eval/RESULTS.md`](eval/RESULTS.md) §3b).
 
 ## 6. Custo aproximado por requisição
 Por `/ask` ≈ 1 chamada de planner + 1 de geração + 1 embedding de consulta (~3k tokens entrada +

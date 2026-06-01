@@ -80,6 +80,9 @@ class EmbeddingIndex:
         texts = self.catalog.all_doc_texts()
         if self.backend == "local":
             vecs = self._embed_local(texts)
+            # O modelo local define a própria dimensão (ex.: MiniLM=384); não forçamos 768.
+            if vecs:
+                self.dim = len(vecs[0])
         else:
             vecs = self.client.embed(texts, task_type="RETRIEVAL_DOCUMENT", dim=self.dim)
         self.matrix = _l2_normalize(np.asarray(vecs, dtype=np.float32))

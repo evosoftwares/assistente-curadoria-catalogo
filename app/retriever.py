@@ -1,12 +1,15 @@
 """Recuperação híbrida.
 
 Ordem (recomendada pelo red-team):
-1. FILTROS DUROS são a fonte da verdade (ano/idioma sempre; gênero/público duros
-   quando categóricos). 200 -> subconjunto. Se o subconjunto <= top_k, devolvemos
-   TODO ele ranqueado (a fusão nunca derruba um membro filtrado).
-2. Dentro do subconjunto, ranqueio HÍBRIDO: cosseno (semântico) + BM25 (lexical)
-   fundidos por Reciprocal Rank Fusion. Filtros de gênero "soft" viram boost.
-3. Guardamos o cosseno bruto do topo para um limiar de abstenção.
+1. FILTROS DUROS são a fonte da verdade. ano/idioma e público são SEMPRE duros (são
+   restrições FACTUAIS — o público-alvo é um atributo categórico do livro). O GÊNERO é
+   duro só quando categórico (is_categorical); senão vira boost soft. 200 -> subconjunto.
+   Se o subconjunto <= top_k, devolvemos TODO ele ranqueado (a fusão não derruba membro).
+   Se o filtro factual (ano/idioma) zerar, devolvemos VAZIO (a geração se abstém).
+2. Dentro do subconjunto, ranqueio HÍBRIDO: cosseno (semântico) + BM25 (lexical, OR por
+   sub-query) fundidos por Reciprocal Rank Fusion (BM25 ignora zeros). Gênero soft = boost.
+3. Expomos o cosseno bruto do topo (top_cosine) para observabilidade/debug. (Um limiar de
+   abstenção por cosseno foi avaliado e descartado — ver nota em config.py.)
 """
 from __future__ import annotations
 
@@ -66,7 +69,7 @@ class HybridRetriever:
         if plan.idioma_contains:
             needle = normalize(plan.idioma_contains)
             idx = [i for i in idx if needle in normalize(self.catalog.books[i].get("idioma", ""))]
-        if plan.publico_alvo:
+        if plan.publico_alvo:  # público é restrição factual -> sempre filtro duro
             wanted = set(plan.publico_alvo)
             idx = [i for i in idx if self.catalog.books[i].get("publico_alvo") in wanted]
         if plan.hard_genre_filter and plan.generos:
@@ -74,8 +77,11 @@ class HybridRetriever:
             idx = [i for i in idx if wanted & set(self.catalog.books[i].get("generos", []))]
 
         if not idx:
-            # Over-filtragem: relaxa gênero/público, mantém ano/idioma; se ainda vazio, usa tudo.
-            notes.append("filtros duros zeraram; relaxando gênero/público")
+            # Over-filtragem: relaxamos só os filtros TEMÁTICOS (gênero/público) e
+            # MANTEMOS ano/idioma — que são restrições FACTUAIS, não temáticas. Se ainda
+            # assim zerar, devolvemos VAZIO (a geração ancorada se abstém) em vez de
+            # cair no catálogo inteiro e "responder" como se houvesse resultados.
+            notes.append("filtros temáticos (gênero/público) relaxados; ano/idioma mantidos")
             idx = list(range(len(self.ids)))
             if plan.ano_min is not None:
                 idx = [i for i in idx if self.catalog.books[i]["ano_publicacao"] >= plan.ano_min]
@@ -85,15 +91,21 @@ class HybridRetriever:
                 needle = normalize(plan.idioma_contains)
                 idx = [i for i in idx if needle in normalize(self.catalog.books[i].get("idioma", ""))]
             if not idx:
-                notes.append("ano/idioma também zeraram; usando catálogo inteiro")
-                idx = list(range(len(self.ids)))
+                notes.append("nenhum livro satisfaz ano/idioma pedidos -> conjunto vazio (abstém)")
         return idx, notes
 
     @staticmethod
-    def _rrf_ranks(scores: np.ndarray) -> dict[int, int]:
-        """Mapa posição-no-subconjunto -> rank (0 = melhor) por score decrescente."""
+    def _rrf_contribution(scores: np.ndarray, k: int, skip_zero: bool = False) -> np.ndarray:
+        """Contribuição RRF por documento: 1/(k+rank), rank por score decrescente.
+        Com skip_zero=True, documentos com score<=0 NÃO contribuem (evita que a massa
+        de BM25=0, lexicalmente irrelevante, receba ranks distintos só pela ordenação)."""
         order = np.argsort(-scores)
-        return {int(p): r for r, p in enumerate(order)}
+        contrib = np.zeros(len(scores), dtype=np.float32)
+        for r, p in enumerate(order):
+            if skip_zero and scores[p] <= 1e-9:
+                continue
+            contrib[p] = 1.0 / (k + r)
+        return contrib
 
     def retrieve(
         self, plan: RetrievalPlan, query_vecs: Optional[list[np.ndarray]], top_k: Optional[int] = None
@@ -101,42 +113,42 @@ class HybridRetriever:
         top_k = top_k or config.TOP_K
         cand, notes = self._hard_filter(plan)
         cand_books = [self.catalog.books[i] for i in cand]
+        if not cand:  # conjunto vazio (filtro factual insatisfazível) -> sem resultados
+            return [], {"candidate_count": 0, "top_cosine": None, "notes": notes,
+                        "semantic_used": False, "retrieved_ids": []}
 
-        query_text = " ".join(plan.semantic_queries) or " ".join(b["titulo"] for b in cand_books[:1])
-        q_tokens = tokenize(query_text)
+        subqueries = [q for q in (plan.semantic_queries or []) if tokenize(q)] or \
+                     [" ".join(b["titulo"] for b in cand_books[:1])]
 
-        # --- BM25 sobre o subconjunto ---
-        bm25_all = self.bm25.get_scores(q_tokens)  # vetor sobre TODOS os docs
+        # --- BM25: OR por sub-query (max), espelhando o lado semântico ---
+        bm25_mats = [self.bm25.get_scores(tokenize(q)) for q in subqueries]
+        bm25_all = np.max(np.vstack(bm25_mats), axis=0)
         bm25_sub = np.array([bm25_all[i] for i in cand], dtype=np.float32)
 
         # --- Semântico (cosseno), OR entre sub-queries (pega o máximo) ---
         cos_sub = None
         top_cosine = None
         if query_vecs:
-            mats = []
-            for qv in query_vecs:
-                mats.append(self.index.cosine_scores(qv, subset_idx=cand))
+            mats = [self.index.cosine_scores(qv, subset_idx=cand) for qv in query_vecs]
             cos_sub = np.max(np.vstack(mats), axis=0) if mats else None
             if cos_sub is not None and len(cos_sub):
                 top_cosine = float(np.max(cos_sub))
 
-        # --- Fusão RRF ---
+        # --- Fusão RRF. BM25 ignora zeros (massa lexicalmente irrelevante não recebe
+        #     ranks artificiais); cosseno é contínuo e ranqueia todos. ---
         k = config.RRF_K
-        fused = np.zeros(len(cand), dtype=np.float32)
-        bm_ranks = self._rrf_ranks(bm25_sub)
-        for p, r in bm_ranks.items():
-            fused[p] += 1.0 / (k + r)
+        fused = self._rrf_contribution(bm25_sub, k, skip_zero=True)
         if cos_sub is not None:
-            cos_ranks = self._rrf_ranks(cos_sub)
-            for p, r in cos_ranks.items():
-                fused[p] += 1.0 / (k + r)
+            fused = fused + self._rrf_contribution(cos_sub, k, skip_zero=False)
 
-        # --- Boost de gênero soft (quando não é filtro duro) ---
+        # --- Boost de gênero soft (quando o gênero é TEMA, não filtro duro). Calibrado
+        #     para subir poucas posições (não dominar): fração pequena de uma contribuição. ---
         if plan.generos and not plan.hard_genre_filter:
             wanted = set(plan.generos)
+            boost = 0.2 / k
             for p, b in enumerate(cand_books):
                 if wanted & set(b.get("generos", [])):
-                    fused[p] += 1.0 / k  # bônus equivalente a ~1 rank
+                    fused[p] += boost
 
         order = list(np.argsort(-fused))
         # Se o subconjunto filtrado é pequeno, devolve todo ele; senão, top_k.
