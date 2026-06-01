@@ -1,0 +1,32 @@
+# Perguntas-exemplo para o desafio "Assistente de Curadoria do Catálogo"
+#
+# Estas 10 perguntas devem ser usadas pelo candidato para testar e validar
+# a aplicação. Elas variam em dificuldade e tipo, cobrindo:
+#   - busca por tema/conteúdo
+#   - filtros por público-alvo, gênero, ano
+#   - perguntas que exigem comparação
+#   - perguntas ambíguas ou potencialmente fora do catálogo
+#   - perguntas conversacionais
+#
+# O candidato deve, para cada pergunta, classificar a resposta do sistema
+# como: CORRETA / PARCIAL / ERRADA, e registrar observações.
+
+1. Quais livros do nosso catálogo abordam temas de inteligência artificial ou sistemas distribuídos? Cite os mais relevantes e o público-alvo de cada um.
+
+2. Estou montando uma lista de leitura para o Dia das Crianças. Sugira 5 livros do nosso catálogo, considerando faixas etárias diferentes dentro do público infantil.
+
+3. Tenho um cliente que adorou romances literários ambientados em pequenas cidades brasileiras, com narrativa lenta e foco em memória familiar. Que livros do nosso catálogo eu recomendaria?
+
+4. Quais livros didáticos do ensino médio temos atualmente, e quais matérias eles cobrem?
+
+5. Um leitor está procurando um livro de não-ficção sobre o cérebro humano, escrito de forma acessível. O que temos disponível?
+
+6. Quero montar uma campanha de lançamento focada em livros publicados nos últimos 3 anos. Quais livros do catálogo se encaixam? Liste por categoria.
+
+7. Temos algum livro sobre liderança de equipes em ambientes de incerteza?
+
+8. Qual é o livro mais antigo do nosso catálogo? E qual é o mais recente?
+
+9. Recebi um pedido de um cliente que quer "aquele livro do autor japonês sobre cidades". Você consegue identificar de qual livro ele provavelmente está falando? (Pergunta intencionalmente ambígua — boa resposta inclui pedir mais contexto OU listar candidatos.)
+
+10. Você tem em catálogo o livro "Memórias Póstumas de Brás Cubas" de Machado de Assis? Se sim, em qual edição? (Pergunta sobre livro fora do catálogo — boa resposta admite que não temos, sem alucinar.)

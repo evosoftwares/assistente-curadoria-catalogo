@@ -1,0 +1,18 @@
+# Segredos
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Saídas de avaliação geradas
+eval/results_manual.json
+eval/results_judge.json
+
+# IMPORTANTE: NÃO ignoramos data/embeddings.npy nem data/embeddings_meta.json.
+# Eles são commitados de propósito para que o revisor rode a recuperação OFFLINE,
+# sem chave e sem re-embeddar o catálogo.

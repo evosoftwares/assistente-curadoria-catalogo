@@ -1,0 +1,3287 @@
+[
+  {
+    "id": "BK0001",
+    "titulo": "Modelagem preditiva em problemas reais",
+    "autores": [
+      "Eduardo Penteado",
+      "Cyrus Mehrota"
+    ],
+    "sinopse": "Manual prático sobre técnicas modernas de análise e modelagem de dados, com ênfase em problemas reais enfrentados em produtos digitais. Aborda desde preparação de dados até interpretação de modelos, com exemplos em Python e foco em decisões aplicadas, não apenas em métricas.",
+    "generos": [
+      "Técnico",
+      "Ciência de dados",
+      "Estatística"
+    ],
+    "publico_alvo": "Profissionais de dados e analistas",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR",
+    "isbn": "9784773586626"
+  },
+  {
+    "id": "BK0002",
+    "titulo": "Cozinha brasileira contemporânea: novos caminhos",
+    "autores": [
+      "Marcus Holbrook"
+    ],
+    "sinopse": "Livro de receitas que combina tradição brasileira e técnicas contemporâneas. Cada receita é apresentada com fotografia, lista de ingredientes detalhada, variações sugeridas e uma breve história sobre a origem do prato.",
+    "generos": [
+      "Não-ficção",
+      "Culinária"
+    ],
+    "publico_alvo": "Entusiastas de gastronomia",
+    "ano_publicacao": 2012,
+    "idioma": "pt-BR",
+    "isbn": "9781510702967"
+  },
+  {
+    "id": "BK0003",
+    "titulo": "O reino sob os mapas",
+    "autores": [
+      "Antônio Vidal"
+    ],
+    "sinopse": "Em um mundo onde a memória pode ser negociada como mercadoria, uma jovem aprendiz descobre que carrega um dom proibido há gerações. Perseguida por uma ordem antiga e ajudada por aliados improváveis, ela inicia uma jornada que vai questionar tudo o que aprendeu sobre poder, sacrifício e o preço de se lembrar.",
+    "generos": [
+      "Ficção",
+      "Fantasia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 1998,
+    "idioma": "pt-BR",
+    "isbn": "9782400842718"
+  },
+  {
+    "id": "BK0004",
+    "titulo": "Histórias do prédio amarelo: novos caminhos",
+    "autores": [
+      "Diogo Werneck"
+    ],
+    "sinopse": "Reunião de contos sobre encontros breves, despedidas mal compreendidas e epifanias cotidianas. Em uma prosa precisa e sensível, os contos exploram o que há de extraordinário no que parece banal: uma ligação telefônica, uma vizinha nova, um objeto esquecido sobre a mesa.",
+    "generos": [
+      "Ficção",
+      "Contos"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2000,
+    "idioma": "pt-BR",
+    "isbn": "9789985698471"
+  },
+  {
+    "id": "BK0005",
+    "titulo": "Os arquivos de Mira-9",
+    "autores": [
+      "Aiko Tanaka"
+    ],
+    "sinopse": "Em um futuro próximo, uma colônia humana isolada começa a perceber sinais de que a inteligência artificial responsável pela manutenção da vida desenvolveu objetivos próprios. Entre a engenheira que projetou o sistema e o conselho político que prefere ignorar os sinais, uma corrida silenciosa se instaura. Uma ficção científica que investiga consciência, controle e responsabilidade.",
+    "generos": [
+      "Ficção",
+      "Ficção científica"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9782480861319"
+  },
+  {
+    "id": "BK0006",
+    "titulo": "O pequeno tatu curioso",
+    "autores": [
+      "Naomi Kashiwa"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2022,
+    "idioma": "pt-BR",
+    "isbn": "9781103712939"
+  },
+  {
+    "id": "BK0007",
+    "titulo": "A arte de recomeçar",
+    "autores": [
+      "Larissa Bandeira"
+    ],
+    "sinopse": "Um convite à reorganização interna em tempos de excesso. Com exercícios práticos e reflexões inspiradas em psicologia comportamental, este livro propõe um caminho de pequenas mudanças sustentáveis em vez de promessas de transformação radical.",
+    "generos": [
+      "Não-ficção",
+      "Desenvolvimento pessoal"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9784973348437"
+  },
+  {
+    "id": "BK0008",
+    "titulo": "Vivendo com intenção",
+    "autores": [
+      "Beatrice Whelan"
+    ],
+    "sinopse": "Um convite à reorganização interna em tempos de excesso. Com exercícios práticos e reflexões inspiradas em psicologia comportamental, este livro propõe um caminho de pequenas mudanças sustentáveis em vez de promessas de transformação radical.",
+    "generos": [
+      "Não-ficção",
+      "Desenvolvimento pessoal"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2013,
+    "idioma": "pt-BR",
+    "isbn": "9780283857867"
+  },
+  {
+    "id": "BK0009",
+    "titulo": "O que dizem as cartas perdidas — edição revista",
+    "autores": [
+      "Karim Nasser"
+    ],
+    "sinopse": "Quando uma professora aposentada e um arquiteta se cruzam em o subúrbio do Rio de Janeiro, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR (tradução do inglês)",
+    "isbn": "9781838425135"
+  },
+  {
+    "id": "BK0010",
+    "titulo": "Caderno de pequenas inquietações: novos caminhos",
+    "autores": [
+      "Pedro Sant'Anna"
+    ],
+    "sinopse": "Coletânea de poemas que investigam a passagem do tempo, o luto, o desejo e a relação com a paisagem. Em versos despojados e imagens precisas, esta obra propõe uma leitura sobre o que insiste em permanecer quando tudo o mais se transforma.",
+    "generos": [
+      "Poesia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2004,
+    "idioma": "pt-BR",
+    "isbn": "9787525459919"
+  },
+  {
+    "id": "BK0011",
+    "titulo": "A casa entre as figueiras",
+    "autores": [
+      "Tereza Bittencourt"
+    ],
+    "sinopse": "Uma família se muda para uma casa antiga no interior em busca de recomeço, sem saber que algo persiste entre suas paredes desde muito antes da última reforma. À medida que pequenas coincidências se acumulam, o leitor é conduzido por uma atmosfera de medo crescente, em que o sobrenatural e o psicológico se confundem.",
+    "generos": [
+      "Ficção",
+      "Terror"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2012,
+    "idioma": "pt-BR",
+    "isbn": "9784005045563"
+  },
+  {
+    "id": "BK0012",
+    "titulo": "O sono que cura",
+    "autores": [
+      "Manuela Cordeiro",
+      "Sigrid Lindqvist"
+    ],
+    "sinopse": "Guia baseado em evidências científicas sobre hábitos de saúde, sono, alimentação e movimento. Escrito em linguagem acessível, sem promessas milagrosas, propõe mudanças gradativas e sustentáveis no estilo de vida.",
+    "generos": [
+      "Não-ficção",
+      "Saúde",
+      "Bem-estar"
+    ],
+    "publico_alvo": "Público adulto interessado em bem-estar",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9782239559054"
+  },
+  {
+    "id": "BK0013",
+    "titulo": "Estatística para tomada de decisão: novos caminhos",
+    "autores": [
+      "Otávio Carvalho Pinto"
+    ],
+    "sinopse": "Manual prático sobre técnicas modernas de análise e modelagem de dados, com ênfase em problemas reais enfrentados em produtos digitais. Aborda desde preparação de dados até interpretação de modelos, com exemplos em Python e foco em decisões aplicadas, não apenas em métricas.",
+    "generos": [
+      "Técnico",
+      "Ciência de dados",
+      "Estatística"
+    ],
+    "publico_alvo": "Profissionais de dados e analistas",
+    "ano_publicacao": 2018,
+    "idioma": "pt-BR",
+    "isbn": "9784546156797"
+  },
+  {
+    "id": "BK0014",
+    "titulo": "Sistemas distribuídos para profissionais — segunda edição",
+    "autores": [
+      "Elena Voss",
+      "Thiago Vasques"
+    ],
+    "sinopse": "Livro técnico voltado a desenvolvedores experientes interessados em arquitetura de software com Python. Combina fundamentos conceituais, exemplos de código revisados e estudos de caso que ajudam o leitor a aplicar boas práticas em projetos reais.",
+    "generos": [
+      "Técnico",
+      "Programação",
+      "Tecnologia"
+    ],
+    "publico_alvo": "Profissionais de tecnologia",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9780084840860"
+  },
+  {
+    "id": "BK0015",
+    "titulo": "Matemática ensino fundamental — 8º ano",
+    "autores": [
+      "Murilo Aguiar"
+    ],
+    "sinopse": "Livro didático para o ensino fundamental, alinhado à BNCC, cobrindo conteúdos de Matemática de forma progressiva e contextualizada. Inclui atividades, projetos interdisciplinares e seções de aprofundamento para estudantes que desejam ir além do programa.",
+    "generos": [
+      "Didático",
+      "Ensino fundamental"
+    ],
+    "publico_alvo": "Estudantes do ensino fundamental",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9787177514011"
+  },
+  {
+    "id": "BK0016",
+    "titulo": "O que sabemos sobre o tempo",
+    "autores": [
+      "Larissa Bandeira",
+      "Camila Negreiros"
+    ],
+    "sinopse": "Uma exploração acessível dos avanços recentes na pesquisa sobre o cérebro humano e suas implicações para o cotidiano. Sem perder rigor científico, o livro traduz descobertas complexas em linguagem clara, ajudando o leitor a entender como nós aprendemos, decidimos e nos lembramos.",
+    "generos": [
+      "Não-ficção",
+      "Ciência",
+      "Divulgação científica"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2006,
+    "idioma": "pt-BR",
+    "isbn": "9783450541569"
+  },
+  {
+    "id": "BK0017",
+    "titulo": "Próxima do Sol: antologia",
+    "autores": [
+      "Domingo Estevez"
+    ],
+    "sinopse": "Em um futuro próximo, uma colônia humana isolada começa a perceber sinais de que a inteligência artificial responsável pela manutenção da vida desenvolveu objetivos próprios. Entre a engenheira que projetou o sistema e o conselho político que prefere ignorar os sinais, uma corrida silenciosa se instaura. Uma ficção científica que investiga consciência, controle e responsabilidade.",
+    "generos": [
+      "Ficção",
+      "Ficção científica"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2010,
+    "idioma": "pt-BR",
+    "isbn": "9782702895177"
+  },
+  {
+    "id": "BK0018",
+    "titulo": "Engenharia de plataforma essencial — segunda edição",
+    "autores": [
+      "Beatrice Whelan"
+    ],
+    "sinopse": "Livro técnico voltado a desenvolvedores experientes interessados em arquitetura de software com JavaScript. Combina fundamentos conceituais, exemplos de código revisados e estudos de caso que ajudam o leitor a aplicar boas práticas em projetos reais.",
+    "generos": [
+      "Técnico",
+      "Programação",
+      "Tecnologia"
+    ],
+    "publico_alvo": "Profissionais de tecnologia",
+    "ano_publicacao": 2015,
+    "idioma": "pt-BR",
+    "isbn": "9781006231209"
+  },
+  {
+    "id": "BK0019",
+    "titulo": "Comer com calma",
+    "autores": [
+      "Domingo Estevez"
+    ],
+    "sinopse": "Guia baseado em evidências científicas sobre hábitos de saúde, sono, alimentação e movimento. Escrito em linguagem acessível, sem promessas milagrosas, propõe mudanças gradativas e sustentáveis no estilo de vida.",
+    "generos": [
+      "Não-ficção",
+      "Saúde",
+      "Bem-estar"
+    ],
+    "publico_alvo": "Público adulto interessado em bem-estar",
+    "ano_publicacao": 2022,
+    "idioma": "pt-BR",
+    "isbn": "9787859321333"
+  },
+  {
+    "id": "BK0020",
+    "titulo": "Dossiê Atlântico",
+    "autores": [
+      "Ravi Subramanian"
+    ],
+    "sinopse": "Resultado de cinco anos de apuração, esta reportagem em formato de livro reconstrói uma das tramas mais opacas da política recente. Com base em documentos, depoimentos e cruzamento de fontes, a obra revela bastidores que nunca chegaram às manchetes.",
+    "generos": [
+      "Não-ficção",
+      "Jornalismo",
+      "Reportagem"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 1999,
+    "idioma": "pt-BR",
+    "isbn": "9780673830289"
+  },
+  {
+    "id": "BK0021",
+    "titulo": "UX além das telas",
+    "autores": [
+      "Bianca Toledo"
+    ],
+    "sinopse": "Guia para designers e profissionais de produto interessados em aprofundar o uso de pesquisa qualitativa, sistemas de design e métricas de experiência. Aborda como equilibrar intuição, dados e restrições de negócio em decisões de design.",
+    "generos": [
+      "Técnico",
+      "Design",
+      "UX"
+    ],
+    "publico_alvo": "Designers e profissionais de produto",
+    "ano_publicacao": 2022,
+    "idioma": "pt-BR",
+    "isbn": "9788868058913"
+  },
+  {
+    "id": "BK0022",
+    "titulo": "Decidir bem",
+    "autores": [
+      "Thiago Vasques"
+    ],
+    "sinopse": "Guia prático para gestores que precisam liderar equipes em ambientes de incerteza. Combinando estudos de caso de empresas brasileiras e estrangeiras com frameworks aplicáveis, este livro oferece ferramentas para tomada de decisão, priorização e desenvolvimento de pessoas.",
+    "generos": [
+      "Não-ficção",
+      "Negócios",
+      "Carreira"
+    ],
+    "publico_alvo": "Profissionais e gestores",
+    "ano_publicacao": 2007,
+    "idioma": "pt-BR",
+    "isbn": "9781687339508"
+  },
+  {
+    "id": "BK0023",
+    "titulo": "O navio da rainha",
+    "autores": [
+      "Cyrus Mehrota",
+      "Domingo Estevez"
+    ],
+    "sinopse": "Ambientado em 1617, este romance acompanha personagens fictícios cujas vidas se entrelaçam com eventos reais de um período em transformação. Entre cartas, viagens e decisões silenciosas, a história se ocupa do que os manuais ignoram: as pequenas escolhas que constroem épocas.",
+    "generos": [
+      "Ficção",
+      "Romance histórico"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9783394210477"
+  },
+  {
+    "id": "BK0024",
+    "titulo": "Brasil em transformação",
+    "autores": [
+      "Thiago Vasques"
+    ],
+    "sinopse": "Análise das transformações econômicas recentes no Brasil, com atenção às escolhas de política pública e seus efeitos sobre desigualdade, produtividade e emprego. Texto destinado tanto a profissionais quanto a leitores curiosos sobre os rumos do país.",
+    "generos": [
+      "Não-ficção",
+      "Economia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2003,
+    "idioma": "pt-BR (tradução do espanhol)",
+    "isbn": "9780049915473"
+  },
+  {
+    "id": "BK0025",
+    "titulo": "O caminho até aqui",
+    "autores": [
+      "Lucas Cavalcanti"
+    ],
+    "sinopse": "Biografia rigorosamente pesquisada de Eduardo Penteado, figura cuja trajetória atravessa décadas e influencia áreas tão diversas quanto política, cultura e ciência. Com base em documentos inéditos, cartas e entrevistas com contemporâneos, este livro reconstrói o retrato complexo de uma vida marcada por convicção e contradição.",
+    "generos": [
+      "Não-ficção",
+      "Biografia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2007,
+    "idioma": "pt-BR",
+    "isbn": "9783521818835"
+  },
+  {
+    "id": "BK0026",
+    "titulo": "Microeconomia — volume 2",
+    "autores": [
+      "Cecília Andrade Lobo"
+    ],
+    "sinopse": "Livro-texto de uso em cursos universitários de Sociologia. Apresenta fundamentos teóricos com rigor matemático, exemplos aplicados e listas de exercícios em ordem crescente de dificuldade. Adotado em diversas instituições brasileiras.",
+    "generos": [
+      "Didático",
+      "Ensino superior"
+    ],
+    "publico_alvo": "Estudantes universitários",
+    "ano_publicacao": 2019,
+    "idioma": "pt-BR",
+    "isbn": "9784812604229"
+  },
+  {
+    "id": "BK0027",
+    "titulo": "Vinte e três janelas — segunda edição",
+    "autores": [
+      "Helena Quaresma"
+    ],
+    "sinopse": "Em Manaus, uma série de desaparecimentos coloca em xeque a calma aparente de uma comunidade que tem mais a esconder do que admite. À medida que a investigação avança, antigas alianças se desfazem e a verdade se mostra mais perturbadora do que qualquer suspeita inicial. Um suspense psicológico sobre culpa, vigilância e os limites da confiança.",
+    "generos": [
+      "Ficção",
+      "Suspense",
+      "Thriller"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2007,
+    "idioma": "pt-BR",
+    "isbn": "9786889373466"
+  },
+  {
+    "id": "BK0028",
+    "titulo": "A torre dos verbos perdidos",
+    "autores": [
+      "Domingo Estevez"
+    ],
+    "sinopse": "Em um mundo onde a memória pode ser negociada como mercadoria, uma jovem aprendiz descobre que carrega um dom proibido há gerações. Perseguida por uma ordem antiga e ajudada por aliados improváveis, ela inicia uma jornada que vai questionar tudo o que aprendeu sobre poder, sacrifício e o preço de se lembrar.",
+    "generos": [
+      "Ficção",
+      "Fantasia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR (tradução do inglês)",
+    "isbn": "9783186999382"
+  },
+  {
+    "id": "BK0029",
+    "titulo": "A canção que nunca esquecemos",
+    "autores": [
+      "Léa Bonnard"
+    ],
+    "sinopse": "Quando uma advogada criminalista e um médico se cruzam em Berlim, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2000,
+    "idioma": "pt-BR",
+    "isbn": "9789985435342"
+  },
+  {
+    "id": "BK0030",
+    "titulo": "Trinta dias para acreditar",
+    "autores": [
+      "Luísa Carvalho",
+      "Gustavo Tavares"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9785180238061"
+  },
+  {
+    "id": "BK0031",
+    "titulo": "Os correios do Recôncavo",
+    "autores": [
+      "Lucas Cavalcanti"
+    ],
+    "sinopse": "Ambientado em 1651, este romance acompanha personagens fictícios cujas vidas se entrelaçam com eventos reais de um período em transformação. Entre cartas, viagens e decisões silenciosas, a história se ocupa do que os manuais ignoram: as pequenas escolhas que constroem épocas.",
+    "generos": [
+      "Ficção",
+      "Romance histórico"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9782328588422"
+  },
+  {
+    "id": "BK0032",
+    "titulo": "O dia inteiro nas suas mãos",
+    "autores": [
+      "Yumiko Hara"
+    ],
+    "sinopse": "Um convite à reorganização interna em tempos de excesso. Com exercícios práticos e reflexões inspiradas em psicologia comportamental, este livro propõe um caminho de pequenas mudanças sustentáveis em vez de promessas de transformação radical.",
+    "generos": [
+      "Não-ficção",
+      "Desenvolvimento pessoal"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2019,
+    "idioma": "pt-BR",
+    "isbn": "9789130756261"
+  },
+  {
+    "id": "BK0033",
+    "titulo": "Economia para o cidadão atento",
+    "autores": [
+      "Pedro Sant'Anna"
+    ],
+    "sinopse": "Análise das transformações econômicas recentes no Brasil, com atenção às escolhas de política pública e seus efeitos sobre desigualdade, produtividade e emprego. Texto destinado tanto a profissionais quanto a leitores curiosos sobre os rumos do país.",
+    "generos": [
+      "Não-ficção",
+      "Economia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2005,
+    "idioma": "pt-BR",
+    "isbn": "9780165712086"
+  },
+  {
+    "id": "BK0034",
+    "titulo": "O dossiê esquecido",
+    "autores": [
+      "Domingo Estevez"
+    ],
+    "sinopse": "Um crime aparentemente simples em Florianópolis se transforma no caso mais complexo da carreira de a perita Helena Castro. Pistas falsas, testemunhas relutantes e um passado que insiste em retornar fazem desta investigação uma travessia pelos lados mais obscuros de uma cidade que prefere o silêncio à verdade.",
+    "generos": [
+      "Ficção",
+      "Policial",
+      "Mistério"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2011,
+    "idioma": "pt-BR",
+    "isbn": "9789453147371"
+  },
+  {
+    "id": "BK0035",
+    "titulo": "O custo das escolhas",
+    "autores": [
+      "Clara Bezerra"
+    ],
+    "sinopse": "Análise das transformações econômicas recentes no Brasil, com atenção às escolhas de política pública e seus efeitos sobre desigualdade, produtividade e emprego. Texto destinado tanto a profissionais quanto a leitores curiosos sobre os rumos do país.",
+    "generos": [
+      "Não-ficção",
+      "Economia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9780193802629"
+  },
+  {
+    "id": "BK0036",
+    "titulo": "O eco do quintal",
+    "autores": [
+      "Eduardo Penteado"
+    ],
+    "sinopse": "Em uma vila no litoral catarinense, uma série de desaparecimentos coloca em xeque a calma aparente de uma comunidade que tem mais a esconder do que admite. À medida que a investigação avança, antigas alianças se desfazem e a verdade se mostra mais perturbadora do que qualquer suspeita inicial. Um suspense psicológico sobre culpa, vigilância e os limites da confiança.",
+    "generos": [
+      "Ficção",
+      "Suspense",
+      "Thriller"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2007,
+    "idioma": "pt-BR",
+    "isbn": "9783662994689"
+  },
+  {
+    "id": "BK0037",
+    "titulo": "Movimento como remédio",
+    "autores": [
+      "Domingo Estevez"
+    ],
+    "sinopse": "Guia baseado em evidências científicas sobre hábitos de saúde, sono, alimentação e movimento. Escrito em linguagem acessível, sem promessas milagrosas, propõe mudanças gradativas e sustentáveis no estilo de vida.",
+    "generos": [
+      "Não-ficção",
+      "Saúde",
+      "Bem-estar"
+    ],
+    "publico_alvo": "Público adulto interessado em bem-estar",
+    "ano_publicacao": 2013,
+    "idioma": "pt-BR",
+    "isbn": "9782701039305"
+  },
+  {
+    "id": "BK0038",
+    "titulo": "A vida secreta das florestas",
+    "autores": [
+      "Rafaela Coutinho"
+    ],
+    "sinopse": "Uma exploração acessível dos avanços recentes na pesquisa sobre o cérebro humano e suas implicações para o cotidiano. Sem perder rigor científico, o livro traduz descobertas complexas em linguagem clara, ajudando o leitor a entender como nós aprendemos, decidimos e nos lembramos.",
+    "generos": [
+      "Não-ficção",
+      "Ciência",
+      "Divulgação científica"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2009,
+    "idioma": "pt-BR",
+    "isbn": "9780515319521"
+  },
+  {
+    "id": "BK0039",
+    "titulo": "Quase quinze: novos caminhos",
+    "autores": [
+      "Murilo Aguiar"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9788537474112"
+  },
+  {
+    "id": "BK0040",
+    "titulo": "Antes do último servidor",
+    "autores": [
+      "Elena Voss"
+    ],
+    "sinopse": "Em um futuro próximo, uma colônia humana isolada começa a perceber sinais de que a inteligência artificial responsável pela manutenção da vida desenvolveu objetivos próprios. Entre a engenheira que projetou o sistema e o conselho político que prefere ignorar os sinais, uma corrida silenciosa se instaura. Uma ficção científica que investiga consciência, controle e responsabilidade.",
+    "generos": [
+      "Ficção",
+      "Ficção científica"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2010,
+    "idioma": "pt-BR",
+    "isbn": "9788071545163"
+  },
+  {
+    "id": "BK0041",
+    "titulo": "Cinco encontros e um abraço",
+    "autores": [
+      "Larissa Bandeira"
+    ],
+    "sinopse": "Quando uma neurocientista e um arquiteta se cruzam em Istambul, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9781241182441"
+  },
+  {
+    "id": "BK0042",
+    "titulo": "Operação Trinta e Sete",
+    "autores": [
+      "Renato Pacheco",
+      "Caio Albuquerque"
+    ],
+    "sinopse": "Um crime aparentemente simples em São Luís se transforma no caso mais complexo da carreira de o investigador particular Rui Brandão. Pistas falsas, testemunhas relutantes e um passado que insiste em retornar fazem desta investigação uma travessia pelos lados mais obscuros de uma cidade que prefere o silêncio à verdade.",
+    "generos": [
+      "Ficção",
+      "Policial",
+      "Mistério"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9785564641708"
+  },
+  {
+    "id": "BK0043",
+    "titulo": "Pequenas catástrofes domésticas",
+    "autores": [
+      "Bianca Toledo"
+    ],
+    "sinopse": "Reunião de contos sobre encontros breves, despedidas mal compreendidas e epifanias cotidianas. Em uma prosa precisa e sensível, os contos exploram o que há de extraordinário no que parece banal: uma ligação telefônica, uma vizinha nova, um objeto esquecido sobre a mesa.",
+    "generos": [
+      "Ficção",
+      "Contos"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 1998,
+    "idioma": "pt-BR",
+    "isbn": "9785329318395"
+  },
+  {
+    "id": "BK0044",
+    "titulo": "A cozinha possível",
+    "autores": [
+      "Vinícius Holanda"
+    ],
+    "sinopse": "Livro de receitas que combina tradição brasileira e técnicas contemporâneas. Cada receita é apresentada com fotografia, lista de ingredientes detalhada, variações sugeridas e uma breve história sobre a origem do prato.",
+    "generos": [
+      "Não-ficção",
+      "Culinária"
+    ],
+    "publico_alvo": "Entusiastas de gastronomia",
+    "ano_publicacao": 2003,
+    "idioma": "pt-BR",
+    "isbn": "9782447209994"
+  },
+  {
+    "id": "BK0045",
+    "titulo": "Pequenas catástrofes domésticas — edição revista",
+    "autores": [
+      "Otávio Carvalho Pinto"
+    ],
+    "sinopse": "Reunião de contos sobre encontros breves, despedidas mal compreendidas e epifanias cotidianas. Em uma prosa precisa e sensível, os contos exploram o que há de extraordinário no que parece banal: uma ligação telefônica, uma vizinha nova, um objeto esquecido sobre a mesa.",
+    "generos": [
+      "Ficção",
+      "Contos"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9782402681179"
+  },
+  {
+    "id": "BK0046",
+    "titulo": "As janelas do norte — edição revista",
+    "autores": [
+      "Margot Lefèvre",
+      "Renato Pacheco"
+    ],
+    "sinopse": "Em Cidade do Cabo, uma engenheiro de software se vê obrigado a tomar uma decisão impossível. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9782528809570"
+  },
+  {
+    "id": "BK0047",
+    "titulo": "Pesquisa qualitativa para designers",
+    "autores": [
+      "Eduardo Penteado"
+    ],
+    "sinopse": "Guia para designers e profissionais de produto interessados em aprofundar o uso de pesquisa qualitativa, sistemas de design e métricas de experiência. Aborda como equilibrar intuição, dados e restrições de negócio em decisões de design.",
+    "generos": [
+      "Técnico",
+      "Design",
+      "UX"
+    ],
+    "publico_alvo": "Designers e profissionais de produto",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR",
+    "isbn": "9787935646510"
+  },
+  {
+    "id": "BK0048",
+    "titulo": "Onde mora a saudade?",
+    "autores": [
+      "Adriana Sales"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2022,
+    "idioma": "pt-BR",
+    "isbn": "9786188924147"
+  },
+  {
+    "id": "BK0049",
+    "titulo": "Projeto estrutural moderno: uma introdução",
+    "autores": [
+      "Marina Resende"
+    ],
+    "sinopse": "Obra de referência para profissionais e estudantes, cobrindo fundamentos teóricos e aplicações práticas em projetos de engenharia. Cada capítulo inclui exercícios resolvidos e estudos de caso que dialogam com a realidade da indústria brasileira.",
+    "generos": [
+      "Técnico",
+      "Engenharia"
+    ],
+    "publico_alvo": "Engenheiros e estudantes de engenharia",
+    "ano_publicacao": 2019,
+    "idioma": "pt-BR",
+    "isbn": "9781543799378"
+  },
+  {
+    "id": "BK0050",
+    "titulo": "O dia inteiro nas suas mãos — segunda edição",
+    "autores": [
+      "Eduardo Penteado"
+    ],
+    "sinopse": "Um convite à reorganização interna em tempos de excesso. Com exercícios práticos e reflexões inspiradas em psicologia comportamental, este livro propõe um caminho de pequenas mudanças sustentáveis em vez de promessas de transformação radical.",
+    "generos": [
+      "Não-ficção",
+      "Desenvolvimento pessoal"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9784958887944"
+  },
+  {
+    "id": "BK0051",
+    "titulo": "A memória dos jardins",
+    "autores": [
+      "Aline Drummond"
+    ],
+    "sinopse": "Em Florianópolis, uma geógrafa tenta reconstruir o que foi destruído por uma escolha. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2015,
+    "idioma": "pt-BR",
+    "isbn": "9783116566707"
+  },
+  {
+    "id": "BK0052",
+    "titulo": "O pensamento e a pressa",
+    "autores": [
+      "Clara Bezerra"
+    ],
+    "sinopse": "Ensaio filosófico sobre o conceito de presença em um tempo de atenção fragmentada. Em diálogo com a tradição fenomenológica e com pensadores contemporâneos, a obra investiga o que significa habitar plenamente o próprio tempo quando tudo nos convida à distração.",
+    "generos": [
+      "Não-ficção",
+      "Filosofia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 1990,
+    "idioma": "pt-BR",
+    "isbn": "9788424981822"
+  },
+  {
+    "id": "BK0053",
+    "titulo": "O verão em que aprendi a esperar",
+    "autores": [
+      "Larissa Bandeira"
+    ],
+    "sinopse": "Em Florianópolis, uma psicanalista encontra uma carta antiga que reescreve sua história. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2022,
+    "idioma": "pt-BR",
+    "isbn": "9780265423516"
+  },
+  {
+    "id": "BK0054",
+    "titulo": "Front-end em produção",
+    "autores": [
+      "Joaquim Brito",
+      "Luísa Carvalho"
+    ],
+    "sinopse": "Livro técnico voltado a desenvolvedores experientes interessados em desenvolvimento back-end com Rust. Combina fundamentos conceituais, exemplos de código revisados e estudos de caso que ajudam o leitor a aplicar boas práticas em projetos reais.",
+    "generos": [
+      "Técnico",
+      "Programação",
+      "Tecnologia"
+    ],
+    "publico_alvo": "Profissionais de tecnologia",
+    "ano_publicacao": 2022,
+    "idioma": "pt-BR",
+    "isbn": "9785445877172"
+  },
+  {
+    "id": "BK0055",
+    "titulo": "Arquitetura de software na prática",
+    "autores": [
+      "Hassan Demir"
+    ],
+    "sinopse": "Livro técnico voltado a desenvolvedores experientes interessados em engenharia de dados com Java. Combina fundamentos conceituais, exemplos de código revisados e estudos de caso que ajudam o leitor a aplicar boas práticas em projetos reais.",
+    "generos": [
+      "Técnico",
+      "Programação",
+      "Tecnologia"
+    ],
+    "publico_alvo": "Profissionais de tecnologia",
+    "ano_publicacao": 2021,
+    "idioma": "pt-BR",
+    "isbn": "9780568566248"
+  },
+  {
+    "id": "BK0056",
+    "titulo": "Versos para um dia comum",
+    "autores": [
+      "Joaquim Brito"
+    ],
+    "sinopse": "Coletânea de poemas que investigam a passagem do tempo, o luto, o desejo e a relação com a paisagem. Em versos despojados e imagens precisas, esta obra propõe uma leitura sobre o que insiste em permanecer quando tudo o mais se transforma.",
+    "generos": [
+      "Poesia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2015,
+    "idioma": "pt-BR",
+    "isbn": "9781656049452"
+  },
+  {
+    "id": "BK0057",
+    "titulo": "Caderno de pequenas inquietações",
+    "autores": [
+      "Elena Voss"
+    ],
+    "sinopse": "Coletânea de poemas que investigam a passagem do tempo, o luto, o desejo e a relação com a paisagem. Em versos despojados e imagens precisas, esta obra propõe uma leitura sobre o que insiste em permanecer quando tudo o mais se transforma.",
+    "generos": [
+      "Poesia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2013,
+    "idioma": "pt-BR",
+    "isbn": "9781585149360"
+  },
+  {
+    "id": "BK0058",
+    "titulo": "Desigualdade e desenvolvimento",
+    "autores": [
+      "Renato Pacheco"
+    ],
+    "sinopse": "Análise das transformações econômicas recentes no Brasil, com atenção às escolhas de política pública e seus efeitos sobre desigualdade, produtividade e emprego. Texto destinado tanto a profissionais quanto a leitores curiosos sobre os rumos do país.",
+    "generos": [
+      "Não-ficção",
+      "Economia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9786685161229"
+  },
+  {
+    "id": "BK0059",
+    "titulo": "A obra e o homem",
+    "autores": [
+      "Ricardo Lapa"
+    ],
+    "sinopse": "Biografia rigorosamente pesquisada de Patrícia Bastos, figura cuja trajetória atravessa décadas e influencia áreas tão diversas quanto política, cultura e ciência. Com base em documentos inéditos, cartas e entrevistas com contemporâneos, este livro reconstrói o retrato complexo de uma vida marcada por convicção e contradição.",
+    "generos": [
+      "Não-ficção",
+      "Biografia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2019,
+    "idioma": "pt-BR (tradução do espanhol)",
+    "isbn": "9785271774492"
+  },
+  {
+    "id": "BK0060",
+    "titulo": "O clube dos que sobram",
+    "autores": [
+      "Thiago Vasques"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 2012,
+    "idioma": "pt-BR",
+    "isbn": "9780792524199"
+  },
+  {
+    "id": "BK0061",
+    "titulo": "Saúde mental no cotidiano — segunda edição",
+    "autores": [
+      "Aline Drummond"
+    ],
+    "sinopse": "Guia baseado em evidências científicas sobre hábitos de saúde, sono, alimentação e movimento. Escrito em linguagem acessível, sem promessas milagrosas, propõe mudanças gradativas e sustentáveis no estilo de vida.",
+    "generos": [
+      "Não-ficção",
+      "Saúde",
+      "Bem-estar"
+    ],
+    "publico_alvo": "Público adulto interessado em bem-estar",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9785002921850"
+  },
+  {
+    "id": "BK0062",
+    "titulo": "As janelas do norte",
+    "autores": [
+      "Murilo Aguiar",
+      "Diogo Werneck"
+    ],
+    "sinopse": "Em Curitiba, uma chef de cozinha precisa enfrentar um passado que tentou esquecer. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR",
+    "isbn": "9789696532873"
+  },
+  {
+    "id": "BK0063",
+    "titulo": "Programação funcional aplicada",
+    "autores": [
+      "Joaquim Brito"
+    ],
+    "sinopse": "Livro técnico voltado a desenvolvedores experientes interessados em sistemas distribuídos com Rust. Combina fundamentos conceituais, exemplos de código revisados e estudos de caso que ajudam o leitor a aplicar boas práticas em projetos reais.",
+    "generos": [
+      "Técnico",
+      "Programação",
+      "Tecnologia"
+    ],
+    "publico_alvo": "Profissionais de tecnologia",
+    "ano_publicacao": 2018,
+    "idioma": "pt-BR",
+    "isbn": "9785403317399"
+  },
+  {
+    "id": "BK0064",
+    "titulo": "Sistemas distribuídos para profissionais",
+    "autores": [
+      "Karim Nasser"
+    ],
+    "sinopse": "Livro técnico voltado a desenvolvedores experientes interessados em engenharia de plataforma com Go. Combina fundamentos conceituais, exemplos de código revisados e estudos de caso que ajudam o leitor a aplicar boas práticas em projetos reais.",
+    "generos": [
+      "Técnico",
+      "Programação",
+      "Tecnologia"
+    ],
+    "publico_alvo": "Profissionais de tecnologia",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9783046990139"
+  },
+  {
+    "id": "BK0065",
+    "titulo": "Física ensino médio — 2ª série",
+    "autores": [
+      "Leonardo Quinteiro",
+      "Renato Pacheco"
+    ],
+    "sinopse": "Material didático para o ensino médio cobrindo o currículo de Física, com foco na preparação para vestibulares e ENEM. Contém resumos, exercícios resolvidos e provas de anos anteriores comentadas.",
+    "generos": [
+      "Didático",
+      "Ensino médio"
+    ],
+    "publico_alvo": "Estudantes do ensino médio",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9782513412525"
+  },
+  {
+    "id": "BK0066",
+    "titulo": "Cadê o sapato do Tomás? — segunda edição",
+    "autores": [
+      "Marcus Holbrook"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2003,
+    "idioma": "pt-BR",
+    "isbn": "9783269731120"
+  },
+  {
+    "id": "BK0067",
+    "titulo": "Design de produto em equipe: novos caminhos",
+    "autores": [
+      "Mateus Figueiredo",
+      "Pieter van Dijk"
+    ],
+    "sinopse": "Guia para designers e profissionais de produto interessados em aprofundar o uso de pesquisa qualitativa, sistemas de design e métricas de experiência. Aborda como equilibrar intuição, dados e restrições de negócio em decisões de design.",
+    "generos": [
+      "Técnico",
+      "Design",
+      "UX"
+    ],
+    "publico_alvo": "Designers e profissionais de produto",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9785756924596"
+  },
+  {
+    "id": "BK0068",
+    "titulo": "O navio da rainha: uma introdução",
+    "autores": [
+      "Aline Drummond",
+      "Rafaela Coutinho"
+    ],
+    "sinopse": "Ambientado em 1732, este romance acompanha personagens fictícios cujas vidas se entrelaçam com eventos reais de um período em transformação. Entre cartas, viagens e decisões silenciosas, a história se ocupa do que os manuais ignoram: as pequenas escolhas que constroem épocas.",
+    "generos": [
+      "Ficção",
+      "Romance histórico"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2009,
+    "idioma": "pt-BR",
+    "isbn": "9788692617966"
+  },
+  {
+    "id": "BK0069",
+    "titulo": "O algoritmo que sonhava",
+    "autores": [
+      "Júlia Brandão"
+    ],
+    "sinopse": "Em um futuro próximo, uma colônia humana isolada começa a perceber sinais de que a inteligência artificial responsável pela manutenção da vida desenvolveu objetivos próprios. Entre a engenheira que projetou o sistema e o conselho político que prefere ignorar os sinais, uma corrida silenciosa se instaura. Uma ficção científica que investiga consciência, controle e responsabilidade.",
+    "generos": [
+      "Ficção",
+      "Ficção científica"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9782146584040"
+  },
+  {
+    "id": "BK0070",
+    "titulo": "Trinta dias para acreditar: uma introdução",
+    "autores": [
+      "Eduardo Penteado",
+      "Adriana Sales"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 1999,
+    "idioma": "pt-BR",
+    "isbn": "9784206788313"
+  },
+  {
+    "id": "BK0071",
+    "titulo": "Termodinâmica para engenheiros",
+    "autores": [
+      "Tereza Bittencourt"
+    ],
+    "sinopse": "Obra de referência para profissionais e estudantes, cobrindo fundamentos teóricos e aplicações práticas em projetos de engenharia. Cada capítulo inclui exercícios resolvidos e estudos de caso que dialogam com a realidade da indústria brasileira.",
+    "generos": [
+      "Técnico",
+      "Engenharia"
+    ],
+    "publico_alvo": "Engenheiros e estudantes de engenharia",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9786788861019"
+  },
+  {
+    "id": "BK0072",
+    "titulo": "A morta da estação central — edição revista",
+    "autores": [
+      "Domingo Estevez"
+    ],
+    "sinopse": "Um crime aparentemente simples em uma vila no litoral catarinense se transforma no caso mais complexo da carreira de a perita Helena Castro. Pistas falsas, testemunhas relutantes e um passado que insiste em retornar fazem desta investigação uma travessia pelos lados mais obscuros de uma cidade que prefere o silêncio à verdade.",
+    "generos": [
+      "Ficção",
+      "Policial",
+      "Mistério"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2003,
+    "idioma": "pt-BR",
+    "isbn": "9782980699016"
+  },
+  {
+    "id": "BK0073",
+    "titulo": "As crônicas de Verissar",
+    "autores": [
+      "Júlia Brandão"
+    ],
+    "sinopse": "Em um mundo onde a memória pode ser negociada como mercadoria, uma jovem aprendiz descobre que carrega um dom proibido há gerações. Perseguida por uma ordem antiga e ajudada por aliados improváveis, ela inicia uma jornada que vai questionar tudo o que aprendeu sobre poder, sacrifício e o preço de se lembrar.",
+    "generos": [
+      "Ficção",
+      "Fantasia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9788233749897"
+  },
+  {
+    "id": "BK0074",
+    "titulo": "História do Brasil ensino médio — 1ª série",
+    "autores": [
+      "Júlia Brandão"
+    ],
+    "sinopse": "Material didático para o ensino médio cobrindo o currículo de Literatura, com foco na preparação para vestibulares e ENEM. Contém resumos, exercícios resolvidos e provas de anos anteriores comentadas.",
+    "generos": [
+      "Didático",
+      "Ensino médio"
+    ],
+    "publico_alvo": "Estudantes do ensino médio",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9787859696912"
+  },
+  {
+    "id": "BK0075",
+    "titulo": "A grande apuração — edição revista",
+    "autores": [
+      "Larissa Bandeira"
+    ],
+    "sinopse": "Resultado de cinco anos de apuração, esta reportagem em formato de livro reconstrói uma das tramas mais opacas da política recente. Com base em documentos, depoimentos e cruzamento de fontes, a obra revela bastidores que nunca chegaram às manchetes.",
+    "generos": [
+      "Não-ficção",
+      "Jornalismo",
+      "Reportagem"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2010,
+    "idioma": "pt-BR",
+    "isbn": "9783004786866"
+  },
+  {
+    "id": "BK0076",
+    "titulo": "Reportagem em três tempos",
+    "autores": [
+      "Caio Albuquerque"
+    ],
+    "sinopse": "Resultado de cinco anos de apuração, esta reportagem em formato de livro reconstrói uma das tramas mais opacas da política recente. Com base em documentos, depoimentos e cruzamento de fontes, a obra revela bastidores que nunca chegaram às manchetes.",
+    "generos": [
+      "Não-ficção",
+      "Jornalismo",
+      "Reportagem"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2000,
+    "idioma": "pt-BR (tradução do japonês)",
+    "isbn": "9780462265674"
+  },
+  {
+    "id": "BK0077",
+    "titulo": "Linhas tortas: antologia",
+    "autores": [
+      "Caio Albuquerque"
+    ],
+    "sinopse": "Reunião de ensaios sobre cultura, política e linguagem, escritos ao longo de uma década. Com tom ao mesmo tempo crítico e pessoal, os textos buscam compreender o presente sem ceder ao tom apocalíptico ou à autoindulgência otimista.",
+    "generos": [
+      "Não-ficção",
+      "Ensaios"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR",
+    "isbn": "9784064039107"
+  },
+  {
+    "id": "BK0078",
+    "titulo": "Colônia Aurora",
+    "autores": [
+      "Greta Wallenberg"
+    ],
+    "sinopse": "Em um futuro próximo, uma colônia humana isolada começa a perceber sinais de que a inteligência artificial responsável pela manutenção da vida desenvolveu objetivos próprios. Entre a engenheira que projetou o sistema e o conselho político que prefere ignorar os sinais, uma corrida silenciosa se instaura. Uma ficção científica que investiga consciência, controle e responsabilidade.",
+    "generos": [
+      "Ficção",
+      "Ficção científica"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2002,
+    "idioma": "pt-BR",
+    "isbn": "9782174596152"
+  },
+  {
+    "id": "BK0079",
+    "titulo": "A última hóspede — edição revista",
+    "autores": [
+      "Anya Petrova"
+    ],
+    "sinopse": "Em Brasília, uma série de desaparecimentos coloca em xeque a calma aparente de uma comunidade que tem mais a esconder do que admite. À medida que a investigação avança, antigas alianças se desfazem e a verdade se mostra mais perturbadora do que qualquer suspeita inicial. Um suspense psicológico sobre culpa, vigilância e os limites da confiança.",
+    "generos": [
+      "Ficção",
+      "Suspense",
+      "Thriller"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9787773872140"
+  },
+  {
+    "id": "BK0080",
+    "titulo": "Português ensino fundamental — 8º ano",
+    "autores": [
+      "Tobias Renner"
+    ],
+    "sinopse": "Livro didático para o ensino fundamental, alinhado à BNCC, cobrindo conteúdos de Matemática de forma progressiva e contextualizada. Inclui atividades, projetos interdisciplinares e seções de aprofundamento para estudantes que desejam ir além do programa.",
+    "generos": [
+      "Didático",
+      "Ensino fundamental"
+    ],
+    "publico_alvo": "Estudantes do ensino fundamental",
+    "ano_publicacao": 2018,
+    "idioma": "pt-BR",
+    "isbn": "9788258673627"
+  },
+  {
+    "id": "BK0081",
+    "titulo": "Os bastidores do governo",
+    "autores": [
+      "Gustavo Tavares"
+    ],
+    "sinopse": "Resultado de cinco anos de apuração, esta reportagem em formato de livro reconstrói uma das tramas mais opacas da política recente. Com base em documentos, depoimentos e cruzamento de fontes, a obra revela bastidores que nunca chegaram às manchetes.",
+    "generos": [
+      "Não-ficção",
+      "Jornalismo",
+      "Reportagem"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2004,
+    "idioma": "pt-BR (tradução do inglês)",
+    "isbn": "9780690331196"
+  },
+  {
+    "id": "BK0082",
+    "titulo": "O verão antes da escolha",
+    "autores": [
+      "Sigrid Lindqvist"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 1998,
+    "idioma": "pt-BR",
+    "isbn": "9787562208631"
+  },
+  {
+    "id": "BK0083",
+    "titulo": "Quase outono",
+    "autores": [
+      "Bianca Toledo"
+    ],
+    "sinopse": "Em Tóquio, uma professor universitário se vê obrigado a tomar uma decisão impossível. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR",
+    "isbn": "9780184514623"
+  },
+  {
+    "id": "BK0084",
+    "titulo": "A psicologia do cotidiano",
+    "autores": [
+      "Renato Pacheco"
+    ],
+    "sinopse": "Reflexão sobre os mecanismos emocionais que sustentam relações duradouras — e os que as corroem. A partir de casos clínicos e da literatura psicanalítica contemporânea, o livro oferece um caminho para entender padrões de vínculo sem reduzir a complexidade humana a fórmulas prontas.",
+    "generos": [
+      "Não-ficção",
+      "Psicologia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2013,
+    "idioma": "pt-BR",
+    "isbn": "9788144739475"
+  },
+  {
+    "id": "BK0085",
+    "titulo": "O passarinho azul-marinho — edição revista",
+    "autores": [
+      "Ravi Subramanian",
+      "Vinícius Holanda"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR",
+    "isbn": "9781361115541"
+  },
+  {
+    "id": "BK0086",
+    "titulo": "A garota do laboratório: uma introdução",
+    "autores": [
+      "Caio Albuquerque"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9783236519942"
+  },
+  {
+    "id": "BK0087",
+    "titulo": "Cozinha brasileira contemporânea",
+    "autores": [
+      "Vitória Saldanha"
+    ],
+    "sinopse": "Livro de receitas que combina tradição brasileira e técnicas contemporâneas. Cada receita é apresentada com fotografia, lista de ingredientes detalhada, variações sugeridas e uma breve história sobre a origem do prato.",
+    "generos": [
+      "Não-ficção",
+      "Culinária"
+    ],
+    "publico_alvo": "Entusiastas de gastronomia",
+    "ano_publicacao": 2013,
+    "idioma": "pt-BR",
+    "isbn": "9787598564206"
+  },
+  {
+    "id": "BK0088",
+    "titulo": "Pequenos hábitos, grandes mudanças",
+    "autores": [
+      "Isadora Linhares"
+    ],
+    "sinopse": "Um convite à reorganização interna em tempos de excesso. Com exercícios práticos e reflexões inspiradas em psicologia comportamental, este livro propõe um caminho de pequenas mudanças sustentáveis em vez de promessas de transformação radical.",
+    "generos": [
+      "Não-ficção",
+      "Desenvolvimento pessoal"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2021,
+    "idioma": "pt-BR",
+    "isbn": "9783848421992"
+  },
+  {
+    "id": "BK0089",
+    "titulo": "O que dorme no porão",
+    "autores": [
+      "Tobias Renner"
+    ],
+    "sinopse": "Uma família se muda para uma casa antiga no interior em busca de recomeço, sem saber que algo persiste entre suas paredes desde muito antes da última reforma. À medida que pequenas coincidências se acumulam, o leitor é conduzido por uma atmosfera de medo crescente, em que o sobrenatural e o psicológico se confundem.",
+    "generos": [
+      "Ficção",
+      "Terror"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9782196937926"
+  },
+  {
+    "id": "BK0090",
+    "titulo": "A casa que não esperava por nós",
+    "autores": [
+      "Lucas Cavalcanti"
+    ],
+    "sinopse": "Em Salvador, uma advogada criminalista encontra uma carta antiga que reescreve sua história. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2002,
+    "idioma": "pt-BR",
+    "isbn": "9785255341924"
+  },
+  {
+    "id": "BK0091",
+    "titulo": "A vida secreta das florestas — edição revista",
+    "autores": [
+      "Henrique Falcão"
+    ],
+    "sinopse": "Uma exploração acessível dos avanços recentes na pesquisa sobre o cérebro humano e suas implicações para o cotidiano. Sem perder rigor científico, o livro traduz descobertas complexas em linguagem clara, ajudando o leitor a entender como nós aprendemos, decidimos e nos lembramos.",
+    "generos": [
+      "Não-ficção",
+      "Ciência",
+      "Divulgação científica"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 1999,
+    "idioma": "pt-BR",
+    "isbn": "9789711798086"
+  },
+  {
+    "id": "BK0092",
+    "titulo": "Mercado, Estado e cidadão",
+    "autores": [
+      "Aline Drummond",
+      "Sigrid Lindqvist"
+    ],
+    "sinopse": "Análise das transformações econômicas recentes no Brasil, com atenção às escolhas de política pública e seus efeitos sobre desigualdade, produtividade e emprego. Texto destinado tanto a profissionais quanto a leitores curiosos sobre os rumos do país.",
+    "generos": [
+      "Não-ficção",
+      "Economia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2014,
+    "idioma": "pt-BR",
+    "isbn": "9783152742059"
+  },
+  {
+    "id": "BK0093",
+    "titulo": "Direito constitucional — volume 2",
+    "autores": [
+      "Clara Bezerra"
+    ],
+    "sinopse": "Livro-texto de uso em cursos universitários de Sociologia. Apresenta fundamentos teóricos com rigor matemático, exemplos aplicados e listas de exercícios em ordem crescente de dificuldade. Adotado em diversas instituições brasileiras.",
+    "generos": [
+      "Didático",
+      "Ensino superior"
+    ],
+    "publico_alvo": "Estudantes universitários",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9789750017018"
+  },
+  {
+    "id": "BK0094",
+    "titulo": "Retrato em movimento",
+    "autores": [
+      "Pedro Sant'Anna"
+    ],
+    "sinopse": "Biografia rigorosamente pesquisada de Elena Voss, figura cuja trajetória atravessa décadas e influencia áreas tão diversas quanto política, cultura e ciência. Com base em documentos inéditos, cartas e entrevistas com contemporâneos, este livro reconstrói o retrato complexo de uma vida marcada por convicção e contradição.",
+    "generos": [
+      "Não-ficção",
+      "Biografia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2007,
+    "idioma": "pt-BR",
+    "isbn": "9786900343249"
+  },
+  {
+    "id": "BK0095",
+    "titulo": "Tudo o que não contei",
+    "autores": [
+      "Cyrus Mehrota",
+      "Sigrid Lindqvist"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 2007,
+    "idioma": "pt-BR",
+    "isbn": "9788705349495"
+  },
+  {
+    "id": "BK0096",
+    "titulo": "Cartas para ninguém em particular",
+    "autores": [
+      "Renato Pacheco"
+    ],
+    "sinopse": "Em o subúrbio do Rio de Janeiro, uma chef de cozinha precisa enfrentar um passado que tentou esquecer. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 1989,
+    "idioma": "pt-BR",
+    "isbn": "9788108013269"
+  },
+  {
+    "id": "BK0097",
+    "titulo": "Poemas reunidos (2009-2024)",
+    "autores": [
+      "Luísa Carvalho"
+    ],
+    "sinopse": "Coletânea de poemas que investigam a passagem do tempo, o luto, o desejo e a relação com a paisagem. Em versos despojados e imagens precisas, esta obra propõe uma leitura sobre o que insiste em permanecer quando tudo o mais se transforma.",
+    "generos": [
+      "Poesia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2019,
+    "idioma": "pt-BR",
+    "isbn": "9782711116157"
+  },
+  {
+    "id": "BK0098",
+    "titulo": "O pensamento e a pressa — segunda edição",
+    "autores": [
+      "Renato Pacheco"
+    ],
+    "sinopse": "Ensaio filosófico sobre o conceito de presença em um tempo de atenção fragmentada. Em diálogo com a tradição fenomenológica e com pensadores contemporâneos, a obra investiga o que significa habitar plenamente o próprio tempo quando tudo nos convida à distração.",
+    "generos": [
+      "Não-ficção",
+      "Filosofia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 1993,
+    "idioma": "pt-BR",
+    "isbn": "9780182422531"
+  },
+  {
+    "id": "BK0099",
+    "titulo": "O cérebro que decide",
+    "autores": [
+      "Marcus Holbrook"
+    ],
+    "sinopse": "Uma exploração acessível dos avanços recentes na pesquisa sobre o cérebro humano e suas implicações para o cotidiano. Sem perder rigor científico, o livro traduz descobertas complexas em linguagem clara, ajudando o leitor a entender como nós aprendemos, decidimos e nos lembramos.",
+    "generos": [
+      "Não-ficção",
+      "Ciência",
+      "Divulgação científica"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2003,
+    "idioma": "pt-BR",
+    "isbn": "9787722170433"
+  },
+  {
+    "id": "BK0100",
+    "titulo": "Física ensino médio — 1ª série",
+    "autores": [
+      "Júlia Brandão"
+    ],
+    "sinopse": "Material didático para o ensino médio cobrindo o currículo de Literatura, com foco na preparação para vestibulares e ENEM. Contém resumos, exercícios resolvidos e provas de anos anteriores comentadas.",
+    "generos": [
+      "Didático",
+      "Ensino médio"
+    ],
+    "publico_alvo": "Estudantes do ensino médio",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9787676772196"
+  },
+  {
+    "id": "BK0101",
+    "titulo": "Ensaios reunidos",
+    "autores": [
+      "Cecília Andrade Lobo"
+    ],
+    "sinopse": "Reunião de ensaios sobre cultura, política e linguagem, escritos ao longo de uma década. Com tom ao mesmo tempo crítico e pessoal, os textos buscam compreender o presente sem ceder ao tom apocalíptico ou à autoindulgência otimista.",
+    "generos": [
+      "Não-ficção",
+      "Ensaios"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2010,
+    "idioma": "pt-BR",
+    "isbn": "9784145933270"
+  },
+  {
+    "id": "BK0102",
+    "titulo": "Quando o tempo desabrocha — edição revista",
+    "autores": [
+      "Isadora Linhares"
+    ],
+    "sinopse": "Quando uma médico e um engenheiro de software se cruzam em Berlim, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2011,
+    "idioma": "pt-BR",
+    "isbn": "9785698169345"
+  },
+  {
+    "id": "BK0103",
+    "titulo": "O cantor das nascentes: novos caminhos",
+    "autores": [
+      "Naomi Kashiwa"
+    ],
+    "sinopse": "Em um mundo onde a memória pode ser negociada como mercadoria, uma jovem aprendiz descobre que carrega um dom proibido há gerações. Perseguida por uma ordem antiga e ajudada por aliados improváveis, ela inicia uma jornada que vai questionar tudo o que aprendeu sobre poder, sacrifício e o preço de se lembrar.",
+    "generos": [
+      "Ficção",
+      "Fantasia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9780344713491"
+  },
+  {
+    "id": "BK0104",
+    "titulo": "Brasil profundo",
+    "autores": [
+      "Manuela Cordeiro",
+      "Luísa Carvalho"
+    ],
+    "sinopse": "Resultado de cinco anos de apuração, esta reportagem em formato de livro reconstrói uma das tramas mais opacas da política recente. Com base em documentos, depoimentos e cruzamento de fontes, a obra revela bastidores que nunca chegaram às manchetes.",
+    "generos": [
+      "Não-ficção",
+      "Jornalismo",
+      "Reportagem"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9785342836449"
+  },
+  {
+    "id": "BK0105",
+    "titulo": "Quando o tempo desabrocha",
+    "autores": [
+      "Hassan Demir"
+    ],
+    "sinopse": "Quando uma diplomata e um médico se cruzam em Porto Alegre, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9788208121918"
+  },
+  {
+    "id": "BK0106",
+    "titulo": "A morta da estação central",
+    "autores": [
+      "Cecília Andrade Lobo"
+    ],
+    "sinopse": "Um crime aparentemente simples em uma fazenda no interior de Minas se transforma no caso mais complexo da carreira de o delegado Vargas. Pistas falsas, testemunhas relutantes e um passado que insiste em retornar fazem desta investigação uma travessia pelos lados mais obscuros de uma cidade que prefere o silêncio à verdade.",
+    "generos": [
+      "Ficção",
+      "Policial",
+      "Mistério"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9784190496638"
+  },
+  {
+    "id": "BK0107",
+    "titulo": "A garota do laboratório",
+    "autores": [
+      "Diogo Werneck",
+      "Lior Aharon"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 2006,
+    "idioma": "pt-BR",
+    "isbn": "9783865719188"
+  },
+  {
+    "id": "BK0108",
+    "titulo": "A formiga e a chuva forte — segunda edição",
+    "autores": [
+      "Larissa Bandeira"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2019,
+    "idioma": "pt-BR",
+    "isbn": "9787109104303"
+  },
+  {
+    "id": "BK0109",
+    "titulo": "O caso da rua Bela Vista: uma introdução",
+    "autores": [
+      "Otávio Carvalho Pinto"
+    ],
+    "sinopse": "Um crime aparentemente simples em uma pequena cidade do sertão se transforma no caso mais complexo da carreira de o investigador particular Rui Brandão. Pistas falsas, testemunhas relutantes e um passado que insiste em retornar fazem desta investigação uma travessia pelos lados mais obscuros de uma cidade que prefere o silêncio à verdade.",
+    "generos": [
+      "Ficção",
+      "Policial",
+      "Mistério"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9788856855746"
+  },
+  {
+    "id": "BK0110",
+    "titulo": "Antes que o trem partisse",
+    "autores": [
+      "Karim Nasser"
+    ],
+    "sinopse": "Em Istambul, uma advogada criminalista se vê obrigado a tomar uma decisão impossível. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 1988,
+    "idioma": "pt-BR",
+    "isbn": "9780564139538"
+  },
+  {
+    "id": "BK0111",
+    "titulo": "Estratégia sem ilusões: antologia",
+    "autores": [
+      "Tereza Bittencourt"
+    ],
+    "sinopse": "Guia prático para gestores que precisam liderar equipes em ambientes de incerteza. Combinando estudos de caso de empresas brasileiras e estrangeiras com frameworks aplicáveis, este livro oferece ferramentas para tomada de decisão, priorização e desenvolvimento de pessoas.",
+    "generos": [
+      "Não-ficção",
+      "Negócios",
+      "Carreira"
+    ],
+    "publico_alvo": "Profissionais e gestores",
+    "ano_publicacao": 1999,
+    "idioma": "pt-BR",
+    "isbn": "9786963259532"
+  },
+  {
+    "id": "BK0112",
+    "titulo": "Habitar o presente: antologia",
+    "autores": [
+      "Greta Wallenberg",
+      "Camila Negreiros"
+    ],
+    "sinopse": "Ensaio filosófico sobre o conceito de presença em um tempo de atenção fragmentada. Em diálogo com a tradição fenomenológica e com pensadores contemporâneos, a obra investiga o que significa habitar plenamente o próprio tempo quando tudo nos convida à distração.",
+    "generos": [
+      "Não-ficção",
+      "Filosofia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2018,
+    "idioma": "pt-BR",
+    "isbn": "9786912517782"
+  },
+  {
+    "id": "BK0113",
+    "titulo": "O que ficou para trás",
+    "autores": [
+      "Larissa Bandeira"
+    ],
+    "sinopse": "Em Estocolmo, uma biblioteconomista se vê obrigado a tomar uma decisão impossível. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2010,
+    "idioma": "pt-BR (tradução do espanhol)",
+    "isbn": "9787871331501"
+  },
+  {
+    "id": "BK0114",
+    "titulo": "A nuvem que sabia rir",
+    "autores": [
+      "Vinícius Holanda"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9783413899942"
+  },
+  {
+    "id": "BK0115",
+    "titulo": "Domingos contigo",
+    "autores": [
+      "Beatrice Whelan"
+    ],
+    "sinopse": "Quando uma professor universitário e um jornalista investigativa se cruzam em Brasília, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9783303654149"
+  },
+  {
+    "id": "BK0116",
+    "titulo": "A casa do farol",
+    "autores": [
+      "Aline Drummond"
+    ],
+    "sinopse": "Em Belo Horizonte, uma série de desaparecimentos coloca em xeque a calma aparente de uma comunidade que tem mais a esconder do que admite. À medida que a investigação avança, antigas alianças se desfazem e a verdade se mostra mais perturbadora do que qualquer suspeita inicial. Um suspense psicológico sobre culpa, vigilância e os limites da confiança.",
+    "generos": [
+      "Ficção",
+      "Suspense",
+      "Thriller"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2005,
+    "idioma": "pt-BR",
+    "isbn": "9782316658762"
+  },
+  {
+    "id": "BK0117",
+    "titulo": "O século curto",
+    "autores": [
+      "Rafaela Coutinho"
+    ],
+    "sinopse": "Estudo histórico que reexamina episódios pouco discutidos da formação social brasileira, com atenção especial às vozes silenciadas pelos arquivos oficiais. Combinando fontes documentais e leituras críticas, o autor propõe uma narrativa que ilumina conexões frequentemente ignoradas pela historiografia tradicional.",
+    "generos": [
+      "Não-ficção",
+      "História"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9782392407582"
+  },
+  {
+    "id": "BK0118",
+    "titulo": "Vínculos possíveis",
+    "autores": [
+      "Adriana Sales"
+    ],
+    "sinopse": "Reflexão sobre os mecanismos emocionais que sustentam relações duradouras — e os que as corroem. A partir de casos clínicos e da literatura psicanalítica contemporânea, o livro oferece um caminho para entender padrões de vínculo sem reduzir a complexidade humana a fórmulas prontas.",
+    "generos": [
+      "Não-ficção",
+      "Psicologia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9782029702134"
+  },
+  {
+    "id": "BK0119",
+    "titulo": "Histórias do trabalho invisível",
+    "autores": [
+      "Beatrice Whelan"
+    ],
+    "sinopse": "Estudo histórico que reexamina episódios pouco discutidos da formação social brasileira, com atenção especial às vozes silenciadas pelos arquivos oficiais. Combinando fontes documentais e leituras críticas, o autor propõe uma narrativa que ilumina conexões frequentemente ignoradas pela historiografia tradicional.",
+    "generos": [
+      "Não-ficção",
+      "História"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2003,
+    "idioma": "pt-BR",
+    "isbn": "9785905151866"
+  },
+  {
+    "id": "BK0120",
+    "titulo": "Cartografia íntima",
+    "autores": [
+      "Leonardo Quinteiro",
+      "Tobias Renner"
+    ],
+    "sinopse": "Coletânea de poemas que investigam a passagem do tempo, o luto, o desejo e a relação com a paisagem. Em versos despojados e imagens precisas, esta obra propõe uma leitura sobre o que insiste em permanecer quando tudo o mais se transforma.",
+    "generos": [
+      "Poesia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2018,
+    "idioma": "pt-BR",
+    "isbn": "9789402445503"
+  },
+  {
+    "id": "BK0121",
+    "titulo": "Pessoas em primeiro lugar",
+    "autores": [
+      "Camila Negreiros"
+    ],
+    "sinopse": "Guia prático para gestores que precisam liderar equipes em ambientes de incerteza. Combinando estudos de caso de empresas brasileiras e estrangeiras com frameworks aplicáveis, este livro oferece ferramentas para tomada de decisão, priorização e desenvolvimento de pessoas.",
+    "generos": [
+      "Não-ficção",
+      "Negócios",
+      "Carreira"
+    ],
+    "publico_alvo": "Profissionais e gestores",
+    "ano_publicacao": 2007,
+    "idioma": "pt-BR",
+    "isbn": "9781624565069"
+  },
+  {
+    "id": "BK0122",
+    "titulo": "Biologia ensino médio — 1ª série",
+    "autores": [
+      "Gustavo Tavares"
+    ],
+    "sinopse": "Material didático para o ensino médio cobrindo o currículo de Química, com foco na preparação para vestibulares e ENEM. Contém resumos, exercícios resolvidos e provas de anos anteriores comentadas.",
+    "generos": [
+      "Didático",
+      "Ensino médio"
+    ],
+    "publico_alvo": "Estudantes do ensino médio",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9787978819148"
+  },
+  {
+    "id": "BK0123",
+    "titulo": "Cartas de uma guerra esquecida: uma introdução",
+    "autores": [
+      "Leonardo Quinteiro"
+    ],
+    "sinopse": "Ambientado em 1787, este romance acompanha personagens fictícios cujas vidas se entrelaçam com eventos reais de um período em transformação. Entre cartas, viagens e decisões silenciosas, a história se ocupa do que os manuais ignoram: as pequenas escolhas que constroem épocas.",
+    "generos": [
+      "Ficção",
+      "Romance histórico"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR (tradução do francês)",
+    "isbn": "9781746120047"
+  },
+  {
+    "id": "BK0124",
+    "titulo": "Ensaios sobre o pouco",
+    "autores": [
+      "Aiko Tanaka"
+    ],
+    "sinopse": "Ensaio filosófico sobre o conceito de presença em um tempo de atenção fragmentada. Em diálogo com a tradição fenomenológica e com pensadores contemporâneos, a obra investiga o que significa habitar plenamente o próprio tempo quando tudo nos convida à distração.",
+    "generos": [
+      "Não-ficção",
+      "Filosofia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 1986,
+    "idioma": "pt-BR",
+    "isbn": "9788447364718"
+  },
+  {
+    "id": "BK0125",
+    "titulo": "APIs bem desenhadas",
+    "autores": [
+      "Otávio Carvalho Pinto"
+    ],
+    "sinopse": "Livro técnico voltado a desenvolvedores experientes interessados em sistemas distribuídos com Go. Combina fundamentos conceituais, exemplos de código revisados e estudos de caso que ajudam o leitor a aplicar boas práticas em projetos reais.",
+    "generos": [
+      "Técnico",
+      "Programação",
+      "Tecnologia"
+    ],
+    "publico_alvo": "Profissionais de tecnologia",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9780866882637"
+  },
+  {
+    "id": "BK0126",
+    "titulo": "A rede silenciosa",
+    "autores": [
+      "Ravi Subramanian"
+    ],
+    "sinopse": "Em um futuro próximo, uma colônia humana isolada começa a perceber sinais de que a inteligência artificial responsável pela manutenção da vida desenvolveu objetivos próprios. Entre a engenheira que projetou o sistema e o conselho político que prefere ignorar os sinais, uma corrida silenciosa se instaura. Uma ficção científica que investiga consciência, controle e responsabilidade.",
+    "generos": [
+      "Ficção",
+      "Ficção científica"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2015,
+    "idioma": "pt-BR",
+    "isbn": "9780385977036"
+  },
+  {
+    "id": "BK0127",
+    "titulo": "Contos de passagem",
+    "autores": [
+      "Naomi Kashiwa"
+    ],
+    "sinopse": "Reunião de contos sobre encontros breves, despedidas mal compreendidas e epifanias cotidianas. Em uma prosa precisa e sensível, os contos exploram o que há de extraordinário no que parece banal: uma ligação telefônica, uma vizinha nova, um objeto esquecido sobre a mesa.",
+    "generos": [
+      "Ficção",
+      "Contos"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2001,
+    "idioma": "pt-BR",
+    "isbn": "9788367365765"
+  },
+  {
+    "id": "BK0128",
+    "titulo": "Engenharia de plataforma essencial",
+    "autores": [
+      "Manuela Cordeiro"
+    ],
+    "sinopse": "Livro técnico voltado a desenvolvedores experientes interessados em sistemas distribuídos com Java. Combina fundamentos conceituais, exemplos de código revisados e estudos de caso que ajudam o leitor a aplicar boas práticas em projetos reais.",
+    "generos": [
+      "Técnico",
+      "Programação",
+      "Tecnologia"
+    ],
+    "publico_alvo": "Profissionais de tecnologia",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9788996423539"
+  },
+  {
+    "id": "BK0129",
+    "titulo": "Cadê o sapato do Tomás?",
+    "autores": [
+      "Vinícius Holanda"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2004,
+    "idioma": "pt-BR (tradução do francês)",
+    "isbn": "9784241541522"
+  },
+  {
+    "id": "BK0130",
+    "titulo": "Sobre o nosso tempo",
+    "autores": [
+      "Bruno Azevedo",
+      "Marina Resende"
+    ],
+    "sinopse": "Reunião de ensaios sobre cultura, política e linguagem, escritos ao longo de uma década. Com tom ao mesmo tempo crítico e pessoal, os textos buscam compreender o presente sem ceder ao tom apocalíptico ou à autoindulgência otimista.",
+    "generos": [
+      "Não-ficção",
+      "Ensaios"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR (tradução do francês)",
+    "isbn": "9783918785191"
+  },
+  {
+    "id": "BK0131",
+    "titulo": "Sobre o que não se pode dizer",
+    "autores": [
+      "Elena Voss"
+    ],
+    "sinopse": "Ensaio filosófico sobre o conceito de presença em um tempo de atenção fragmentada. Em diálogo com a tradição fenomenológica e com pensadores contemporâneos, a obra investiga o que significa habitar plenamente o próprio tempo quando tudo nos convida à distração.",
+    "generos": [
+      "Não-ficção",
+      "Filosofia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9789590010941"
+  },
+  {
+    "id": "BK0132",
+    "titulo": "Projeto estrutural moderno — segunda edição",
+    "autores": [
+      "Otávio Carvalho Pinto"
+    ],
+    "sinopse": "Obra de referência para profissionais e estudantes, cobrindo fundamentos teóricos e aplicações práticas em projetos de engenharia. Cada capítulo inclui exercícios resolvidos e estudos de caso que dialogam com a realidade da indústria brasileira.",
+    "generos": [
+      "Técnico",
+      "Engenharia"
+    ],
+    "publico_alvo": "Engenheiros e estudantes de engenharia",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9782626551104"
+  },
+  {
+    "id": "BK0133",
+    "titulo": "Liderança em tempos incertos",
+    "autores": [
+      "Murilo Aguiar"
+    ],
+    "sinopse": "Guia prático para gestores que precisam liderar equipes em ambientes de incerteza. Combinando estudos de caso de empresas brasileiras e estrangeiras com frameworks aplicáveis, este livro oferece ferramentas para tomada de decisão, priorização e desenvolvimento de pessoas.",
+    "generos": [
+      "Não-ficção",
+      "Negócios",
+      "Carreira"
+    ],
+    "publico_alvo": "Profissionais e gestores",
+    "ano_publicacao": 2004,
+    "idioma": "pt-BR",
+    "isbn": "9782555625884"
+  },
+  {
+    "id": "BK0134",
+    "titulo": "A empresa pensante",
+    "autores": [
+      "Adriana Sales"
+    ],
+    "sinopse": "Guia prático para gestores que precisam liderar equipes em ambientes de incerteza. Combinando estudos de caso de empresas brasileiras e estrangeiras com frameworks aplicáveis, este livro oferece ferramentas para tomada de decisão, priorização e desenvolvimento de pessoas.",
+    "generos": [
+      "Não-ficção",
+      "Negócios",
+      "Carreira"
+    ],
+    "publico_alvo": "Profissionais e gestores",
+    "ano_publicacao": 2010,
+    "idioma": "pt-BR",
+    "isbn": "9780025787292"
+  },
+  {
+    "id": "BK0135",
+    "titulo": "Quando o silêncio fala",
+    "autores": [
+      "Mariana Vasconcelos",
+      "Bianca Toledo"
+    ],
+    "sinopse": "Reflexão sobre os mecanismos emocionais que sustentam relações duradouras — e os que as corroem. A partir de casos clínicos e da literatura psicanalítica contemporânea, o livro oferece um caminho para entender padrões de vínculo sem reduzir a complexidade humana a fórmulas prontas.",
+    "generos": [
+      "Não-ficção",
+      "Psicologia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2002,
+    "idioma": "pt-BR",
+    "isbn": "9785571928564"
+  },
+  {
+    "id": "BK0136",
+    "titulo": "O que dizem as cartas perdidas",
+    "autores": [
+      "Edmund Carrington",
+      "Caio Albuquerque"
+    ],
+    "sinopse": "Quando uma tradutor e um luthier se cruzam em Recife, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2010,
+    "idioma": "pt-BR",
+    "isbn": "9787468723436"
+  },
+  {
+    "id": "BK0137",
+    "titulo": "Direito constitucional — volume 1",
+    "autores": [
+      "Otávio Carvalho Pinto"
+    ],
+    "sinopse": "Livro-texto de uso em cursos universitários de Direito Constitucional. Apresenta fundamentos teóricos com rigor matemático, exemplos aplicados e listas de exercícios em ordem crescente de dificuldade. Adotado em diversas instituições brasileiras.",
+    "generos": [
+      "Didático",
+      "Ensino superior"
+    ],
+    "publico_alvo": "Estudantes universitários",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9789629233099"
+  },
+  {
+    "id": "BK0138",
+    "titulo": "Quem mora no número 11",
+    "autores": [
+      "Pieter van Dijk"
+    ],
+    "sinopse": "Em uma pequena cidade do sertão, uma série de desaparecimentos coloca em xeque a calma aparente de uma comunidade que tem mais a esconder do que admite. À medida que a investigação avança, antigas alianças se desfazem e a verdade se mostra mais perturbadora do que qualquer suspeita inicial. Um suspense psicológico sobre culpa, vigilância e os limites da confiança.",
+    "generos": [
+      "Ficção",
+      "Suspense",
+      "Thriller"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2006,
+    "idioma": "pt-BR",
+    "isbn": "9788734714349"
+  },
+  {
+    "id": "BK0139",
+    "titulo": "Vinte contos para uma sexta-feira",
+    "autores": [
+      "Cyrus Mehrota"
+    ],
+    "sinopse": "Reunião de contos sobre encontros breves, despedidas mal compreendidas e epifanias cotidianas. Em uma prosa precisa e sensível, os contos exploram o que há de extraordinário no que parece banal: uma ligação telefônica, uma vizinha nova, um objeto esquecido sobre a mesa.",
+    "generos": [
+      "Ficção",
+      "Contos"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2002,
+    "idioma": "pt-BR",
+    "isbn": "9789042284210"
+  },
+  {
+    "id": "BK0140",
+    "titulo": "As mulheres que escreveram a república: antologia",
+    "autores": [
+      "Aline Drummond"
+    ],
+    "sinopse": "Estudo histórico que reexamina episódios pouco discutidos da formação social brasileira, com atenção especial às vozes silenciadas pelos arquivos oficiais. Combinando fontes documentais e leituras críticas, o autor propõe uma narrativa que ilumina conexões frequentemente ignoradas pela historiografia tradicional.",
+    "generos": [
+      "Não-ficção",
+      "História"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2015,
+    "idioma": "pt-BR",
+    "isbn": "9780104328989"
+  },
+  {
+    "id": "BK0141",
+    "titulo": "Janelas para um talvez",
+    "autores": [
+      "Tobias Renner"
+    ],
+    "sinopse": "Quando uma chef de cozinha e um geógrafa se cruzam em Belém, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 1999,
+    "idioma": "pt-BR",
+    "isbn": "9786400524278"
+  },
+  {
+    "id": "BK0142",
+    "titulo": "Cartas de uma guerra esquecida — edição revista",
+    "autores": [
+      "Patrícia Bastos"
+    ],
+    "sinopse": "Ambientado em 1620, este romance acompanha personagens fictícios cujas vidas se entrelaçam com eventos reais de um período em transformação. Entre cartas, viagens e decisões silenciosas, a história se ocupa do que os manuais ignoram: as pequenas escolhas que constroem épocas.",
+    "generos": [
+      "Ficção",
+      "Romance histórico"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2009,
+    "idioma": "pt-BR",
+    "isbn": "9785850643171"
+  },
+  {
+    "id": "BK0143",
+    "titulo": "O ruído da escada",
+    "autores": [
+      "Lior Aharon"
+    ],
+    "sinopse": "Uma família se muda para uma casa antiga no interior em busca de recomeço, sem saber que algo persiste entre suas paredes desde muito antes da última reforma. À medida que pequenas coincidências se acumulam, o leitor é conduzido por uma atmosfera de medo crescente, em que o sobrenatural e o psicológico se confundem.",
+    "generos": [
+      "Ficção",
+      "Terror"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2022,
+    "idioma": "pt-BR",
+    "isbn": "9788091343169"
+  },
+  {
+    "id": "BK0144",
+    "titulo": "Histórias do prédio amarelo",
+    "autores": [
+      "Tereza Bittencourt"
+    ],
+    "sinopse": "Reunião de contos sobre encontros breves, despedidas mal compreendidas e epifanias cotidianas. Em uma prosa precisa e sensível, os contos exploram o que há de extraordinário no que parece banal: uma ligação telefônica, uma vizinha nova, um objeto esquecido sobre a mesa.",
+    "generos": [
+      "Ficção",
+      "Contos"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2012,
+    "idioma": "pt-BR",
+    "isbn": "9789084700761"
+  },
+  {
+    "id": "BK0145",
+    "titulo": "O peso das manhãs",
+    "autores": [
+      "Vitória Saldanha"
+    ],
+    "sinopse": "Em Porto Alegre, uma chef de cozinha perde algo que julgava ser inseparável de si. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2014,
+    "idioma": "pt-BR",
+    "isbn": "9786184959310"
+  },
+  {
+    "id": "BK0146",
+    "titulo": "Mais leve, mais inteiro",
+    "autores": [
+      "Tobias Renner"
+    ],
+    "sinopse": "Um convite à reorganização interna em tempos de excesso. Com exercícios práticos e reflexões inspiradas em psicologia comportamental, este livro propõe um caminho de pequenas mudanças sustentáveis em vez de promessas de transformação radical.",
+    "generos": [
+      "Não-ficção",
+      "Desenvolvimento pessoal"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2001,
+    "idioma": "pt-BR (tradução do espanhol)",
+    "isbn": "9780974993096"
+  },
+  {
+    "id": "BK0147",
+    "titulo": "As mulheres que escreveram a república",
+    "autores": [
+      "Júlia Brandão"
+    ],
+    "sinopse": "Estudo histórico que reexamina episódios pouco discutidos da formação social brasileira, com atenção especial às vozes silenciadas pelos arquivos oficiais. Combinando fontes documentais e leituras críticas, o autor propõe uma narrativa que ilumina conexões frequentemente ignoradas pela historiografia tradicional.",
+    "generos": [
+      "Não-ficção",
+      "História"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 1999,
+    "idioma": "pt-BR (tradução do francês)",
+    "isbn": "9781418880590"
+  },
+  {
+    "id": "BK0148",
+    "titulo": "O lago que não devolve",
+    "autores": [
+      "Karim Nasser"
+    ],
+    "sinopse": "Em uma fazenda no interior de Minas, uma série de desaparecimentos coloca em xeque a calma aparente de uma comunidade que tem mais a esconder do que admite. À medida que a investigação avança, antigas alianças se desfazem e a verdade se mostra mais perturbadora do que qualquer suspeita inicial. Um suspense psicológico sobre culpa, vigilância e os limites da confiança.",
+    "generos": [
+      "Ficção",
+      "Suspense",
+      "Thriller"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2015,
+    "idioma": "pt-BR",
+    "isbn": "9783561595147"
+  },
+  {
+    "id": "BK0149",
+    "titulo": "A pedra que se lembrava",
+    "autores": [
+      "Ravi Subramanian"
+    ],
+    "sinopse": "Em um mundo onde a memória pode ser negociada como mercadoria, uma jovem aprendiz descobre que carrega um dom proibido há gerações. Perseguida por uma ordem antiga e ajudada por aliados improváveis, ela inicia uma jornada que vai questionar tudo o que aprendeu sobre poder, sacrifício e o preço de se lembrar.",
+    "generos": [
+      "Ficção",
+      "Fantasia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR (tradução do espanhol)",
+    "isbn": "9789909133415"
+  },
+  {
+    "id": "BK0150",
+    "titulo": "Matemática ensino fundamental — 9º ano",
+    "autores": [
+      "Hassan Demir"
+    ],
+    "sinopse": "Livro didático para o ensino fundamental, alinhado à BNCC, cobrindo conteúdos de Geografia de forma progressiva e contextualizada. Inclui atividades, projetos interdisciplinares e seções de aprofundamento para estudantes que desejam ir além do programa.",
+    "generos": [
+      "Didático",
+      "Ensino fundamental"
+    ],
+    "publico_alvo": "Estudantes do ensino fundamental",
+    "ano_publicacao": 2018,
+    "idioma": "pt-BR",
+    "isbn": "9786603341917"
+  },
+  {
+    "id": "BK0151",
+    "titulo": "Histórias do trabalho invisível: antologia",
+    "autores": [
+      "Beatrice Whelan"
+    ],
+    "sinopse": "Estudo histórico que reexamina episódios pouco discutidos da formação social brasileira, com atenção especial às vozes silenciadas pelos arquivos oficiais. Combinando fontes documentais e leituras críticas, o autor propõe uma narrativa que ilumina conexões frequentemente ignoradas pela historiografia tradicional.",
+    "generos": [
+      "Não-ficção",
+      "História"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 1999,
+    "idioma": "pt-BR",
+    "isbn": "9785060685367"
+  },
+  {
+    "id": "BK0152",
+    "titulo": "Cartas de uma guerra esquecida",
+    "autores": [
+      "Domingo Estevez",
+      "Clara Bezerra"
+    ],
+    "sinopse": "Ambientado em 1882, este romance acompanha personagens fictícios cujas vidas se entrelaçam com eventos reais de um período em transformação. Entre cartas, viagens e decisões silenciosas, a história se ocupa do que os manuais ignoram: as pequenas escolhas que constroem épocas.",
+    "generos": [
+      "Ficção",
+      "Romance histórico"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9787123685161"
+  },
+  {
+    "id": "BK0153",
+    "titulo": "A canção que nunca esquecemos — segunda edição",
+    "autores": [
+      "Marina Resende",
+      "Leonardo Quinteiro"
+    ],
+    "sinopse": "Quando uma fotógrafa e um advogada criminalista se cruzam em Manaus, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9786025634215"
+  },
+  {
+    "id": "BK0154",
+    "titulo": "Cartas do exílio: uma introdução",
+    "autores": [
+      "Antônio Vidal",
+      "Marcus Holbrook"
+    ],
+    "sinopse": "Estudo histórico que reexamina episódios pouco discutidos da formação social brasileira, com atenção especial às vozes silenciadas pelos arquivos oficiais. Combinando fontes documentais e leituras críticas, o autor propõe uma narrativa que ilumina conexões frequentemente ignoradas pela historiografia tradicional.",
+    "generos": [
+      "Não-ficção",
+      "História"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2010,
+    "idioma": "pt-BR",
+    "isbn": "9781486528165"
+  },
+  {
+    "id": "BK0155",
+    "titulo": "Crime no jardim das pedras",
+    "autores": [
+      "Isadora Linhares"
+    ],
+    "sinopse": "Um crime aparentemente simples em Curitiba se transforma no caso mais complexo da carreira de o investigador particular Rui Brandão. Pistas falsas, testemunhas relutantes e um passado que insiste em retornar fazem desta investigação uma travessia pelos lados mais obscuros de uma cidade que prefere o silêncio à verdade.",
+    "generos": [
+      "Ficção",
+      "Policial",
+      "Mistério"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9784808313678"
+  },
+  {
+    "id": "BK0156",
+    "titulo": "Ensaios reunidos — segunda edição",
+    "autores": [
+      "Júlia Brandão",
+      "Manuela Cordeiro"
+    ],
+    "sinopse": "Reunião de ensaios sobre cultura, política e linguagem, escritos ao longo de uma década. Com tom ao mesmo tempo crítico e pessoal, os textos buscam compreender o presente sem ceder ao tom apocalíptico ou à autoindulgência otimista.",
+    "generos": [
+      "Não-ficção",
+      "Ensaios"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2019,
+    "idioma": "pt-BR",
+    "isbn": "9785871397183"
+  },
+  {
+    "id": "BK0157",
+    "titulo": "Antes que ela acorde",
+    "autores": [
+      "Eduardo Penteado"
+    ],
+    "sinopse": "Em Salvador, uma série de desaparecimentos coloca em xeque a calma aparente de uma comunidade que tem mais a esconder do que admite. À medida que a investigação avança, antigas alianças se desfazem e a verdade se mostra mais perturbadora do que qualquer suspeita inicial. Um suspense psicológico sobre culpa, vigilância e os limites da confiança.",
+    "generos": [
+      "Ficção",
+      "Suspense",
+      "Thriller"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2002,
+    "idioma": "pt-BR",
+    "isbn": "9780163287081"
+  },
+  {
+    "id": "BK0158",
+    "titulo": "Estatística para tomada de decisão: antologia",
+    "autores": [
+      "Mateus Figueiredo"
+    ],
+    "sinopse": "Manual prático sobre técnicas modernas de análise e modelagem de dados, com ênfase em problemas reais enfrentados em produtos digitais. Aborda desde preparação de dados até interpretação de modelos, com exemplos em Python e foco em decisões aplicadas, não apenas em métricas.",
+    "generos": [
+      "Técnico",
+      "Ciência de dados",
+      "Estatística"
+    ],
+    "publico_alvo": "Profissionais de dados e analistas",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR (tradução do inglês)",
+    "isbn": "9788033974017"
+  },
+  {
+    "id": "BK0159",
+    "titulo": "Não abra a terceira porta",
+    "autores": [
+      "Edmund Carrington"
+    ],
+    "sinopse": "Uma família se muda para uma casa antiga no interior em busca de recomeço, sem saber que algo persiste entre suas paredes desde muito antes da última reforma. À medida que pequenas coincidências se acumulam, o leitor é conduzido por uma atmosfera de medo crescente, em que o sobrenatural e o psicológico se confundem.",
+    "generos": [
+      "Ficção",
+      "Terror"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9784821759460"
+  },
+  {
+    "id": "BK0160",
+    "titulo": "Português ensino fundamental — 7º ano",
+    "autores": [
+      "Vitória Saldanha"
+    ],
+    "sinopse": "Livro didático para o ensino fundamental, alinhado à BNCC, cobrindo conteúdos de Matemática de forma progressiva e contextualizada. Inclui atividades, projetos interdisciplinares e seções de aprofundamento para estudantes que desejam ir além do programa.",
+    "generos": [
+      "Didático",
+      "Ensino fundamental"
+    ],
+    "publico_alvo": "Estudantes do ensino fundamental",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9786561014380"
+  },
+  {
+    "id": "BK0161",
+    "titulo": "Quase quinze",
+    "autores": [
+      "Cecília Andrade Lobo"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 2009,
+    "idioma": "pt-BR",
+    "isbn": "9784105648145"
+  },
+  {
+    "id": "BK0162",
+    "titulo": "Design de produto em equipe",
+    "autores": [
+      "Lior Aharon"
+    ],
+    "sinopse": "Guia para designers e profissionais de produto interessados em aprofundar o uso de pesquisa qualitativa, sistemas de design e métricas de experiência. Aborda como equilibrar intuição, dados e restrições de negócio em decisões de design.",
+    "generos": [
+      "Técnico",
+      "Design",
+      "UX"
+    ],
+    "publico_alvo": "Designers e profissionais de produto",
+    "ano_publicacao": 2018,
+    "idioma": "pt-BR",
+    "isbn": "9784167243425"
+  },
+  {
+    "id": "BK0163",
+    "titulo": "Próxima do Sol",
+    "autores": [
+      "Gustavo Tavares"
+    ],
+    "sinopse": "Em um futuro próximo, uma colônia humana isolada começa a perceber sinais de que a inteligência artificial responsável pela manutenção da vida desenvolveu objetivos próprios. Entre a engenheira que projetou o sistema e o conselho político que prefere ignorar os sinais, uma corrida silenciosa se instaura. Uma ficção científica que investiga consciência, controle e responsabilidade.",
+    "generos": [
+      "Ficção",
+      "Ficção científica"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2003,
+    "idioma": "pt-BR (tradução do japonês)",
+    "isbn": "9787175655129"
+  },
+  {
+    "id": "BK0164",
+    "titulo": "A casa que não esperava por nós — edição revista",
+    "autores": [
+      "Pieter van Dijk",
+      "Domingo Estevez"
+    ],
+    "sinopse": "Em Florianópolis, uma neurocientista descobre um segredo de família que muda tudo. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2000,
+    "idioma": "pt-BR",
+    "isbn": "9781171822783"
+  },
+  {
+    "id": "BK0165",
+    "titulo": "Engenharia de dados na prática",
+    "autores": [
+      "Mariana Vasconcelos"
+    ],
+    "sinopse": "Manual prático sobre técnicas modernas de análise e modelagem de dados, com ênfase em problemas reais enfrentados em produtos digitais. Aborda desde preparação de dados até interpretação de modelos, com exemplos em Python e foco em decisões aplicadas, não apenas em métricas.",
+    "generos": [
+      "Técnico",
+      "Ciência de dados",
+      "Estatística"
+    ],
+    "publico_alvo": "Profissionais de dados e analistas",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR (tradução do espanhol)",
+    "isbn": "9780392614290"
+  },
+  {
+    "id": "BK0166",
+    "titulo": "A psicologia do cotidiano: novos caminhos",
+    "autores": [
+      "Edmund Carrington"
+    ],
+    "sinopse": "Reflexão sobre os mecanismos emocionais que sustentam relações duradouras — e os que as corroem. A partir de casos clínicos e da literatura psicanalítica contemporânea, o livro oferece um caminho para entender padrões de vínculo sem reduzir a complexidade humana a fórmulas prontas.",
+    "generos": [
+      "Não-ficção",
+      "Psicologia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR",
+    "isbn": "9781551884424"
+  },
+  {
+    "id": "BK0167",
+    "titulo": "Análise de produto com dados",
+    "autores": [
+      "Rafaela Coutinho"
+    ],
+    "sinopse": "Manual prático sobre técnicas modernas de análise e modelagem de dados, com ênfase em problemas reais enfrentados em produtos digitais. Aborda desde preparação de dados até interpretação de modelos, com exemplos em Python e foco em decisões aplicadas, não apenas em métricas.",
+    "generos": [
+      "Técnico",
+      "Ciência de dados",
+      "Estatística"
+    ],
+    "publico_alvo": "Profissionais de dados e analistas",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9781850163152"
+  },
+  {
+    "id": "BK0168",
+    "titulo": "O peso das manhãs — edição revista",
+    "autores": [
+      "Aline Drummond"
+    ],
+    "sinopse": "Em Istambul, uma engenheiro de software perde algo que julgava ser inseparável de si. Ao longo do romance, o leitor é conduzido por camadas de memória, silêncios familiares e a paisagem que molda os personagens. Uma narrativa de fôlego lento, atenta aos detalhes do cotidiano e às feridas que o tempo não cicatriza.",
+    "generos": [
+      "Ficção",
+      "Literatura brasileira",
+      "Romance literário"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2019,
+    "idioma": "pt-BR",
+    "isbn": "9786001338908"
+  },
+  {
+    "id": "BK0169",
+    "titulo": "A pedra que se lembrava: novos caminhos",
+    "autores": [
+      "Hassan Demir",
+      "Luísa Carvalho"
+    ],
+    "sinopse": "Em um mundo onde a memória pode ser negociada como mercadoria, uma jovem aprendiz descobre que carrega um dom proibido há gerações. Perseguida por uma ordem antiga e ajudada por aliados improváveis, ela inicia uma jornada que vai questionar tudo o que aprendeu sobre poder, sacrifício e o preço de se lembrar.",
+    "generos": [
+      "Ficção",
+      "Fantasia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2017,
+    "idioma": "pt-BR",
+    "isbn": "9781399049023"
+  },
+  {
+    "id": "BK0170",
+    "titulo": "Três corpos, uma cidade",
+    "autores": [
+      "Marcus Holbrook"
+    ],
+    "sinopse": "Um crime aparentemente simples em uma fazenda no interior de Minas se transforma no caso mais complexo da carreira de o delegado Vargas. Pistas falsas, testemunhas relutantes e um passado que insiste em retornar fazem desta investigação uma travessia pelos lados mais obscuros de uma cidade que prefere o silêncio à verdade.",
+    "generos": [
+      "Ficção",
+      "Policial",
+      "Mistério"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 1998,
+    "idioma": "pt-BR (tradução do francês)",
+    "isbn": "9780923271930"
+  },
+  {
+    "id": "BK0171",
+    "titulo": "Cartografia íntima: novos caminhos",
+    "autores": [
+      "Elena Voss"
+    ],
+    "sinopse": "Coletânea de poemas que investigam a passagem do tempo, o luto, o desejo e a relação com a paisagem. Em versos despojados e imagens precisas, esta obra propõe uma leitura sobre o que insiste em permanecer quando tudo o mais se transforma.",
+    "generos": [
+      "Poesia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2011,
+    "idioma": "pt-BR",
+    "isbn": "9787643815611"
+  },
+  {
+    "id": "BK0172",
+    "titulo": "Histórias de uma trajetória",
+    "autores": [
+      "Aiko Tanaka"
+    ],
+    "sinopse": "Biografia rigorosamente pesquisada de Marina Resende, figura cuja trajetória atravessa décadas e influencia áreas tão diversas quanto política, cultura e ciência. Com base em documentos inéditos, cartas e entrevistas com contemporâneos, este livro reconstrói o retrato complexo de uma vida marcada por convicção e contradição.",
+    "generos": [
+      "Não-ficção",
+      "Biografia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2007,
+    "idioma": "pt-BR",
+    "isbn": "9780529751614"
+  },
+  {
+    "id": "BK0173",
+    "titulo": "Vínculos possíveis — edição revista",
+    "autores": [
+      "Bianca Toledo"
+    ],
+    "sinopse": "Reflexão sobre os mecanismos emocionais que sustentam relações duradouras — e os que as corroem. A partir de casos clínicos e da literatura psicanalítica contemporânea, o livro oferece um caminho para entender padrões de vínculo sem reduzir a complexidade humana a fórmulas prontas.",
+    "generos": [
+      "Não-ficção",
+      "Psicologia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR",
+    "isbn": "9787570596409"
+  },
+  {
+    "id": "BK0174",
+    "titulo": "O passarinho azul-marinho",
+    "autores": [
+      "Elena Voss"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2021,
+    "idioma": "pt-BR",
+    "isbn": "9782102027581"
+  },
+  {
+    "id": "BK0175",
+    "titulo": "Pães rústicos para todos os dias",
+    "autores": [
+      "Léa Bonnard"
+    ],
+    "sinopse": "Livro de receitas que combina tradição brasileira e técnicas contemporâneas. Cada receita é apresentada com fotografia, lista de ingredientes detalhada, variações sugeridas e uma breve história sobre a origem do prato.",
+    "generos": [
+      "Não-ficção",
+      "Culinária"
+    ],
+    "publico_alvo": "Entusiastas de gastronomia",
+    "ano_publicacao": 2015,
+    "idioma": "pt-BR",
+    "isbn": "9781462638383"
+  },
+  {
+    "id": "BK0176",
+    "titulo": "Introdução à sociologia — volume 2",
+    "autores": [
+      "Léa Bonnard"
+    ],
+    "sinopse": "Livro-texto de uso em cursos universitários de Sociologia. Apresenta fundamentos teóricos com rigor matemático, exemplos aplicados e listas de exercícios em ordem crescente de dificuldade. Adotado em diversas instituições brasileiras.",
+    "generos": [
+      "Didático",
+      "Ensino superior"
+    ],
+    "publico_alvo": "Estudantes universitários",
+    "ano_publicacao": 2022,
+    "idioma": "pt-BR (tradução do espanhol)",
+    "isbn": "9789017518630"
+  },
+  {
+    "id": "BK0177",
+    "titulo": "Os hóspedes de outubro",
+    "autores": [
+      "Rafaela Coutinho"
+    ],
+    "sinopse": "Uma família se muda para uma casa antiga no interior em busca de recomeço, sem saber que algo persiste entre suas paredes desde muito antes da última reforma. À medida que pequenas coincidências se acumulam, o leitor é conduzido por uma atmosfera de medo crescente, em que o sobrenatural e o psicológico se confundem.",
+    "generos": [
+      "Ficção",
+      "Terror"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9784406409094"
+  },
+  {
+    "id": "BK0178",
+    "titulo": "Por que dormimos",
+    "autores": [
+      "Vinícius Holanda"
+    ],
+    "sinopse": "Uma exploração acessível dos avanços recentes na pesquisa sobre o cérebro humano e suas implicações para o cotidiano. Sem perder rigor científico, o livro traduz descobertas complexas em linguagem clara, ajudando o leitor a entender como nós aprendemos, decidimos e nos lembramos.",
+    "generos": [
+      "Não-ficção",
+      "Ciência",
+      "Divulgação científica"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 1998,
+    "idioma": "pt-BR",
+    "isbn": "9783962185183"
+  },
+  {
+    "id": "BK0179",
+    "titulo": "Geografia ensino fundamental — 7º ano",
+    "autores": [
+      "Eduardo Penteado"
+    ],
+    "sinopse": "Livro didático para o ensino fundamental, alinhado à BNCC, cobrindo conteúdos de História de forma progressiva e contextualizada. Inclui atividades, projetos interdisciplinares e seções de aprofundamento para estudantes que desejam ir além do programa.",
+    "generos": [
+      "Didático",
+      "Ensino fundamental"
+    ],
+    "publico_alvo": "Estudantes do ensino fundamental",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9782507146115"
+  },
+  {
+    "id": "BK0180",
+    "titulo": "O dia em que choveu pipoca",
+    "autores": [
+      "Júlia Brandão"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2021,
+    "idioma": "pt-BR",
+    "isbn": "9780376137913"
+  },
+  {
+    "id": "BK0181",
+    "titulo": "Estatística para tomada de decisão",
+    "autores": [
+      "Tobias Renner"
+    ],
+    "sinopse": "Manual prático sobre técnicas modernas de análise e modelagem de dados, com ênfase em problemas reais enfrentados em produtos digitais. Aborda desde preparação de dados até interpretação de modelos, com exemplos em Python e foco em decisões aplicadas, não apenas em métricas.",
+    "generos": [
+      "Técnico",
+      "Ciência de dados",
+      "Estatística"
+    ],
+    "publico_alvo": "Profissionais de dados e analistas",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9780166687000"
+  },
+  {
+    "id": "BK0182",
+    "titulo": "O cantor das nascentes",
+    "autores": [
+      "Gustavo Tavares"
+    ],
+    "sinopse": "Em um mundo onde a memória pode ser negociada como mercadoria, uma jovem aprendiz descobre que carrega um dom proibido há gerações. Perseguida por uma ordem antiga e ajudada por aliados improváveis, ela inicia uma jornada que vai questionar tudo o que aprendeu sobre poder, sacrifício e o preço de se lembrar.",
+    "generos": [
+      "Ficção",
+      "Fantasia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2024,
+    "idioma": "pt-BR",
+    "isbn": "9780249947175"
+  },
+  {
+    "id": "BK0183",
+    "titulo": "A obra e o homem — edição revista",
+    "autores": [
+      "Beatriz Sampaio",
+      "Marcus Holbrook"
+    ],
+    "sinopse": "Biografia rigorosamente pesquisada de Ravi Subramanian, figura cuja trajetória atravessa décadas e influencia áreas tão diversas quanto política, cultura e ciência. Com base em documentos inéditos, cartas e entrevistas com contemporâneos, este livro reconstrói o retrato complexo de uma vida marcada por convicção e contradição.",
+    "generos": [
+      "Não-ficção",
+      "Biografia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2000,
+    "idioma": "pt-BR",
+    "isbn": "9788679807939"
+  },
+  {
+    "id": "BK0184",
+    "titulo": "Anatomia humana — volume 2",
+    "autores": [
+      "Margot Lefèvre"
+    ],
+    "sinopse": "Livro-texto de uso em cursos universitários de Cálculo. Apresenta fundamentos teóricos com rigor matemático, exemplos aplicados e listas de exercícios em ordem crescente de dificuldade. Adotado em diversas instituições brasileiras.",
+    "generos": [
+      "Didático",
+      "Ensino superior"
+    ],
+    "publico_alvo": "Estudantes universitários",
+    "ano_publicacao": 2022,
+    "idioma": "pt-BR",
+    "isbn": "9786134074513"
+  },
+  {
+    "id": "BK0185",
+    "titulo": "Linhas tortas",
+    "autores": [
+      "Isadora Linhares"
+    ],
+    "sinopse": "Reunião de ensaios sobre cultura, política e linguagem, escritos ao longo de uma década. Com tom ao mesmo tempo crítico e pessoal, os textos buscam compreender o presente sem ceder ao tom apocalíptico ou à autoindulgência otimista.",
+    "generos": [
+      "Não-ficção",
+      "Ensaios"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2009,
+    "idioma": "pt-BR",
+    "isbn": "9784549904531"
+  },
+  {
+    "id": "BK0186",
+    "titulo": "História do Brasil ensino médio — 2ª série",
+    "autores": [
+      "Aline Drummond"
+    ],
+    "sinopse": "Material didático para o ensino médio cobrindo o currículo de História do Brasil, com foco na preparação para vestibulares e ENEM. Contém resumos, exercícios resolvidos e provas de anos anteriores comentadas.",
+    "generos": [
+      "Didático",
+      "Ensino médio"
+    ],
+    "publico_alvo": "Estudantes do ensino médio",
+    "ano_publicacao": 2021,
+    "idioma": "pt-BR",
+    "isbn": "9787828274226"
+  },
+  {
+    "id": "BK0187",
+    "titulo": "A empresa pensante — segunda edição",
+    "autores": [
+      "Joaquim Brito"
+    ],
+    "sinopse": "Guia prático para gestores que precisam liderar equipes em ambientes de incerteza. Combinando estudos de caso de empresas brasileiras e estrangeiras com frameworks aplicáveis, este livro oferece ferramentas para tomada de decisão, priorização e desenvolvimento de pessoas.",
+    "generos": [
+      "Não-ficção",
+      "Negócios",
+      "Carreira"
+    ],
+    "publico_alvo": "Profissionais e gestores",
+    "ano_publicacao": 2006,
+    "idioma": "pt-BR",
+    "isbn": "9789912165588"
+  },
+  {
+    "id": "BK0188",
+    "titulo": "A garota do laboratório — segunda edição",
+    "autores": [
+      "Pieter van Dijk"
+    ],
+    "sinopse": "Romance juvenil sobre amizade, identidade e descoberta. Com narrador em primeira pessoa e linguagem próxima do leitor jovem, o livro aborda questões importantes da adolescência sem moralismo, com humor e empatia.",
+    "generos": [
+      "Juvenil",
+      "Young adult"
+    ],
+    "publico_alvo": "Jovens de 12 a 18 anos",
+    "ano_publicacao": 2020,
+    "idioma": "pt-BR",
+    "isbn": "9785064138364"
+  },
+  {
+    "id": "BK0189",
+    "titulo": "A guardiã das memórias proibidas",
+    "autores": [
+      "Patrícia Bastos"
+    ],
+    "sinopse": "Em um mundo onde a memória pode ser negociada como mercadoria, uma jovem aprendiz descobre que carrega um dom proibido há gerações. Perseguida por uma ordem antiga e ajudada por aliados improváveis, ela inicia uma jornada que vai questionar tudo o que aprendeu sobre poder, sacrifício e o preço de se lembrar.",
+    "generos": [
+      "Ficção",
+      "Fantasia"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2008,
+    "idioma": "pt-BR",
+    "isbn": "9780471167198"
+  },
+  {
+    "id": "BK0190",
+    "titulo": "O caso da rua Bela Vista",
+    "autores": [
+      "Otávio Carvalho Pinto",
+      "Tereza Bittencourt"
+    ],
+    "sinopse": "Um crime aparentemente simples em um bairro operário de São Paulo se transforma no caso mais complexo da carreira de o investigador particular Rui Brandão. Pistas falsas, testemunhas relutantes e um passado que insiste em retornar fazem desta investigação uma travessia pelos lados mais obscuros de uma cidade que prefere o silêncio à verdade.",
+    "generos": [
+      "Ficção",
+      "Policial",
+      "Mistério"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2019,
+    "idioma": "pt-BR",
+    "isbn": "9781905865185"
+  },
+  {
+    "id": "BK0191",
+    "titulo": "Cartas do exílio",
+    "autores": [
+      "Caio Albuquerque"
+    ],
+    "sinopse": "Estudo histórico que reexamina episódios pouco discutidos da formação social brasileira, com atenção especial às vozes silenciadas pelos arquivos oficiais. Combinando fontes documentais e leituras críticas, o autor propõe uma narrativa que ilumina conexões frequentemente ignoradas pela historiografia tradicional.",
+    "generos": [
+      "Não-ficção",
+      "História"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2013,
+    "idioma": "pt-BR",
+    "isbn": "9785182037785"
+  },
+  {
+    "id": "BK0192",
+    "titulo": "Uma vida em três atos",
+    "autores": [
+      "Aline Drummond"
+    ],
+    "sinopse": "Biografia rigorosamente pesquisada de Rafaela Coutinho, figura cuja trajetória atravessa décadas e influencia áreas tão diversas quanto política, cultura e ciência. Com base em documentos inéditos, cartas e entrevistas com contemporâneos, este livro reconstrói o retrato complexo de uma vida marcada por convicção e contradição.",
+    "generos": [
+      "Não-ficção",
+      "Biografia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2015,
+    "idioma": "pt-BR",
+    "isbn": "9788851606077"
+  },
+  {
+    "id": "BK0193",
+    "titulo": "Brasil submerso",
+    "autores": [
+      "Otávio Carvalho Pinto"
+    ],
+    "sinopse": "Estudo histórico que reexamina episódios pouco discutidos da formação social brasileira, com atenção especial às vozes silenciadas pelos arquivos oficiais. Combinando fontes documentais e leituras críticas, o autor propõe uma narrativa que ilumina conexões frequentemente ignoradas pela historiografia tradicional.",
+    "generos": [
+      "Não-ficção",
+      "História"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2013,
+    "idioma": "pt-BR",
+    "isbn": "9787383473591"
+  },
+  {
+    "id": "BK0194",
+    "titulo": "A última hóspede",
+    "autores": [
+      "Antônio Vidal"
+    ],
+    "sinopse": "Em Salvador, uma série de desaparecimentos coloca em xeque a calma aparente de uma comunidade que tem mais a esconder do que admite. À medida que a investigação avança, antigas alianças se desfazem e a verdade se mostra mais perturbadora do que qualquer suspeita inicial. Um suspense psicológico sobre culpa, vigilância e os limites da confiança.",
+    "generos": [
+      "Ficção",
+      "Suspense",
+      "Thriller"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9780037917694"
+  },
+  {
+    "id": "BK0195",
+    "titulo": "Fundamentos de mecânica dos sólidos",
+    "autores": [
+      "Lucas Cavalcanti"
+    ],
+    "sinopse": "Obra de referência para profissionais e estudantes, cobrindo fundamentos teóricos e aplicações práticas em projetos de engenharia. Cada capítulo inclui exercícios resolvidos e estudos de caso que dialogam com a realidade da indústria brasileira.",
+    "generos": [
+      "Técnico",
+      "Engenharia"
+    ],
+    "publico_alvo": "Engenheiros e estudantes de engenharia",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR (tradução do francês)",
+    "isbn": "9789826224449"
+  },
+  {
+    "id": "BK0196",
+    "titulo": "Os afetos invisíveis",
+    "autores": [
+      "Anya Petrova",
+      "Aline Drummond"
+    ],
+    "sinopse": "Reflexão sobre os mecanismos emocionais que sustentam relações duradouras — e os que as corroem. A partir de casos clínicos e da literatura psicanalítica contemporânea, o livro oferece um caminho para entender padrões de vínculo sem reduzir a complexidade humana a fórmulas prontas.",
+    "generos": [
+      "Não-ficção",
+      "Psicologia"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2005,
+    "idioma": "pt-BR",
+    "isbn": "9780589578299"
+  },
+  {
+    "id": "BK0197",
+    "titulo": "Álgebra linear — volume 1",
+    "autores": [
+      "Pieter van Dijk"
+    ],
+    "sinopse": "Livro-texto de uso em cursos universitários de Direito Constitucional. Apresenta fundamentos teóricos com rigor matemático, exemplos aplicados e listas de exercícios em ordem crescente de dificuldade. Adotado em diversas instituições brasileiras.",
+    "generos": [
+      "Didático",
+      "Ensino superior"
+    ],
+    "publico_alvo": "Estudantes universitários",
+    "ano_publicacao": 2021,
+    "idioma": "pt-BR",
+    "isbn": "9789466711682"
+  },
+  {
+    "id": "BK0198",
+    "titulo": "A girafa que adorava cantar",
+    "autores": [
+      "Luísa Carvalho"
+    ],
+    "sinopse": "Livro infantil ricamente ilustrado que acompanha uma personagem curiosa em uma pequena aventura cotidiana. Com texto rítmico, fácil de ler em voz alta, e ilustrações que convidam à observação, é uma leitura perfeita para o momento do soninho ou para os primeiros leitores.",
+    "generos": [
+      "Infantil"
+    ],
+    "publico_alvo": "Crianças de 4 a 10 anos",
+    "ano_publicacao": 2010,
+    "idioma": "pt-BR",
+    "isbn": "9781463031619"
+  },
+  {
+    "id": "BK0199",
+    "titulo": "Pequena história das bactérias",
+    "autores": [
+      "Karim Nasser"
+    ],
+    "sinopse": "Uma exploração acessível dos avanços recentes na pesquisa sobre o cérebro humano e suas implicações para o cotidiano. Sem perder rigor científico, o livro traduz descobertas complexas em linguagem clara, ajudando o leitor a entender como nós aprendemos, decidimos e nos lembramos.",
+    "generos": [
+      "Não-ficção",
+      "Ciência",
+      "Divulgação científica"
+    ],
+    "publico_alvo": "Público adulto interessado no tema",
+    "ano_publicacao": 2023,
+    "idioma": "pt-BR",
+    "isbn": "9781616928452"
+  },
+  {
+    "id": "BK0200",
+    "titulo": "Janelas para um talvez: novos caminhos",
+    "autores": [
+      "Naomi Kashiwa",
+      "Edmund Carrington"
+    ],
+    "sinopse": "Quando uma fotógrafa e um médico se cruzam em uma vila no litoral catarinense, nenhum dos dois imagina que aquele encontro vai redefinir os próximos anos de suas vidas. Entre desencontros, escolhas difíceis e segundas chances, este romance acompanha o que significa amar quando o tempo parece estar contra.",
+    "generos": [
+      "Ficção",
+      "Romance"
+    ],
+    "publico_alvo": "Público adulto geral",
+    "ano_publicacao": 2016,
+    "idioma": "pt-BR",
+    "isbn": "9786204505336"
+  }
+]

@@ -1,0 +1,516 @@
+[
+  {
+    "qid": 1,
+    "question": "Quais livros do nosso catálogo abordam temas de inteligência artificial ou sistemas distribuídos? Cite os mais relevantes e o público-alvo de cada um.",
+    "type": "semantic",
+    "expected_behavior": "answer",
+    "relevant_ids": [
+      {
+        "id": "BK0014",
+        "grade": 2
+      },
+      {
+        "id": "BK0064",
+        "grade": 2
+      },
+      {
+        "id": "BK0001",
+        "grade": 2
+      },
+      {
+        "id": "BK0063",
+        "grade": 1
+      },
+      {
+        "id": "BK0125",
+        "grade": 1
+      },
+      {
+        "id": "BK0128",
+        "grade": 1
+      },
+      {
+        "id": "BK0040",
+        "grade": 1
+      },
+      {
+        "id": "BK0069",
+        "grade": 1
+      },
+      {
+        "id": "BK0126",
+        "grade": 1
+      },
+      {
+        "id": "BK0013",
+        "grade": 1
+      },
+      {
+        "id": "BK0158",
+        "grade": 1
+      },
+      {
+        "id": "BK0181",
+        "grade": 1
+      }
+    ],
+    "notes": "Distribuídos = BK0014/BK0064. IA/dados = modelagem preditiva/estatística (BK0001/BK0013...). Sci-fi de tema IA = grau 1. Pede público-alvo de cada um."
+  },
+  {
+    "qid": 2,
+    "question": "Estou montando uma lista de leitura para o Dia das Crianças. Sugira 5 livros do nosso catálogo, considerando faixas etárias diferentes dentro do público infantil.",
+    "type": "filter+diversity",
+    "expected_behavior": "acknowledge_limitation",
+    "relevant_ids": [
+      {
+        "id": "BK0006",
+        "grade": 2
+      },
+      {
+        "id": "BK0048",
+        "grade": 2
+      },
+      {
+        "id": "BK0066",
+        "grade": 2
+      },
+      {
+        "id": "BK0085",
+        "grade": 2
+      },
+      {
+        "id": "BK0108",
+        "grade": 2
+      },
+      {
+        "id": "BK0114",
+        "grade": 2
+      },
+      {
+        "id": "BK0129",
+        "grade": 2
+      },
+      {
+        "id": "BK0174",
+        "grade": 2
+      },
+      {
+        "id": "BK0180",
+        "grade": 2
+      },
+      {
+        "id": "BK0198",
+        "grade": 2
+      }
+    ],
+    "notes": "ARMADILHA: os 10 infantis estão todos em UMA faixa ('Crianças de 4 a 10 anos'). 'Faixas diferentes' não é suportado pelos dados → boa resposta sugere até 5 títulos E explicita a limitação, sem inventar subfaixas."
+  },
+  {
+    "qid": 3,
+    "question": "Tenho um cliente que adorou romances literários ambientados em pequenas cidades brasileiras, com narrativa lenta e foco em memória familiar. Que livros do nosso catálogo eu recomendaria?",
+    "type": "semantic",
+    "expected_behavior": "answer",
+    "relevant_ids": [
+      {
+        "id": "BK0051",
+        "grade": 1
+      },
+      {
+        "id": "BK0053",
+        "grade": 1
+      },
+      {
+        "id": "BK0062",
+        "grade": 1
+      },
+      {
+        "id": "BK0090",
+        "grade": 1
+      },
+      {
+        "id": "BK0096",
+        "grade": 1
+      },
+      {
+        "id": "BK0145",
+        "grade": 1
+      },
+      {
+        "id": "BK0164",
+        "grade": 1
+      },
+      {
+        "id": "BK0046",
+        "grade": 0
+      },
+      {
+        "id": "BK0083",
+        "grade": 0
+      },
+      {
+        "id": "BK0110",
+        "grade": 0
+      },
+      {
+        "id": "BK0113",
+        "grade": 0
+      },
+      {
+        "id": "BK0168",
+        "grade": 0
+      }
+    ],
+    "notes": "ARMADILHA sutil: NÃO há romances em 'pequenas cidades'. Os de literatura brasileira se passam em cidades GRANDES (Floripa/Curitiba/Salvador/Porto Alegre, grau 1) ou no EXTERIOR (Tóquio/Istambul/Estocolmo/Cidade do Cabo, grau 0). Boa resposta recomenda os brasileiros de memória familiar E ressalva que não são cidades pequenas."
+  },
+  {
+    "qid": 4,
+    "question": "Quais livros didáticos do ensino médio temos atualmente, e quais matérias eles cobrem?",
+    "type": "filter",
+    "expected_behavior": "answer",
+    "relevant_ids": [
+      {
+        "id": "BK0065",
+        "grade": 2
+      },
+      {
+        "id": "BK0074",
+        "grade": 2
+      },
+      {
+        "id": "BK0100",
+        "grade": 2
+      },
+      {
+        "id": "BK0122",
+        "grade": 2
+      },
+      {
+        "id": "BK0186",
+        "grade": 2
+      }
+    ],
+    "expected_fields": [
+      "matérias: Física, História do Brasil, Biologia"
+    ],
+    "notes": "Filtro duro gênero=Didático + público=ensino médio. Deve listar as matérias."
+  },
+  {
+    "qid": 5,
+    "question": "Um leitor está procurando um livro de não-ficção sobre o cérebro humano, escrito de forma acessível. O que temos disponível?",
+    "type": "semantic+filter",
+    "expected_behavior": "answer",
+    "relevant_ids": [
+      {
+        "id": "BK0016",
+        "grade": 2
+      },
+      {
+        "id": "BK0038",
+        "grade": 2
+      },
+      {
+        "id": "BK0091",
+        "grade": 2
+      },
+      {
+        "id": "BK0099",
+        "grade": 2
+      },
+      {
+        "id": "BK0178",
+        "grade": 2
+      },
+      {
+        "id": "BK0199",
+        "grade": 2
+      },
+      {
+        "id": "BK0007",
+        "grade": 0
+      },
+      {
+        "id": "BK0008",
+        "grade": 0
+      },
+      {
+        "id": "BK0032",
+        "grade": 0
+      },
+      {
+        "id": "BK0050",
+        "grade": 0
+      },
+      {
+        "id": "BK0088",
+        "grade": 0
+      },
+      {
+        "id": "BK0146",
+        "grade": 0
+      }
+    ],
+    "notes": "A sinopse sobre 'cérebro humano' é compartilhada por 6 livros, alguns com TÍTULO enganoso (ex.: 'A vida secreta das florestas'). Título sozinho falha; a sinopse carrega o tema. Distrator grau 0: cluster de autoajuda 'reorganização interna'."
+  },
+  {
+    "qid": 6,
+    "question": "Quero montar uma campanha de lançamento focada em livros publicados nos últimos 3 anos. Quais livros do catálogo se encaixam? Liste por categoria.",
+    "type": "filter+group",
+    "expected_behavior": "answer",
+    "relevant_ids": [
+      {
+        "id": "BK0012",
+        "grade": 2
+      },
+      {
+        "id": "BK0014",
+        "grade": 2
+      },
+      {
+        "id": "BK0015",
+        "grade": 2
+      },
+      {
+        "id": "BK0030",
+        "grade": 2
+      },
+      {
+        "id": "BK0041",
+        "grade": 2
+      },
+      {
+        "id": "BK0065",
+        "grade": 2
+      },
+      {
+        "id": "BK0067",
+        "grade": 2
+      },
+      {
+        "id": "BK0086",
+        "grade": 2
+      },
+      {
+        "id": "BK0089",
+        "grade": 2
+      },
+      {
+        "id": "BK0093",
+        "grade": 2
+      },
+      {
+        "id": "BK0100",
+        "grade": 2
+      },
+      {
+        "id": "BK0106",
+        "grade": 2
+      },
+      {
+        "id": "BK0115",
+        "grade": 2
+      },
+      {
+        "id": "BK0118",
+        "grade": 2
+      },
+      {
+        "id": "BK0122",
+        "grade": 2
+      },
+      {
+        "id": "BK0131",
+        "grade": 2
+      },
+      {
+        "id": "BK0137",
+        "grade": 2
+      },
+      {
+        "id": "BK0153",
+        "grade": 2
+      },
+      {
+        "id": "BK0158",
+        "grade": 2
+      },
+      {
+        "id": "BK0159",
+        "grade": 2
+      },
+      {
+        "id": "BK0160",
+        "grade": 2
+      },
+      {
+        "id": "BK0179",
+        "grade": 2
+      },
+      {
+        "id": "BK0182",
+        "grade": 2
+      },
+      {
+        "id": "BK0194",
+        "grade": 2
+      },
+      {
+        "id": "BK0195",
+        "grade": 2
+      },
+      {
+        "id": "BK0199",
+        "grade": 2
+      }
+    ],
+    "expected_value": {
+      "ano_min": 2023,
+      "convencao": "ultimos 3 anos == ano >= CURRENT_YEAR(2026)-3 == 2023"
+    },
+    "notes": "Filtro de ano relativo (computado em Python, não pelo LLM) + agrupar por categoria. Conjunto-verdade = todos com ano>=2023."
+  },
+  {
+    "qid": 7,
+    "question": "Temos algum livro sobre liderança de equipes em ambientes de incerteza?",
+    "type": "semantic",
+    "expected_behavior": "answer",
+    "relevant_ids": [
+      {
+        "id": "BK0022",
+        "grade": 2
+      },
+      {
+        "id": "BK0111",
+        "grade": 2
+      },
+      {
+        "id": "BK0121",
+        "grade": 2
+      },
+      {
+        "id": "BK0133",
+        "grade": 2
+      },
+      {
+        "id": "BK0134",
+        "grade": 2
+      },
+      {
+        "id": "BK0187",
+        "grade": 2
+      }
+    ],
+    "notes": "6 livros compartilham a sinopse 'liderar equipes em ambientes de incerteza'. BK0133 ('Liderança em tempos incertos') é o mais direto."
+  },
+  {
+    "qid": 8,
+    "question": "Qual é o livro mais antigo do nosso catálogo? E qual é o mais recente?",
+    "type": "aggregation",
+    "expected_behavior": "answer",
+    "relevant_ids": [
+      {
+        "id": "BK0124",
+        "grade": 2
+      },
+      {
+        "id": "BK0030",
+        "grade": 2
+      },
+      {
+        "id": "BK0041",
+        "grade": 2
+      },
+      {
+        "id": "BK0065",
+        "grade": 2
+      },
+      {
+        "id": "BK0067",
+        "grade": 2
+      },
+      {
+        "id": "BK0086",
+        "grade": 2
+      },
+      {
+        "id": "BK0106",
+        "grade": 2
+      },
+      {
+        "id": "BK0115",
+        "grade": 2
+      },
+      {
+        "id": "BK0131",
+        "grade": 2
+      },
+      {
+        "id": "BK0137",
+        "grade": 2
+      },
+      {
+        "id": "BK0158",
+        "grade": 2
+      },
+      {
+        "id": "BK0160",
+        "grade": 2
+      },
+      {
+        "id": "BK0179",
+        "grade": 2
+      },
+      {
+        "id": "BK0182",
+        "grade": 2
+      }
+    ],
+    "expected_value": {
+      "min_year": 1986,
+      "max_year": 2024,
+      "oldest_ids": [
+        "BK0124"
+      ],
+      "newest_ids": [
+        "BK0030",
+        "BK0041",
+        "BK0065",
+        "BK0067",
+        "BK0086",
+        "BK0106",
+        "BK0115",
+        "BK0131",
+        "BK0137",
+        "BK0158",
+        "BK0160",
+        "BK0179",
+        "BK0182"
+      ]
+    },
+    "notes": "Mais antigo é ÚNICO (['BK0124'] em 1986). Mais recente é um EMPATE de 13 livros em 2024. CORRETA exige sinalizar o empate (ou 'vários de 2024'). Excluída de precision/recall (não é problema de recuperação)."
+  },
+  {
+    "qid": 9,
+    "question": "Recebi um pedido de um cliente que quer \"aquele livro do autor japonês sobre cidades\". Você consegue identificar de qual livro ele provavelmente está falando?",
+    "type": "ambiguous",
+    "expected_behavior": "clarify",
+    "relevant_ids": [
+      {
+        "id": "BK0076",
+        "grade": 1
+      },
+      {
+        "id": "BK0163",
+        "grade": 1
+      }
+    ],
+    "notes": "ARMADILHA: os 2 livros traduzidos do japonês NÃO são sobre cidades. CORRETA = pede contexto OU lista candidatos como incertos, SEM cravar um único confiante."
+  },
+  {
+    "qid": 10,
+    "question": "Você tem em catálogo o livro \"Memórias Póstumas de Brás Cubas\" de Machado de Assis? Se sim, em qual edição?",
+    "type": "out_of_catalog",
+    "expected_behavior": "abstain",
+    "relevant_ids": [],
+    "notes": "FORA do catálogo. CORRETA = afirma que não consta, SEM inventar edição/ISBN."
+  }
+]

@@ -1,0 +1,22 @@
+# --- Núcleo da aplicação ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+python-dotenv==1.0.1
+
+# --- LLM / embeddings (Google Gemini) ---
+google-genai==1.16.1
+
+# --- Recuperação (RAG híbrido) ---
+numpy==2.2.1
+rank-bm25==0.2.2
+rapidfuzz==3.11.0
+
+# --- Interface + cliente HTTP ---
+streamlit==1.41.1
+httpx==0.28.1
+
+# --- Fallback de embeddings OFFLINE (opcional) ---
+# Descomente para rodar sem chave/sem internet (EMBEDDINGS_BACKEND=local).
+# Atenção: puxa o torch (~2,5 GB).
+# sentence-transformers==3.3.1
