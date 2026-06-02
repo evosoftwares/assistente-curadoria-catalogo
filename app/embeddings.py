@@ -1,13 +1,16 @@
 """Índice de embeddings com cache em disco.
 
-Decisões:
-- Backend padrão = Gemini (`gemini-embedding-001`, 768d via MRL). Sem dependência
-  pesada (torch). Cache em disco chaveado por sha256(books.json)+backend+modelo+dim,
-  então só re-embeddamos quando o catálogo muda. O cache é commitado no repo para
-  o revisor rodar a recuperação OFFLINE, sem chave.
-- `task_type` assimétrico: RETRIEVAL_DOCUMENT no corpus, RETRIEVAL_QUERY na consulta.
-- Vetores L2-normalizados → produto interno == cosseno.
-- Backend opcional "local" (sentence-transformers) para operação 100% offline.
+Decisões (e o porquê):
+- Backend padrão = Gemini (`gemini-embedding-001`, 768d via MRL). Por quê e não local: evita a
+  dependência pesada do torch (~2,5 GB), que travaria um revisor clonando o repo no Windows.
+- Cache em disco chaveado por hash dos TEXTOS indexados + backend + modelo + dim. Por quê: só
+  re-embeddar quando o conteúdo muda (catálogo OU cartões de contexto); é commitado no repo para
+  o revisor rodar a recuperação OFFLINE, sem chave e sem re-embeddar.
+- `task_type` assimétrico (RETRIEVAL_DOCUMENT no corpus, RETRIEVAL_QUERY na consulta): o
+  gemini-embedding rende mais quando documento e consulta são embeddados com tipos distintos.
+- Vetores L2-normalizados → produto interno vira cosseno (cosine = dot de vetores unitários),
+  então a busca é um simples `matrix @ query` — rápido e exato para 200 docs.
+- Backend opcional "local" (sentence-transformers) para operação 100% offline / sem chave.
 """
 from __future__ import annotations
 
@@ -24,8 +27,9 @@ from .llm import GeminiClient, get_client
 
 
 def _l2_normalize(mat: np.ndarray) -> np.ndarray:
+    # Normaliza cada linha para norma 1 -> aí o produto interno é exatamente o cosseno.
     norms = np.linalg.norm(mat, axis=1, keepdims=True)
-    norms[norms == 0] = 1.0
+    norms[norms == 0] = 1.0  # guarda contra divisão por zero (vetor nulo improvável, mas seguro)
     return mat / norms
 
 

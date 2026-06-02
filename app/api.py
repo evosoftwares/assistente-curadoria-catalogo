@@ -18,11 +18,15 @@ from .logging_conf import log_event, new_request_id
 from .models import AskRequest, AskResponse
 from .pipeline import AskPipeline
 
+# Guardamos o pipeline em estado de módulo (não global solto) para o lifespan injetar 1 instância.
 _state: dict = {}
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # lifespan do FastAPI: construímos o pipeline UMA vez no startup (carrega catálogo + índice
+    # de embeddings) e reusamos em toda requisição. Construir por-requisição re-leria o índice a
+    # cada chamada — caro e desnecessário. O log de startup vira um "cartão de saúde" observável.
     pipe = AskPipeline()
     _state["pipeline"] = pipe
     log_event(
@@ -49,6 +53,8 @@ app.add_middleware(
 
 @app.get("/health")
 def health() -> dict:
+    # Health expõe o MODO em que o serviço subiu (semântico pronto? LLM disponível?) — útil
+    # para a UI mostrar "BM25-only/degradado" e para a banca ver o estado sem ler logs.
     pipe: AskPipeline = _state.get("pipeline")
     return {
         "status": "ok",
@@ -75,10 +81,15 @@ def kpis() -> str:
 
 @app.post("/ask", response_model=AskResponse)
 def ask(req: AskRequest) -> AskResponse:
+    # Endpoint principal exigido pelo desafio. Toda a lógica vive no pipeline (testável fora do
+    # HTTP); aqui só orquestramos request_id + log estruturado. O limite de tamanho da pergunta
+    # vem do schema AskRequest (Pydantic valida antes de chegar aqui).
     pipe: AskPipeline = _state["pipeline"]
     rid = new_request_id()
     resp = pipe.ask(req.question)
     d = resp.retrieval_debug
+    # Log estruturado por requisição (observabilidade): 1 linha JSON com latência por etapa,
+    # tokens, custo, ids recuperados, abstenção e plano — base p/ dashboards de produção.
     log_event(
         "ask",
         request_id=rid,

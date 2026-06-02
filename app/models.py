@@ -1,9 +1,14 @@
 """Modelos Pydantic: contrato da API + plano de recuperação.
 
-Há dois "planos":
-- ``PlannerLLMOutput``: o que o LLM preenche (campos simples, sem aritmética).
-- ``RetrievalPlan``: o plano resolvido pelo Python (datas calculadas, enums
-  validados contra o catálogo, filtro soft/hard decidido). É o que o retriever usa.
+DECISÃO DE DESIGN CENTRAL — dois "planos" separados (separação de responsabilidades):
+- ``PlannerLLMOutput``: SÓ o que o LLM preenche — intenção/filtros em campos simples, SEM
+  aritmética nem decisões. É o limite de confiança no LLM.
+- ``RetrievalPlan``: o plano RESOLVIDO em Python — datas calculadas (CURRENT_YEAR−N), enums
+  validados contra o vocabulário REAL do catálogo, soft/hard decidido. É o que o retriever usa.
+
+Por que separar: tudo que é determinístico/verificável (datas, validação, agregação) fica do
+lado do Python; o LLM só faz o que LLM faz bem (entender linguagem). Isso é o que torna o
+sistema testável e à prova de planos malformados do LLM.
 """
 from __future__ import annotations
 
