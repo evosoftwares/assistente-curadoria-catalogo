@@ -125,42 +125,44 @@ class AskPipeline:
         results, rdebug = self.retriever.retrieve(plan, query_vecs)
         timings["retrieval_ms"] = round((time.perf_counter() - ts) * 1000, 1)
 
-        # 4) Comportamento + ferramentas determinísticas
-        behavior = Behavior.answer
-        computed_facts: Optional[str] = None
-        extra_directive: Optional[str] = None
-        context_books: list[dict]
-        ranking_used = False  # True só nos paths cujo context_books vem do ranking de relevância
-        notes = list(rdebug["notes"])
+        # 4) DESPACHO DE COMPORTAMENTO — escolhe o que `context_books` (o que o gerador vê) e o
+        #    comportamento serão, segundo o plano. Cada ramo trata uma das "armadilhas".
+        behavior = Behavior.answer                 # default: responder normalmente
+        computed_facts: Optional[str] = None       # fatos pré-calculados (agregação/grupo) p/ o prompt
+        extra_directive: Optional[str] = None      # instrução extra ao gerador (clarify/limitação)
+        context_books: list[dict]                  # os livros que vão ao gerador
+        ranking_used = False  # True só nos paths cujo context_books vem do RANKING de relevância
+        notes = list(rdebug["notes"])              # copia as notas do retrieve p/ acrescentar as nossas
 
-        if plan.is_ambiguous:
+        if plan.is_ambiguous:                      # Q9: pergunta vaga -> NÃO cravar; pedir contexto
             behavior = Behavior.clarify
-            context_books = [r.book for r in results]
-            ranking_used = True
+            context_books = [r.book for r in results]   # mostra os candidatos recuperados
+            ranking_used = True                          # vieram do ranking -> score faz sentido
             extra_directive = (
                 "A pergunta é ambígua. NÃO afirme um único livro com certeza; liste os candidatos "
                 "abaixo como possibilidades e peça o contexto que falta."
             )
-        elif plan.aggregations:
-            cand = self.retriever.candidates(plan)
-            agg = tools.aggregate_min_max(cand)
-            want_min = Aggregation.min_year in plan.aggregations
-            want_max = Aggregation.max_year in plan.aggregations
+        elif plan.aggregations:                    # Q8: "mais antigo/recente" -> CÁLCULO, não busca
+            cand = self.retriever.candidates(plan)      # conjunto pós-filtro inteiro (não o top-k)
+            agg = tools.aggregate_min_max(cand)         # mín/máx + TODOS os empatados, em Python
+            want_min = Aggregation.min_year in plan.aggregations  # pediu o mais antigo?
+            want_max = Aggregation.max_year in plan.aggregations  # pediu o mais recente?
+            # contexto = só o(s) extremo(s) PEDIDO(s) (não narra ambos se só um foi pedido)
             ctx = (agg.get("oldest", []) if want_min else []) + (agg.get("newest", []) if want_max else [])
-            seen = set(); context_books = [b for b in ctx if not (b["id"] in seen or seen.add(b["id"]))]
-            computed_facts = self._facts_aggregation(agg, want_min, want_max)
+            seen = set(); context_books = [b for b in ctx if not (b["id"] in seen or seen.add(b["id"]))]  # dedup
+            computed_facts = self._facts_aggregation(agg, want_min, want_max)  # vira "FATO" no prompt
             notes.append(f"agregação determinística (min={want_min}, max={want_max})")
-        elif plan.group_by == GroupBy.genero:
-            cand = self.retriever.candidates(plan)
-            groups = tools.group_by_genero(cand)
-            context_books = cand
+        elif plan.group_by == GroupBy.genero:      # Q6: "liste por categoria" -> agrupar em Python
+            cand = self.retriever.candidates(plan)      # todos os que passaram no filtro de ano
+            groups = tools.group_by_genero(cand)        # {gênero: [livros]}
+            context_books = cand                        # o gerador vê todos (narra por categoria)
             computed_facts = self._facts_groups(groups)
             notes.append(f"agrupamento por categoria ({len(groups)} categorias, {len(cand)} livros)")
-        elif plan.diversity:
+        elif plan.diversity:                       # Q2: "5 de faixas DIFERENTES" -> diversificar
             cand = self.retriever.candidates(plan)
-            div = tools.diversify(cand, field="publico_alvo", n=5)
+            div = tools.diversify(cand, field="publico_alvo", n=5)  # 1 por faixa distinta, até 5
             context_books = div["selected"]
-            if div["distinct_count"] <= 1:
+            if div["distinct_count"] <= 1:               # o dado só tem 1 faixa? -> ser honesto
                 behavior = Behavior.acknowledge_limitation
                 extra_directive = (
                     f"O catálogo rotula esses livros em apenas {div['distinct_count']} faixa(s) de "
@@ -168,11 +170,12 @@ class AskPipeline:
                     "explique que essa diferenciação mais fina não existe nos dados."
                 )
             notes.append(f"diversidade: {div['distinct_count']} faixa(s) distinta(s)")
-        else:
-            context_books = [r.book for r in results]
+        else:                                      # Q1/Q3/Q5/Q7: busca semântica normal
+            context_books = [r.book for r in results]    # top-k ranqueado
             ranking_used = True
 
-        # 5) Geração ancorada (ou degradação graciosa sem LLM)
+        # 5) GERAÇÃO ANCORADA (ou degradação graciosa sem LLM). Retorna texto, ids citados e
+        #    uma nota (não-vazia se caiu no fallback degradado — observabilidade).
         ts = time.perf_counter()
         answer, cited_ids, gen_note = self._generate(question, context_books, behavior,
                                                      computed_facts, extra_directive, meter)
@@ -180,16 +183,17 @@ class AskPipeline:
         if gen_note:
             notes.append(gen_note)
 
-        # 6) Verificação de citações: references só com ids realmente recuperados
-        context_ids = {b["id"] for b in context_books}
-        verified = [cid for cid in cited_ids if cid in context_ids]
-        dropped = [cid for cid in cited_ids if cid not in context_ids]
+        # 6) VERIFICAÇÃO DE CITAÇÕES — a salvaguarda anti-alucinação de citação.
+        context_ids = {b["id"] for b in context_books}            # ids que o gerador REALMENTE viu
+        verified = [cid for cid in cited_ids if cid in context_ids]      # mantém só citações reais
+        dropped = [cid for cid in cited_ids if cid not in context_ids]   # citou algo que não viu?
         if dropped:
-            notes.append(f"citações descartadas (não recuperadas): {dropped}")
-        # Score só faz sentido onde os livros foram ranqueados por relevância; nos paths
-        # determinísticos (agregação/grupo/diversidade) a seleção é por regra — não herdamos
-        # o ranking não-usado de retrieve() (apareceria score só em alguns refs, enganoso).
+            notes.append(f"citações descartadas (não recuperadas): {dropped}")  # registra p/ auditoria
+        # Score só faz sentido onde houve RANKING. Nos paths determinísticos (agregação/grupo/
+        # diversidade) a seleção é por regra -> dict vazio -> todas as refs ficam com score=None
+        # (consistente), em vez de herdar um score do top-k que não foi usado (enganoso).
         score_by_id = {r.book["id"]: r.fused for r in results} if ranking_used else {}
+        # Monta as referências finais SÓ a partir dos ids verificados (toda ref é um livro real).
         references = [_book_ref(self.catalog.get(cid), score_by_id.get(cid)) for cid in verified
                       if self.catalog.get(cid)]
 
