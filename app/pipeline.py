@@ -6,6 +6,8 @@ degradação graciosa quando o LLM/embeddings não estão disponíveis.
 from __future__ import annotations
 
 import hashlib
+import re
+import threading
 import time
 from typing import Optional
 
@@ -14,7 +16,7 @@ import numpy as np
 from . import config, tools
 from .catalog import Catalog, get_catalog
 from .embeddings import EmbeddingIndex
-from .llm import CostMeter, GeminiClient, get_client
+from .llm import CostMeter, GeminiClient, Usage, get_client
 from .models import (
     Aggregation,
     AnswerOut,
@@ -30,14 +32,30 @@ from .prompts import ANSWER_SYSTEM, build_answer_prompt
 from .retriever import HybridRetriever
 
 
+# Perguntas cujo SENTIDO depende de um token decisivo (número/data/negação/comparação) NÃO podem
+# usar o cache semântico: "após 2015" vs "após 2020" e "infantis" vs "NÃO infantis" têm embeddings
+# quase idênticos (cos > 0,92) mas exigem filtros OPOSTOS — serviriam a resposta ERRADA. Para essas,
+# desligamos o cache (o cache exato por sha256 continua valendo). (Achado SEC-03 da auditoria.)
+_CACHE_UNSAFE_RE = re.compile(
+    r"\d|\bn[ãa]o\b|\bsem\b|\bexceto\b|\bantes\b|\bdepois\b|\bap[óo]s\b|\bat[ée]\b|\bmaior\b|\bmenor\b",
+    re.IGNORECASE,
+)
+
+
+def _cacheable(question: str) -> bool:
+    """False quando a pergunta tem número/negação/comparação (ver _CACHE_UNSAFE_RE)."""
+    return not _CACHE_UNSAFE_RE.search(question)
+
+
 def _coerce_id_list(value) -> list[str]:
     """Normaliza cited_ids do LLM: aceita lista de strings; string vira [string]
-    (não quebra em caracteres); descarta não-strings."""
+    (não quebra em caracteres); descarta não-strings; DEDUPLICA preservando ordem (evita
+    referências repetidas quando o LLM cita o mesmo id em duas frases — achado NEW-01)."""
     if isinstance(value, str):
-        return [value]
-    if isinstance(value, list):
-        return [v for v in value if isinstance(v, str)]
-    return []
+        value = [value]
+    if not isinstance(value, list):
+        return []
+    return list(dict.fromkeys(v for v in value if isinstance(v, str)))
 
 
 def _book_ref(book: dict, score: Optional[float] = None) -> BookRef:
@@ -63,6 +81,10 @@ class AskPipeline:
         self.planner = Planner(self.catalog, self.client)
         self._cache: dict[str, AskResponse] = {}
         self._sem_cache: list[tuple[np.ndarray, str]] = []  # (embedding da pergunta, chave)
+        # O pipeline é UM objeto compartilhado e /ask é síncrono (FastAPI o roda num threadpool):
+        # requisições concorrentes tocam os caches em paralelo. Este lock serializa as mutações
+        # dos caches para evitar corrida na evicção/append (achado SEC-02 da auditoria).
+        self._cache_lock = threading.Lock()
 
     def _init_index(self) -> EmbeddingIndex:
         """Carrega o cache de embeddings; só (re)constrói se houver como embeddar.
@@ -89,19 +111,22 @@ class AskPipeline:
                     notes=["pergunta vazia/trivial -> clarify (sem LLM)"],
                 ),
             )
+        meter = CostMeter()                          # criado JÁ (conta também o embedding da pergunta)
         key = hashlib.sha256(q.lower().encode("utf-8")).hexdigest()
-        if key in self._cache:
-            cached = self._cache[key].model_copy(deep=True)
-            cached.retrieval_debug.from_cache = True
-            return cached
+        with self._cache_lock:                       # leitura do cache exato sob lock (thread-safe)
+            cached = self._cache.get(key)
+        if cached is not None:
+            out = cached.model_copy(deep=True)
+            out.retrieval_debug.from_cache = True
+            return out
 
-        # Cache SEMÂNTICO: pega paráfrases que o sha256 (exato) perderia.
-        q_vec = self._maybe_embed_question(q)
+        # Cache SEMÂNTICO: pega paráfrases que o sha256 (exato) perderia — MAS só para perguntas
+        # "cacheáveis" (sem número/negação/comparação), senão serviria a resposta errada (SEC-03).
+        q_vec = self._maybe_embed_question(q, meter) if _cacheable(q) else None
         hit = self._semantic_cache_lookup(q_vec)
         if hit is not None:
             return hit
 
-        meter = CostMeter()
         timings: dict[str, float] = {}
 
         # 1) Plano
@@ -121,7 +146,7 @@ class AskPipeline:
 
         # 3) Recuperação (embedding da consulta + híbrido)
         ts = time.perf_counter()
-        query_vecs = self._embed_queries(plan)
+        query_vecs = self._embed_queries(plan, meter)   # passa o meter p/ contabilizar embeddings
         results, rdebug = self.retriever.retrieve(plan, query_vecs)
         timings["retrieval_ms"] = round((time.perf_counter() - ts) * 1000, 1)
 
@@ -219,7 +244,15 @@ class AskPipeline:
         return resp
 
     # ------------------------------------------------------------- helpers
-    def _maybe_embed_question(self, q: str) -> Optional[np.ndarray]:
+    def _embed_with_cost(self, text: str, meter: Optional[CostMeter]) -> np.ndarray:
+        """Embedda `text` e CONTABILIZA o custo (mesmo embeddings sendo baratos) — sem isso o
+        teto de custo subestimaria o gasto real (achado COMP-02 da auditoria)."""
+        vec = self.index.embed_query(text)
+        if meter is not None and self.index.backend != "local":   # backend local não tem custo de API
+            meter.add(Usage(config.GEMINI_EMBEDDING_MODEL, input_tokens=max(1, len(text) // 4)))
+        return vec
+
+    def _maybe_embed_question(self, q: str, meter: Optional[CostMeter] = None) -> Optional[np.ndarray]:
         """Embedding da pergunta CRUA, usado pelo cache semântico. Retorna None (cache off)
         se a feature está desabilitada, não há índice, ou não há como embeddar (sem chave)."""
         if not config.SEMANTIC_CACHE_ENABLED or self.index.matrix is None:
@@ -227,45 +260,51 @@ class AskPipeline:
         if not (self.client.available or config.EMBEDDINGS_BACKEND == "local"):
             return None
         try:
-            return self.index.embed_query(q)        # 1 embedding curto (~0 custo); None se falhar
+            return self._embed_with_cost(q, meter)  # 1 embedding curto, contabilizado; None se falhar
         except Exception:
             return None                             # cache é otimização — nunca pode derrubar o /ask
 
     def _semantic_cache_lookup(self, q_vec: Optional[np.ndarray]) -> Optional[AskResponse]:
-        """Procura uma pergunta anterior semanticamente quase idêntica (cosseno >= limiar)."""
-        if q_vec is None or not self._sem_cache:    # sem vetor ou cache vazio -> miss
-            return None
-        sims = [float(np.dot(q_vec, v)) for v, _ in self._sem_cache]  # cos vs cada entrada (vetores unitários)
-        bi = int(np.argmax(sims))                   # índice da entrada mais parecida
-        # Hit só se passar do limiar (0,92) E a entrada ainda existir no cache exato.
-        if sims[bi] >= config.SEMANTIC_CACHE_THRESHOLD and self._sem_cache[bi][1] in self._cache:
-            cached = self._cache[self._sem_cache[bi][1]].model_copy(deep=True)  # cópia isolada (não vaza estado)
-            cached.retrieval_debug.from_cache = True
-            cached.retrieval_debug.notes = list(cached.retrieval_debug.notes) + [
-                f"cache semântico (cos={sims[bi]:.3f})"]  # registra o hit (observabilidade)
-            return cached
+        """Procura uma pergunta anterior semanticamente quase idêntica (cosseno >= limiar).
+        Itera os candidatos por similaridade DECRESCENTE e usa o 1º acima do limiar que ainda
+        exista no cache exato — assim uma entrada stale no topo não suprime um hit válido (NEW-03)."""
+        with self._cache_lock:                      # leitura consistente dos caches sob lock
+            if q_vec is None or not self._sem_cache:
+                return None
+            sims = [float(np.dot(q_vec, v)) for v, _ in self._sem_cache]  # cos vs cada entrada (unitários)
+            for j in np.argsort(sims)[::-1]:        # do mais parecido p/ o menos
+                if sims[j] < config.SEMANTIC_CACHE_THRESHOLD:
+                    break                           # abaixo do limiar -> nenhum candidato serve
+                k = self._sem_cache[j][1]
+                if k in self._cache:                # ignora entradas stale (chave já evicta do exato)
+                    out = self._cache[k].model_copy(deep=True)   # cópia isolada (não vaza estado)
+                    out.retrieval_debug.from_cache = True
+                    out.retrieval_debug.notes = list(out.retrieval_debug.notes) + [
+                        f"cache semântico (cos={sims[j]:.3f})"]
+                    return out
         return None
 
     def _store(self, key: str, resp: AskResponse, q_vec: Optional[np.ndarray]) -> None:
         """Guarda no cache exato (cópia isolada) e, p/ comportamentos estáveis, no semântico.
         Não cacheia 'clarify' por similaridade (ambíguo: pergunta parecida pode pedir outro contexto).
-        SEGURANÇA: os dois caches são LIMITADOS (evicção do mais antigo) — sem isso, um fluxo de
-        perguntas únicas cresceria a memória sem limite (vetor de DoS)."""
-        self._cache[key] = resp.model_copy(deep=True)   # cópia: o cache nunca compartilha objeto com o chamador
-        # Evicção FIFO do cache exato quando excede o teto (dict preserva ordem de inserção).
-        while len(self._cache) > config.MAX_CACHE_ENTRIES:
-            self._cache.pop(next(iter(self._cache)))
-        if q_vec is not None and resp.retrieval_debug.behavior != Behavior.clarify:
-            self._sem_cache.append((q_vec, key))
-            if len(self._sem_cache) > config.MAX_CACHE_ENTRIES:  # idem p/ o cache semântico (lista)
-                self._sem_cache.pop(0)
+        SEGURANÇA: caches LIMITADOS (evicção do mais antigo, anti-DoS de memória) e mutados SOB LOCK
+        (o endpoint é sync no threadpool — sem lock, evicção+append concorrentes corromperiam)."""
+        with self._cache_lock:
+            self._cache[key] = resp.model_copy(deep=True)   # cópia: cache nunca compartilha objeto c/ o chamador
+            while len(self._cache) > config.MAX_CACHE_ENTRIES:   # evicção FIFO (dict preserva ordem)
+                self._cache.pop(next(iter(self._cache)))
+            if q_vec is not None and resp.retrieval_debug.behavior != Behavior.clarify:
+                self._sem_cache.append((q_vec, key))
+                if len(self._sem_cache) > config.MAX_CACHE_ENTRIES:
+                    self._sem_cache.pop(0)
 
-    def _embed_queries(self, plan: RetrievalPlan) -> Optional[list]:
-        """Embeddings das SUB-QUERIES (para o lado semântico do retriever). None -> BM25-only."""
+    def _embed_queries(self, plan: RetrievalPlan, meter: Optional[CostMeter] = None) -> Optional[list]:
+        """Embeddings das SUB-QUERIES (para o lado semântico do retriever). None -> BM25-only.
+        Contabiliza o custo de cada embedding no meter (COMP-02)."""
         if not self.client.available and config.EMBEDDINGS_BACKEND != "local":
             return None  # sem chave e backend remoto -> recuperação cai p/ BM25-only (degradação graciosa)
         try:
-            return [self.index.embed_query(q) for q in (plan.semantic_queries or [])] or None
+            return [self._embed_with_cost(q, meter) for q in (plan.semantic_queries or [])] or None
         except Exception:
             return None  # falha de embedding -> BM25-only, em vez de quebrar
 
@@ -325,7 +364,11 @@ class AskPipeline:
             data, usage = self.client.generate_structured(
                 ANSWER_SYSTEM, prompt, AnswerOut, model=config.GEMINI_MODEL)
             meter.add(usage)                         # contabiliza tokens/custo da geração
-            return str(data.get("answer", "")).strip(), _coerce_id_list(data.get("cited_ids", [])), ""
+            ans = str(data.get("answer", "")).strip()
+            if not ans:                              # NEW-02: answer vazio do schema -> degrada (não entrega em branco)
+                return (self._degraded_answer(context_books, behavior, computed_facts),
+                        [b["id"] for b in context_books], "geração degradada: answer vazio do LLM")
+            return ans, _coerce_id_list(data.get("cited_ids", [])), ""
         except Exception as e:
             # LLM falhou (rede/cota/timeout) -> degradação graciosa COM nota (não mascara a falha).
             # Não vazamos a exceção crua: registramos só o TIPO (não a mensagem, que pode ter detalhes).
@@ -356,8 +399,12 @@ class AskPipeline:
             return ""
         s = []
         if want_min:
-            oldest = agg["oldest"][0]
-            s.append(f"Livro mais ANTIGO: \"{oldest['titulo']}\" ({oldest['id']}), {agg['min_year']}.")
+            old = agg["oldest"]                      # NEW-04: tratar empate no mais ANTIGO igual ao mais recente
+            if len(old) == 1:
+                s.append(f"Livro mais ANTIGO: \"{old[0]['titulo']}\" ({old[0]['id']}), {agg['min_year']}.")
+            else:
+                titulos = "; ".join(f"\"{b['titulo']}\" ({b['id']})" for b in old)
+                s.append(f"Mais ANTIGO: há {len(old)} livros EMPATADOS em {agg['min_year']}: {titulos}.")
         if want_max:
             newest = agg["newest"]
             if len(newest) == 1:

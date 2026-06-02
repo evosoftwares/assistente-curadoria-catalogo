@@ -40,7 +40,7 @@ streamlit run ui/streamlit_app.py     # http://localhost:8501
 
 # 6) Dashboard de KPIs (página web autocontida) + testes
 python scripts/build_dashboard.py     # gera dashboard/index.html (abra no navegador) — também em GET /kpis
-python -m pytest -q                   # 15 testes dos componentes determinísticos
+python -m pytest -q                   # 24 testes (núcleo determinístico + camada de segurança)
 python eval/check_facts.py            # asserta a verdade determinística (Q4/Q6/Q8)
 ```
 
@@ -104,7 +104,7 @@ Detalhes e tabelas em [`eval/RESULTS.md`](eval/RESULTS.md). Três camadas:
 
 O gold-set ([`eval/gold.json`](eval/gold.json)) é curado de forma **anti-circular** (independente do
 planner de produção) — método documentado em [`eval/build_gold.py`](eval/build_gold.py).
-Há ainda **15 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos e
+Há ainda **24 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos + camada de segurança, e
 [`eval/check_facts.py`](eval/check_facts.py) que **assere programaticamente** a verdade determinística
 (Q4/Q6/Q8) contra o que o sistema computa. Todos os indicadores são consolidados num **dashboard web**
 ([`scripts/build_dashboard.py`](scripts/build_dashboard.py) → `dashboard/index.html`, também em `GET /kpis`).

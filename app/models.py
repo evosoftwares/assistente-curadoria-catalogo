@@ -12,6 +12,7 @@ sistema testável e à prova de planos malformados do LLM.
 """
 from __future__ import annotations
 
+import unicodedata
 from enum import Enum
 from typing import Optional
 
@@ -102,9 +103,12 @@ class AskRequest(BaseModel):
     @field_validator("question")
     @classmethod
     def _sanitize(cls, v: str) -> str:
-        # Sanitização de entrada: remove caracteres de CONTROLE (exceto \n e \t) — neutraliza
-        # tentativas de poluir o prompt/logs com bytes de controle — e apara espaços nas bordas.
-        cleaned = "".join(ch for ch in v if ch in ("\n", "\t") or ord(ch) >= 32)
+        # Sanitização de entrada: NFKC normaliza variantes de compatibilidade; depois removemos
+        # caracteres de CONTROLE (categoria Cc) e de FORMATO/invisíveis (Cf: zero-width, bidi
+        # overrides como U+202E) — usados p/ esconder instruções do revisor humano que o LLM ainda
+        # "lê" e p/ spoofar logs. Preservamos \n e \t. Por fim aparamos as bordas. (COMP-06)
+        v = unicodedata.normalize("NFKC", v)
+        cleaned = "".join(ch for ch in v if ch in ("\n", "\t") or unicodedata.category(ch) not in ("Cc", "Cf"))
         return cleaned.strip()
 
 

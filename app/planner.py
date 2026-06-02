@@ -36,9 +36,9 @@ _PUBLICO_KEYWORDS = ["infantil", "crianç", "crianc", "jovens", "juvenil", "adol
 
 def resolve_year_bounds(years_back: Optional[int], ano_min: Optional[int], ano_max: Optional[int]) -> tuple[Optional[int], Optional[int]]:
     """Converte years_back em ano_min de forma DETERMINÍSTICA (em Python, não no LLM).
-    Convenção documentada: "últimos N anos" == ano_publicacao >= CURRENT_YEAR - N + 1? Não:
-    adotamos ano >= CURRENT_YEAR - N (inclui o ano atual e os N-1 anteriores de forma generosa).
-    Ex.: N=3, CURRENT_YEAR=2026 => ano >= 2023."""
+    Convenção documentada (generosa): "últimos N anos" == ano_publicacao >= CURRENT_YEAR - N, o que
+    abrange o ANO ATUAL e os N anos anteriores (N+1 anos no total).
+    Ex.: N=3, CURRENT_YEAR=2026 => ano >= 2023 (2023, 2024, 2025, 2026)."""
     if years_back is not None and ano_min is None:   # só converte se não veio um ano absoluto
         ano_min = config.CURRENT_YEAR - int(years_back)  # a CONTA é aqui, em Python (nunca no LLM)
     return ano_min, ano_max

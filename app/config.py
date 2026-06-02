@@ -60,6 +60,10 @@ API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 # --- Segurança / limites (OWASP LLM Top 10: abuso, DoS, custo, privacidade) ---
 # Rate limit por IP no /ask (cada chamada custa tokens -> protege contra abuso/custo).
 RATE_LIMIT_RPM = int(os.getenv("RATE_LIMIT_RPM", "30"))            # 0 desliga
+# Só confie no header X-Forwarded-For se o serviço estiver ATRÁS de um proxy confiável.
+# Caso contrário (default), o XFF é controlado pelo cliente e poderia ser forjado p/ burlar o
+# rate limit — então usamos o IP real do socket.
+TRUST_PROXY = os.getenv("TRUST_PROXY", "false").lower() == "true"
 # Teto de custo acumulado por processo (circuit breaker de gasto). 0 desliga.
 DAILY_COST_CAP_USD = float(os.getenv("DAILY_COST_CAP_USD", "5.0"))
 # Caches em memória LIMITADOS: evita crescimento ilimitado (DoS de memória) com perguntas únicas.

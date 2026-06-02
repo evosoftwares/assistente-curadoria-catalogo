@@ -93,7 +93,7 @@ escape anti-injeção no contexto; CORS restrito; cache isolado por cópia. Adic
 correções no histórico do git.
 
 ## 4. Custo e latência reais (medidos nas 10 perguntas)
-- **Custo médio: ~US$0,0016 / requisição** (bate com a estimativa ~0,0015 do README). Total das 10 ≈ US$0,016.
+- **Custo médio: ~US$0,0016 / requisição** (fica ABAIXO da estimativa ~US$0,002 do README). Total das 10 ≈ US$0,016.
   - Q10 (abstenção, curto-circuito): **US$0,00008** — só o planner, sem geração nem embedding.
   - Q6 (lista 26 livros): ~US$0,0039 — mais saída de tokens.
 - **Latência:** média ~7,0 s, máx ~10,3 s (Q5); a **geração** domina (~3,7–8,5 s). Q10 responde em ~1,4 s
@@ -137,5 +137,5 @@ forte no modo híbrido + Contextual Retrieval (macro recall@8 = 0,89; MRR = 1,0;
 geração ancorada com citações verificadas. O juiz confiável aponta 9/10 CORRETA; a única não-CORRETA
 é Q10 (PARCIAL — a abstenção por curto-circuito não é validável pelo juiz, cego ao catálogo; ver §3).
 Q4 ficou CORRETA (groundedness=3) após a regra que expõe o conflito título×sinopse — **inconsistência
-do dado**, não falha do RAG. Custo ~US$0,0015/req e latência ~7 s, com abstenção barata e instantânea
+do dado**, não falha do RAG. Custo ~US$0,0016/req (medido) e latência ~7 s, com abstenção barata e instantânea
 via curto-circuito.
