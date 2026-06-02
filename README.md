@@ -42,6 +42,7 @@ streamlit run ui/streamlit_app.py     # http://localhost:8501
 python scripts/build_dashboard.py     # gera dashboard/index.html (abra no navegador) — também em GET /kpis
 python -m pytest -q                   # 24 testes (núcleo determinístico + camada de segurança)
 python eval/check_facts.py            # asserta a verdade determinística (Q4/Q6/Q8)
+python scripts/ci_gate.py             # GATE de regressão (pytest + check_facts + piso de recall@8); sai !=0 se regredir
 ```
 
 Exemplo de chamada direta:
@@ -106,7 +107,9 @@ O gold-set ([`eval/gold.json`](eval/gold.json)) é curado de forma **anti-circul
 planner de produção) — método documentado em [`eval/build_gold.py`](eval/build_gold.py).
 Há ainda **24 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos + camada de segurança, e
 [`eval/check_facts.py`](eval/check_facts.py) que **assere programaticamente** a verdade determinística
-(Q4/Q6/Q8) contra o que o sistema computa. Todos os indicadores são consolidados num **dashboard web**
+(Q4/Q6/Q8) contra o que o sistema computa. O juiz também reporta **faithfulness** (estilo RAGAS, ~0,93)
+— fração de afirmações com suporte no contexto. Um **gate de regressão** ([`scripts/ci_gate.py`](scripts/ci_gate.py),
+também em [`.github/workflows/ci.yml`](.github/workflows/ci.yml)) roda pytest + check_facts + piso de recall@8 e falha o build se algo regredir. Todos os indicadores são consolidados num **dashboard web**
 ([`scripts/build_dashboard.py`](scripts/build_dashboard.py) → `dashboard/index.html`, também em `GET /kpis`).
 
 > **Nota:** o código passou por uma **auditoria adversarial multiagente** (4,45/5), que apontou

@@ -67,6 +67,22 @@ def calibration_set(cat) -> list[dict]:
     ]
 
 
+def _faithfulness(verdict: dict) -> float | None:
+    """FAITHFULNESS estilo RAGAS: fração das afirmações da resposta que têm uma CITAÇÃO de
+    suporte no contexto (vs. 'UNSUPPORTED'). O juiz já decompõe a resposta em per_claim e
+    extrai a citação verbatim ou marca UNSUPPORTED — então isto é uma verificação de
+    *entailment por claim* (suporte da evidência), sem dependência pesada.
+    Retorna None quando não há afirmações factuais (ex.: abstenção pura), p/ não distorcer a macro.
+    (Alternativa offline mais robusta: um cross-encoder NLI multilíngue — ver README/RESULTS.)"""
+    claims = verdict.get("per_claim") or []
+    if not claims:
+        return None
+    supported = sum(1 for c in claims
+                    if isinstance(c, dict) and str(c.get("supporting_quote", "")).strip().upper() != "UNSUPPORTED"
+                    and str(c.get("supporting_quote", "")).strip())
+    return round(supported / len(claims), 3)
+
+
 def cohen_kappa(a: list[str], b: list[str]) -> float | None:
     labels = sorted(set(a) | set(b))
     if len(a) < 2 or len(labels) < 2:
@@ -124,10 +140,18 @@ def main() -> int:
         v = judge_one(client, cat, r["question"], r["expected_behavior"],
                       r.get("context_ids") or r["retrieved_ids"], r["answer"], r["references"])
         v["qid"] = r["qid"]
+        # Faithfulness não se aplica à ABSTENÇÃO ("não consta" não é afirmação factual a ancorar):
+        # excluímos esses itens (None) para não distorcer a macro.
+        v["faithfulness"] = None if r["expected_behavior"] == "abstain" else _faithfulness(v)
         judged.append(v)
+        fth = v["faithfulness"]
         print(f"  Q{r['qid']}: {v.get('veredito','?')} | grounded={v.get('groundedness','?')} "
               f"cite={v.get('citation_faithfulness','?')} rel={v.get('answer_relevance','?')} "
-              f"behavior={v.get('behavior_match','?')}")
+              f"behavior={v.get('behavior_match','?')} | faithfulness={fth if fth is not None else '—'}")
+    # Macro de faithfulness (ignora itens sem afirmações factuais, ex.: abstenção pura).
+    fvals = [v["faithfulness"] for v in judged if v["faithfulness"] is not None]
+    macro_faith = round(sum(fvals) / len(fvals), 3) if fvals else None
+    print(f"\nFaithfulness macro (claims com suporte / total): {macro_faith if macro_faith is not None else '—'}")
 
     # 3) Concordância com rótulo manual humano
     manual = parse_manual_labels()
@@ -138,7 +162,8 @@ def main() -> int:
             kappa = cohen_kappa([p[0] for p in pairs], [p[1] for p in pairs])
     print(f"\nCohen's κ (juiz vs humano): {kappa if kappa is not None else 'sem rótulos manuais ainda'}")
 
-    out = {"trustworthy": trustworthy, "calibration_caught": caught, "kappa": kappa, "verdicts": judged}
+    out = {"trustworthy": trustworthy, "calibration_caught": caught, "kappa": kappa,
+           "faithfulness_macro": macro_faith, "verdicts": judged}
     (EVAL_DIR / "results_judge.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"-> {EVAL_DIR/'results_judge.json'}")
     return 0

@@ -63,6 +63,10 @@ respostas completas em [`results_manual.md`](results_manual.md).
 - **Calibração: 4/4** respostas propositalmente ruins (alucinação de título, citação de id
   inexistente, falha em abster, resposta irrelevante) foram **reprovadas** → juiz **CONFIÁVEL**.
 - Vereditos: **9 CORRETA, 1 PARCIAL** (Q10), com groundedness=3 em Q1-Q8 (Q9=2). Notas 0-3 por dimensão em [`results_judge.json`](results_judge.json).
+- **Faithfulness (estilo RAGAS) = 0,93** macro: fração das afirmações da resposta com CITAÇÃO de
+  suporte no contexto (decomposição em *claims* + verificação de *entailment* por citação verbatim;
+  abstenção excluída por não ter afirmação factual). Complementa o groundedness 0-3 com um número
+  contínuo de fidelidade. (Alternativa offline mais robusta: cross-encoder NLI multilíngue.)
 - **Concordância com o humano:** acordo bruto **90% (9/10)** — a única divergência é Q10. **κ de Cohen = 0,0**,
   porém é um caso **degenerado**: como os rótulos humanos ficaram todos CORRETA (sem variância), o κ colapsa
   por construção mesmo com 90% de acordo. É exatamente a limitação do κ que documentamos — por isso reporto

@@ -195,6 +195,8 @@ def build() -> str:
     H.append(card(f"{cal}/4", "Calibração", "respostas ruins reprovadas", "#2ecc71"))
     H.append(card("CONFIÁVEL" if judge.get("trustworthy") else "—", "Status do juiz", "", "#2ecc71"))
     H.append(card(f"{agree_pct}%", "Acordo vs humano", f"κ={judge.get('kappa','—')} (rótulos uniformes)", "#9b59b6"))
+    fmac = judge.get("faithfulness_macro")
+    H.append(card(f"{fmac if fmac is not None else '—'}", "Faithfulness", "claims com suporte (RAGAS-style)", "#16a085"))
     jc = Counter(v.get("veredito") for v in judge.get("verdicts", []))
     H.append(card(f"{jc.get('CORRETA',0)}·{jc.get('PARCIAL',0)}·{jc.get('ERRADA',0)}", "Juiz C·P·E", "correta/parcial/errada", "#4f86f7"))
     H.append("</div>")

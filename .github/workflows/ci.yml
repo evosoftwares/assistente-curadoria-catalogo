@@ -1,0 +1,44 @@
+name: CI
+
+# Gate de regressão. A parte DETERMINÍSTICA (pytest + check_facts + piso de recall@8) roda
+# SEM chave — usa o cache de embeddings commitado e cai para BM25-only na recuperação.
+# A avaliação por LLM (juiz) só roda se o segredo GEMINI_API_KEY estiver configurado.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+      - name: Gate determinístico (pytest + check_facts + piso de recall@8)
+        run: python scripts/ci_gate.py
+        env:
+          CI_MIN_RECALL8: "0.70"   # BM25-only fica ~0,77; híbrido ~0,89
+
+  eval-llm:
+    runs-on: ubuntu-latest
+    needs: gate
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+      - name: Avaliação por LLM (juiz) — só com segredo
+        if: ${{ env.GEMINI_API_KEY != '' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python eval/run_manual.py
+          python eval/judge.py
