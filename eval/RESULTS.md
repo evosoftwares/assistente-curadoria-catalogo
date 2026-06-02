@@ -121,7 +121,7 @@ overkill nesta escala — ver discussão na conversa):
 | 4 | **Filtro apertado zera o resultado** | Gênero/público fora do vocabulário | Validação fuzzy + **relaxamento automático** | Termo muito distante do vocabulário |
 | 5 | **Citação de id não recuperado** | `cited_id ∉ context_ids` | Verificação em Python (`references` só com ids reais) | — (descartado deterministicamente) |
 | 6 | **Sinopses templadas → baixa discriminação semântica** | 87 sinopses p/ 200 livros | Híbrido (BM25 sobre título) + dedup por cluster | Q1 ainda mistura clusters de sinopse próximos |
-| 7 | **Conflito título × sinopse no dado** (observado no Q4) | Sinopse diz "Literatura", título diz "Física" | Grounding fiel à sinopse; honestidade sobre a fonte | Resposta herda a inconsistência do dado; ideal seria sinalizar o conflito |
+| 7 | **Conflito título × sinopse no dado** (Q4/Q5) | Sinopse diz "Literatura", título diz "Física" | Regra no prompt: expõe AMBOS e sinaliza a divergência (§3c) | Raiz é qualidade do dado; correção definitiva = limpeza na ingestão |
 
 ### Nota de calibração — abstenção por cosseno (avaliada e descartada)
 Medimos o `top_cosine` das consultas in-scope (gold: **0,64–0,75**) e de consultas claramente
