@@ -130,11 +130,13 @@ class AskPipeline:
         computed_facts: Optional[str] = None
         extra_directive: Optional[str] = None
         context_books: list[dict]
+        ranking_used = False  # True só nos paths cujo context_books vem do ranking de relevância
         notes = list(rdebug["notes"])
 
         if plan.is_ambiguous:
             behavior = Behavior.clarify
             context_books = [r.book for r in results]
+            ranking_used = True
             extra_directive = (
                 "A pergunta é ambígua. NÃO afirme um único livro com certeza; liste os candidatos "
                 "abaixo como possibilidades e peça o contexto que falta."
@@ -168,6 +170,7 @@ class AskPipeline:
             notes.append(f"diversidade: {div['distinct_count']} faixa(s) distinta(s)")
         else:
             context_books = [r.book for r in results]
+            ranking_used = True
 
         # 5) Geração ancorada (ou degradação graciosa sem LLM)
         ts = time.perf_counter()
@@ -183,7 +186,10 @@ class AskPipeline:
         dropped = [cid for cid in cited_ids if cid not in context_ids]
         if dropped:
             notes.append(f"citações descartadas (não recuperadas): {dropped}")
-        score_by_id = {r.book["id"]: r.fused for r in results}
+        # Score só faz sentido onde os livros foram ranqueados por relevância; nos paths
+        # determinísticos (agregação/grupo/diversidade) a seleção é por regra — não herdamos
+        # o ranking não-usado de retrieve() (apareceria score só em alguns refs, enganoso).
+        score_by_id = {r.book["id"]: r.fused for r in results} if ranking_used else {}
         references = [_book_ref(self.catalog.get(cid), score_by_id.get(cid)) for cid in verified
                       if self.catalog.get(cid)]
 

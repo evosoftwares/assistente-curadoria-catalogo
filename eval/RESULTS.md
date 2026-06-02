@@ -62,7 +62,7 @@ respostas completas em [`results_manual.md`](results_manual.md).
 ## 3. LLM-as-judge (bônus)
 - **Calibração: 4/4** respostas propositalmente ruins (alucinação de título, citação de id
   inexistente, falha em abster, resposta irrelevante) foram **reprovadas** → juiz **CONFIÁVEL**.
-- Vereditos: **9 CORRETA, 1 PARCIAL** (Q10), com groundedness=3 em Q1-Q9. Notas 0-3 por dimensão em [`results_judge.json`](results_judge.json).
+- Vereditos: **9 CORRETA, 1 PARCIAL** (Q10), com groundedness=3 em Q1-Q8 (Q9=2). Notas 0-3 por dimensão em [`results_judge.json`](results_judge.json).
 - **Concordância com o humano:** acordo bruto **90% (9/10)** — a única divergência é Q10. **κ de Cohen = 0,0**,
   porém é um caso **degenerado**: como os rótulos humanos ficaram todos CORRETA (sem variância), o κ colapsa
   por construção mesmo com 90% de acordo. É exatamente a limitação do κ que documentamos — por isso reporto
@@ -93,12 +93,12 @@ escape anti-injeção no contexto; CORS restrito; cache isolado por cópia. Adic
 correções no histórico do git.
 
 ## 4. Custo e latência reais (medidos nas 10 perguntas)
-- **Custo médio: US$0,0015 / requisição** (bate com a estimativa do README). Total das 10 ≈ US$0,015.
+- **Custo médio: ~US$0,0016 / requisição** (bate com a estimativa ~0,0015 do README). Total das 10 ≈ US$0,016.
   - Q10 (abstenção, curto-circuito): **US$0,00008** — só o planner, sem geração nem embedding.
-  - Q6 (lista 26 livros): US$0,0041 — mais saída de tokens.
-- **Latência:** média ~6,7 s, máx ~9,8 s; a **geração** domina (~3,5–7,4 s). Q10 responde em ~0,8 s.
-  Para a demo, `temperature=0` + cache de resposta tornam repetições instantâneas. Reduzir latência
-  (streaming, planner+geração concorrentes onde possível) é trabalho futuro.
+  - Q6 (lista 26 livros): ~US$0,0039 — mais saída de tokens.
+- **Latência:** média ~7,0 s, máx ~10,3 s (Q5); a **geração** domina (~3,7–8,5 s). Q10 responde em ~1,4 s
+  (só planner + curto-circuito, sem geração). Para a demo, `temperature=0` + cache de resposta tornam
+  repetições instantâneas. Reduzir latência (streaming, planner+geração concorrentes onde possível) é trabalho futuro.
 
 ## 4b. Técnicas avançadas adicionadas (após pesquisa de mercado 2026)
 Selecionadas por ROI para 200 livros (reranking/ColBERT/GraphRAG/pgvector foram avaliados e adiados como
@@ -133,7 +133,9 @@ nas 3 consultas fora de escopo testadas. `top_cosine` permanece exposto apenas p
 
 ## 6. Conclusão
 O comportamento das 10 perguntas (incl. as 4 armadilhas) está correto (10/10), com recuperação
-forte no modo híbrido (macro recall@8 = 0,87; MRR = 1,0; nDCG@8 = 0,96) e geração ancorada com
-citações verificadas. O juiz confiável aponta 8/10 CORRETA; a única falha real de conteúdo (Q4) é
-herdada de uma **inconsistência do dado**, não do RAG. Custo ~US$0,0015/req e latência ~7 s, com
-abstenção barata e instantânea via curto-circuito.
+forte no modo híbrido + Contextual Retrieval (macro recall@8 = 0,89; MRR = 1,0; nDCG@8 = 0,97) e
+geração ancorada com citações verificadas. O juiz confiável aponta 9/10 CORRETA; a única não-CORRETA
+é Q10 (PARCIAL — a abstenção por curto-circuito não é validável pelo juiz, cego ao catálogo; ver §3).
+Q4 ficou CORRETA (groundedness=3) após a regra que expõe o conflito título×sinopse — **inconsistência
+do dado**, não falha do RAG. Custo ~US$0,0015/req e latência ~7 s, com abstenção barata e instantânea
+via curto-circuito.

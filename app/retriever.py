@@ -77,11 +77,12 @@ class HybridRetriever:
             idx = [i for i in idx if wanted & set(self.catalog.books[i].get("generos", []))]
 
         if not idx:
-            # Over-filtragem: relaxamos só os filtros TEMÁTICOS (gênero/público) e
-            # MANTEMOS ano/idioma — que são restrições FACTUAIS, não temáticas. Se ainda
-            # assim zerar, devolvemos VAZIO (a geração ancorada se abstém) em vez de
-            # cair no catálogo inteiro e "responder" como se houvesse resultados.
-            notes.append("filtros temáticos (gênero/público) relaxados; ano/idioma mantidos")
+            # Over-filtragem: relaxamos só o filtro TEMÁTICO (gênero) e MANTEMOS as
+            # restrições FACTUAIS — ano/idioma/público. Público é atributo categórico do
+            # livro (não tema), então não pode ser silenciosamente trocado. Se ainda assim
+            # zerar, devolvemos VAZIO (a geração ancorada se abstém) em vez de cair no
+            # catálogo inteiro e "responder" como se houvesse resultados.
+            notes.append("filtro temático (gênero) relaxado; ano/idioma/público mantidos")
             idx = list(range(len(self.ids)))
             if plan.ano_min is not None:
                 idx = [i for i in idx if self.catalog.books[i]["ano_publicacao"] >= plan.ano_min]
@@ -90,8 +91,11 @@ class HybridRetriever:
             if plan.idioma_contains:
                 needle = normalize(plan.idioma_contains)
                 idx = [i for i in idx if needle in normalize(self.catalog.books[i].get("idioma", ""))]
+            if plan.publico_alvo:  # público é restrição FACTUAL -> mantido no relaxamento
+                wanted = set(plan.publico_alvo)
+                idx = [i for i in idx if self.catalog.books[i].get("publico_alvo") in wanted]
             if not idx:
-                notes.append("nenhum livro satisfaz ano/idioma pedidos -> conjunto vazio (abstém)")
+                notes.append("nenhum livro satisfaz ano/idioma/público pedidos -> conjunto vazio (abstém)")
         return idx, notes
 
     @staticmethod
