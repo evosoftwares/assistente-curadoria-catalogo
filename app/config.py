@@ -57,6 +57,16 @@ SEMANTIC_CACHE_THRESHOLD = float(os.getenv("SEMANTIC_CACHE_THRESHOLD", "0.92"))
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 
+# --- Segurança / limites (OWASP LLM Top 10: abuso, DoS, custo, privacidade) ---
+# Rate limit por IP no /ask (cada chamada custa tokens -> protege contra abuso/custo).
+RATE_LIMIT_RPM = int(os.getenv("RATE_LIMIT_RPM", "30"))            # 0 desliga
+# Teto de custo acumulado por processo (circuit breaker de gasto). 0 desliga.
+DAILY_COST_CAP_USD = float(os.getenv("DAILY_COST_CAP_USD", "5.0"))
+# Caches em memória LIMITADOS: evita crescimento ilimitado (DoS de memória) com perguntas únicas.
+MAX_CACHE_ENTRIES = int(os.getenv("MAX_CACHE_ENTRIES", "1000"))
+# LGPD/privacidade: registrar a pergunta CRUA no log? Em produção, prefira false (ou redação de PII).
+LOG_QUESTIONS = os.getenv("LOG_QUESTIONS", "true").lower() == "true"
+
 # --- Preços (USD por 1M de tokens) — confirmados em jun/2026 (ai.google.dev/pricing) ---
 PRICING = {
     "gemini-2.5-flash": {"input": 0.30, "output": 2.50},

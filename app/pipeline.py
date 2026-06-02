@@ -220,53 +220,67 @@ class AskPipeline:
 
     # ------------------------------------------------------------- helpers
     def _maybe_embed_question(self, q: str) -> Optional[np.ndarray]:
-        """Embedding da pergunta crua p/ o cache semântico (None se desabilitado/sem índice)."""
+        """Embedding da pergunta CRUA, usado pelo cache semântico. Retorna None (cache off)
+        se a feature está desabilitada, não há índice, ou não há como embeddar (sem chave)."""
         if not config.SEMANTIC_CACHE_ENABLED or self.index.matrix is None:
             return None
         if not (self.client.available or config.EMBEDDINGS_BACKEND == "local"):
             return None
         try:
-            return self.index.embed_query(q)
+            return self.index.embed_query(q)        # 1 embedding curto (~0 custo); None se falhar
         except Exception:
-            return None
+            return None                             # cache é otimização — nunca pode derrubar o /ask
 
     def _semantic_cache_lookup(self, q_vec: Optional[np.ndarray]) -> Optional[AskResponse]:
-        if q_vec is None or not self._sem_cache:
+        """Procura uma pergunta anterior semanticamente quase idêntica (cosseno >= limiar)."""
+        if q_vec is None or not self._sem_cache:    # sem vetor ou cache vazio -> miss
             return None
-        sims = [float(np.dot(q_vec, v)) for v, _ in self._sem_cache]
-        bi = int(np.argmax(sims))
+        sims = [float(np.dot(q_vec, v)) for v, _ in self._sem_cache]  # cos vs cada entrada (vetores unitários)
+        bi = int(np.argmax(sims))                   # índice da entrada mais parecida
+        # Hit só se passar do limiar (0,92) E a entrada ainda existir no cache exato.
         if sims[bi] >= config.SEMANTIC_CACHE_THRESHOLD and self._sem_cache[bi][1] in self._cache:
-            cached = self._cache[self._sem_cache[bi][1]].model_copy(deep=True)
+            cached = self._cache[self._sem_cache[bi][1]].model_copy(deep=True)  # cópia isolada (não vaza estado)
             cached.retrieval_debug.from_cache = True
             cached.retrieval_debug.notes = list(cached.retrieval_debug.notes) + [
-                f"cache semântico (cos={sims[bi]:.3f})"]
+                f"cache semântico (cos={sims[bi]:.3f})"]  # registra o hit (observabilidade)
             return cached
         return None
 
     def _store(self, key: str, resp: AskResponse, q_vec: Optional[np.ndarray]) -> None:
         """Guarda no cache exato (cópia isolada) e, p/ comportamentos estáveis, no semântico.
-        Não cacheia 'clarify' por similaridade (ambíguo: pergunta parecida pode pedir outro contexto)."""
-        self._cache[key] = resp.model_copy(deep=True)
+        Não cacheia 'clarify' por similaridade (ambíguo: pergunta parecida pode pedir outro contexto).
+        SEGURANÇA: os dois caches são LIMITADOS (evicção do mais antigo) — sem isso, um fluxo de
+        perguntas únicas cresceria a memória sem limite (vetor de DoS)."""
+        self._cache[key] = resp.model_copy(deep=True)   # cópia: o cache nunca compartilha objeto com o chamador
+        # Evicção FIFO do cache exato quando excede o teto (dict preserva ordem de inserção).
+        while len(self._cache) > config.MAX_CACHE_ENTRIES:
+            self._cache.pop(next(iter(self._cache)))
         if q_vec is not None and resp.retrieval_debug.behavior != Behavior.clarify:
             self._sem_cache.append((q_vec, key))
+            if len(self._sem_cache) > config.MAX_CACHE_ENTRIES:  # idem p/ o cache semântico (lista)
+                self._sem_cache.pop(0)
+
     def _embed_queries(self, plan: RetrievalPlan) -> Optional[list]:
+        """Embeddings das SUB-QUERIES (para o lado semântico do retriever). None -> BM25-only."""
         if not self.client.available and config.EMBEDDINGS_BACKEND != "local":
-            return None  # sem chave e backend remoto -> cai p/ BM25-only
+            return None  # sem chave e backend remoto -> recuperação cai p/ BM25-only (degradação graciosa)
         try:
             return [self.index.embed_query(q) for q in (plan.semantic_queries or [])] or None
         except Exception:
-            return None
+            return None  # falha de embedding -> BM25-only, em vez de quebrar
 
     def _handle_title_lookup(self, question, plan, meter, timings, t0) -> Optional[AskResponse]:
-        q = plan.title_lookup + (" " + plan.author_lookup if plan.author_lookup else "")
-        matches = self.catalog.find_title(q)
+        """Q10 ("vocês têm o livro X?"): checagem DETERMINÍSTICA de pertencimento ao catálogo.
+        É a salvaguarda anti-alucinação mais forte — para um livro ausente, nem chamamos o LLM."""
+        q = plan.title_lookup + (" " + plan.author_lookup if plan.author_lookup else "")  # título (+ autor)
+        matches = self.catalog.find_title(q)        # fuzzy título+autor (token_set + token_sort, anti-fragmento)
         if matches:
-            # O livro EXISTE -> responde normalmente com ele como contexto.
+            # O livro EXISTE -> aí sim usamos o LLM, com os matches como ÚNICO contexto.
             ts = time.perf_counter()
             answer, cited_ids, _ = self._generate(question, matches, Behavior.answer, None, None, meter)
             timings["generation_ms"] = round((time.perf_counter() - ts) * 1000, 1)
-            context_ids = {b["id"] for b in matches}
-            verified = [c for c in cited_ids if c in context_ids]
+            context_ids = {b["id"] for b in matches}                 # ids do contexto
+            verified = [c for c in cited_ids if c in context_ids]    # mantém só citações reais
             refs = [_book_ref(self.catalog.get(c)) for c in verified if self.catalog.get(c)]
             timings["total_ms"] = round((time.perf_counter() - t0) * 1000, 1)
             return AskResponse(
@@ -280,7 +294,8 @@ class AskPipeline:
                     notes=["title_lookup: encontrado no catálogo"],
                 ),
             )
-        # NÃO encontrado -> abstenção determinística, SEM chamar o gerador.
+        # NÃO encontrado -> ABSTENÇÃO determinística, SEM chamar o gerador (custo ~US$0,00008,
+        # só o planner). Resposta fixa = zero superfície de alucinação para livro fora do acervo.
         titulo = plan.title_lookup
         autor = f", de {plan.author_lookup}" if plan.author_lookup else ""
         timings["total_ms"] = round((time.perf_counter() - t0) * 1000, 1)
@@ -297,33 +312,37 @@ class AskPipeline:
         )
 
     def _generate(self, question, context_books, behavior, computed_facts, extra_directive, meter):
-        """Retorna (answer, cited_ids, note). note != '' sinaliza degradação (observabilidade)."""
-        if not self.client.available:
+        """Geração ancorada. Retorna (answer, cited_ids, note); note != '' sinaliza que caiu na
+        degradação (observabilidade — o operador vê que NÃO foi uma geração normal do LLM)."""
+        if not self.client.available:               # sem chave -> resposta determinística (template)
             return (self._degraded_answer(context_books, behavior, computed_facts),
                     [b["id"] for b in context_books], "geração degradada: LLM indisponível (sem chave)")
         try:
+            # Monta o prompt: dados do catálogo entram ESCAPADOS/delimitados (anti-injeção) + diretivas.
             prompt = build_answer_prompt(question, context_books, behavior, computed_facts, extra_directive)
-            # Structured output (response_schema=AnswerOut): JSON garantido pelo schema,
-            # sem json.loads manual — o fallback abaixo fica só p/ falha de rede/indisponibilidade.
+            # Structured output (response_schema=AnswerOut): JSON garantido pelo schema, sem json.loads
+            # manual — o fallback abaixo fica só p/ falha real de rede/indisponibilidade.
             data, usage = self.client.generate_structured(
                 ANSWER_SYSTEM, prompt, AnswerOut, model=config.GEMINI_MODEL)
-            meter.add(usage)
+            meter.add(usage)                         # contabiliza tokens/custo da geração
             return str(data.get("answer", "")).strip(), _coerce_id_list(data.get("cited_ids", [])), ""
         except Exception as e:
-            # LLM falhou/JSON inválido -> degradação graciosa, COM nota p/ observabilidade.
+            # LLM falhou (rede/cota/timeout) -> degradação graciosa COM nota (não mascara a falha).
+            # Não vazamos a exceção crua: registramos só o TIPO (não a mensagem, que pode ter detalhes).
             return (self._degraded_answer(context_books, behavior, computed_facts),
                     [b["id"] for b in context_books], f"geração degradada: {type(e).__name__}")
 
     @staticmethod
     def _degraded_answer(context_books, behavior, computed_facts) -> str:
-        """Resposta determinística sem LLM (sem chave/sem rede). Crua, mas factual."""
-        if behavior == Behavior.abstain or not context_books:
+        """Resposta determinística sem LLM (sem chave/rede). Crua, mas factual e sem alucinação —
+        garante que o /ask sempre devolve algo útil mesmo com o Gemini fora do ar."""
+        if behavior == Behavior.abstain or not context_books:   # nada relevante / abstenção
             return "Não encontrei nada relevante no catálogo para esse pedido."
         lines = []
-        if computed_facts:
+        if computed_facts:                            # se houver fatos (agregação/grupo), abre com eles
             lines.append(computed_facts)
         lines.append("Livros relevantes do catálogo (modo sem LLM):")
-        for b in context_books[:8]:
+        for b in context_books[:8]:                   # lista crua dos livros do contexto (cap 8)
             autores = ", ".join(b.get("autores", []))
             lines.append(f"- {b['titulo']} ({b['id']}), {autores}, {b['ano_publicacao']} — "
                          f"{', '.join(b.get('generos', []))} — público: {b.get('publico_alvo','')}")
@@ -331,6 +350,8 @@ class AskPipeline:
 
     @staticmethod
     def _facts_aggregation(agg: dict, want_min: bool = True, want_max: bool = True) -> str:
+        """Monta o bloco "FATOS COMPUTADOS" da agregação que o gerador vai NARRAR (não recalcular).
+        Inclui só o(s) extremo(s) pedido(s) e SINALIZA o empate quando há vários no máximo."""
         if not agg:
             return ""
         s = []
@@ -348,6 +369,7 @@ class AskPipeline:
 
     @staticmethod
     def _facts_groups(groups) -> str:
+        """Bloco "FATOS COMPUTADOS" do agrupamento (Q6): contagem total + livros por categoria."""
         parts = [f"Total de {sum(len(v) for v in groups.values())} livros, por categoria (gênero primário):"]
         for g, books in groups.items():
             titulos = "; ".join(f"\"{b['titulo']}\" ({b['id']}, {b['ano_publicacao']})" for b in books)

@@ -122,6 +122,13 @@ Indexação (uma vez, cacheada): ~24k tokens × US$0,15/Mtok ≈ **US$0,005**. R
 (cache de resposta + de embeddings). **Em escala:** ~100k req/dia ≈ ~US$200/dia no Flash; planner no
 Flash-Lite + cache de resposta cortam ~3×. Custo é conversa de **escala/abuso**, não de preço por chamada.
 
+## 6b. Segurança (cibersegurança)
+Modelo de ameaças completo (mapeado ao **OWASP LLM Top 10**) em [`SECURITY.md`](SECURITY.md). Em resumo:
+defesa anti-injeção estrutural (dados do catálogo **escapados/delimitados** + verificação de citação);
+**rate limit por IP** e **teto de custo** no `/ask`; **caches limitados** (anti-DoS de memória);
+**handler global de exceção** (não vaza stack trace); **sanitização de entrada**; log de pergunta
+**configurável** (LGPD); CORS restrito; chave só no servidor (gitignored). Configs em `.env` (ver `SECURITY.md`).
+
 ## 7. Limitações conhecidas & o que eu faria com mais tempo
 - **Dados sintéticos/templados:** 87 sinopses distintas p/ 200 livros; algumas perguntas são
   insatisfazíveis pelos dados (Q2 só tem 1 faixa etária; Q3 não tem "cidades pequenas"; nenhum livro

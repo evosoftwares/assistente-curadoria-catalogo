@@ -15,7 +15,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class Aggregation(str, Enum):
@@ -96,7 +96,16 @@ class RetrievalPlan(BaseModel):
 # Contrato HTTP
 # ---------------------------------------------------------------------------
 class AskRequest(BaseModel):
+    # max_length=2000: limita o tamanho da entrada (anti-DoS / controle de custo de tokens).
     question: str = Field(..., min_length=2, max_length=2000)
+
+    @field_validator("question")
+    @classmethod
+    def _sanitize(cls, v: str) -> str:
+        # Sanitização de entrada: remove caracteres de CONTROLE (exceto \n e \t) — neutraliza
+        # tentativas de poluir o prompt/logs com bytes de controle — e apara espaços nas bordas.
+        cleaned = "".join(ch for ch in v if ch in ("\n", "\t") or ord(ch) >= 32)
+        return cleaned.strip()
 
 
 class AnswerOut(BaseModel):
