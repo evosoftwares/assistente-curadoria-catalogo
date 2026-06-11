@@ -5,7 +5,8 @@ Por que: o catálogo é templado (87 sinopses p/ 200 livros) e pobre em texto li
 cartões enriquecem o texto indexado (BM25 + embeddings), melhorando recall sem mexer no
 runtime. Saída: data/context_cards.json {id: cartão}. Versione esse arquivo.
 
-Gera em LOTES (structured output) para economizar chamadas. Requer GEMINI_API_KEY.
+Gera em LOTES (structured output) para economizar chamadas. Requer uma chave de LLM
+(OPENROUTER_API_KEY ou GEMINI_API_KEY — usa o backend de chat ativo).
 Uso:  python scripts/build_context_cards.py [--force]   (depois rode build_index.py --force)
 """
 from __future__ import annotations
@@ -47,7 +48,7 @@ def main() -> int:
     force = "--force" in sys.argv
     client = get_client()
     if not client.available:
-        print("ERRO: build_context_cards requer GEMINI_API_KEY.")
+        print("ERRO: build_context_cards requer uma chave de LLM (OPENROUTER_API_KEY ou GEMINI_API_KEY).")
         return 1
     cat = get_catalog()
     existing: dict[str, str] = {}
@@ -61,19 +62,20 @@ def main() -> int:
 
     cards = dict(existing)
     total_in = total_out = 0
+    cost = 0.0
     for start in range(0, len(todo), BATCH):
         chunk = todo[start:start + BATCH]
         user = "Livros:\n" + "\n".join(_book_line(b) for b in chunk)
-        data, usage = client.generate_structured(SYSTEM, user, CardBatch, model=config.GEMINI_MODEL)
+        # generation_model do backend ativo (Gemini direto ou roteado via OpenRouter).
+        data, usage = client.generate_structured(SYSTEM, user, CardBatch, model=client.generation_model)
         total_in += usage.input_tokens; total_out += usage.output_tokens
+        cost += usage.cost_usd   # com OpenRouter, é o custo REAL devolvido pela resposta
         for item in data.get("cards", []):
             if item.get("id") and item.get("card"):
                 cards[item["id"]] = item["card"].strip()
         print(f"  lote {start//BATCH+1}: +{len(chunk)} livros (total {len(cards)}/{len(cat.books)})")
 
     config.CONTEXT_CARDS_PATH.write_text(json.dumps(cards, ensure_ascii=False, indent=2), encoding="utf-8")
-    from app.llm import Usage
-    cost = Usage(config.GEMINI_MODEL, total_in, total_out).cost_usd
     missing = [b["id"] for b in cat.books if b["id"] not in cards]
     print(f"OK: {len(cards)} cartões -> {config.CONTEXT_CARDS_PATH.name} | tokens {total_in}/{total_out} "
           f"~US${cost:.4f}" + (f" | FALTARAM: {missing}" if missing else ""))

@@ -43,6 +43,14 @@
                   { answer, references[], retrieval_debug{plan, ids, latência, tokens, custo} }
 ```
 
+> **Roteamento de modelos:** o "Gemini" do diagrama é, na prática, o **cliente de chat roteado**
+> (`LLM_BACKEND=auto`): com `OPENROUTER_API_KEY`, planner/geração/juiz passam pelo **OpenRouter**
+> (slugs por `.env`, fallback automático entre modelos, juiz de outra família, custo real por
+> chamada); sem ela, Gemini direto. A GERAÇÃO ainda passa por um **roteamento inteligente por
+> solicitação** (tier light/standard/heavy decidido em Python) e por um **cache de chamadas LLM**.
+> Embeddings ficam sempre no Gemini/local (o OpenRouter não embedda). Fluxo de economia de tokens
+> com fluxograma: [`economia_de_tokens.md`](economia_de_tokens.md).
+
 ## Camadas e responsabilidades
 
 | Módulo | Responsabilidade |
@@ -52,8 +60,8 @@
 | `app/planner.py` | NL → `RetrievalPlan` (LLM structured + fallback regex; datas em Python) |
 | `app/retriever.py` | Filtro duro + híbrido cosine/BM25/RRF + top_cosine (observabilidade) |
 | `app/tools.py` | Agregação mín/máx, agrupamento por categoria, diversificação |
-| `app/pipeline.py` | Orquestra tudo; abstenção/clarify/limitação; verificação de citações |
-| `app/llm.py` | Wrapper Gemini + contabilidade de tokens/custo |
+| `app/pipeline.py` | Orquestra tudo; abstenção/clarify/limitação; roteamento inteligente (tier); verificação de citações |
+| `app/llm.py` | Clientes de chat (Gemini direto + OpenRouter roteado), cache de chamadas, embedder, contabilidade de tokens/custo |
 | `app/api.py` | FastAPI `POST /ask`, `GET /health`, logs estruturados |
 | `ui/streamlit_app.py` | UI mínima para demo (resposta + referências + debug) |
 | `eval/` | gold-set, métricas de recuperação, LLM-as-judge, classificação manual |

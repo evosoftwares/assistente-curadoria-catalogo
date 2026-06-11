@@ -11,6 +11,9 @@ Decisões (e o porquê):
 - Vetores L2-normalizados → produto interno vira cosseno (cosine = dot de vetores unitários),
   então a busca é um simples `matrix @ query` — rápido e exato para 200 docs.
 - Backend opcional "local" (sentence-transformers) para operação 100% offline / sem chave.
+- O cliente daqui é o EMBEDDER (sempre Gemini ou local) — independente do backend de CHAT:
+  mesmo com o chat roteado pelo OpenRouter (LLM_BACKEND), quem embedda é o Gemini, porque o
+  OpenRouter não expõe endpoint de embeddings.
 """
 from __future__ import annotations
 
@@ -23,7 +26,7 @@ import numpy as np
 
 from . import config
 from .catalog import Catalog
-from .llm import GeminiClient, get_client
+from .llm import GeminiClient, get_embedder
 
 
 def _l2_normalize(mat: np.ndarray) -> np.ndarray:
@@ -45,12 +48,21 @@ class EmbeddingIndex:
 
     def __init__(self, catalog: Catalog, client: Optional[GeminiClient] = None):
         self.catalog = catalog
-        self.client = client or get_client()
+        # get_embedder (não get_client): o embedder é SEMPRE Gemini/local, mesmo com o chat
+        # roteado pelo OpenRouter. Os testes injetam um GeminiClient sem chave p/ modo offline.
+        self.client = client or get_embedder()
         self.backend = config.EMBEDDINGS_BACKEND
         self.dim = config.EMBEDDING_DIM
         self.matrix: Optional[np.ndarray] = None
         self.ids: list[str] = []
         self._local_model = None  # lazy
+
+    @property
+    def can_embed(self) -> bool:
+        """Há como embeddar CONSULTAS agora? (backend local não precisa de chave; o gemini sim.)
+        Centraliza o teste que pipeline/scripts faziam olhando o cliente de CHAT — com o chat
+        roteado (OpenRouter), a disponibilidade de embeddings é INDEPENDENTE da do chat."""
+        return self.backend == "local" or self.client.available
 
     # --- metadados do cache ---
     def _meta(self) -> dict:

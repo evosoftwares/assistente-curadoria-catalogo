@@ -67,15 +67,38 @@ def _book_ref(book: dict, score: Optional[float] = None) -> BookRef:
     )
 
 
+def route_generation_model(client, behavior: Behavior, context_books: list[dict],
+                           computed_facts: Optional[str]) -> tuple[str, str]:
+    """ROTEAMENTO INTELIGENTE por solicitação (economia de tokens): o "peso" do modelo de
+    GERAÇÃO é decidido em Python (determinístico/testável) pela complexidade REAL do trabalho:
+    - "light"  (modelo barato): só NARRAR fatos já computados (agregação/grupo — a verdade veio
+      das ferramentas determinísticas) ou contexto minúsculo (<=2 livros, ex.: título encontrado).
+      É reformatação, não síntese — o modelo barato não tem onde errar.
+    - "heavy"  (modelo forte, se configurado): síntese longa (>40 livros) SEM fatos prontos.
+    - "standard": o resto (busca semântica típica) — qualidade onde ela importa.
+    clarify/acknowledge_limitation NUNCA caem no light: nuance vale mais que centavos.
+    Retorna (modelo, tier) — o tier vai ao retrieval_debug.notes (observabilidade do roteamento)."""
+    if config.SMART_ROUTING and behavior == Behavior.answer:
+        if computed_facts or len(context_books) <= 2:
+            return client.light_model, "light"
+        if len(context_books) > 40:
+            return client.heavy_model, "heavy"
+    return client.generation_model, "standard"
+
+
 class AskPipeline:
     def __init__(
         self,
         catalog: Optional[Catalog] = None,
         index: Optional[EmbeddingIndex] = None,
-        client: Optional[GeminiClient] = None,
+        client=None,
+        embedder: Optional[GeminiClient] = None,
     ):
         self.catalog = catalog or get_catalog()
+        # `client` é o cliente de CHAT (GeminiClient OU OpenRouterClient — duck-typing);
+        # `embedder` (sempre Gemini/local) serve o índice. Testes injetam ambos sem chave.
         self.client = client or get_client()
+        self._embedder = embedder
         self.index = index or self._init_index()
         self.retriever = HybridRetriever(self.catalog, self.index)
         self.planner = Planner(self.catalog, self.client)
@@ -88,11 +111,15 @@ class AskPipeline:
 
     def _init_index(self) -> EmbeddingIndex:
         """Carrega o cache de embeddings; só (re)constrói se houver como embeddar.
-        Sem chave e sem cache, segue em modo BM25-only (matrix=None)."""
-        idx = EmbeddingIndex(self.catalog, self.client)
+        O índice usa o EMBEDDER (Gemini/local), NÃO o cliente de chat: com o chat roteado pelo
+        OpenRouter, quem embedda continua sendo o Gemini. Se o cliente de chat injetado JÁ é um
+        GeminiClient (testes / backend gemini), reusamos-no como embedder (compatibilidade).
+        Sem como embeddar e sem cache, segue em modo BM25-only (matrix=None)."""
+        emb = self._embedder or (self.client if isinstance(self.client, GeminiClient) else None)
+        idx = EmbeddingIndex(self.catalog, emb)   # emb=None -> get_embedder() (Gemini do processo)
         if idx.load():
             return idx
-        if self.client.available or config.EMBEDDINGS_BACKEND == "local":
+        if idx.can_embed:
             idx.build()
         return idx  # matrix pode ficar None -> retrieval cai p/ BM25-only
 
@@ -257,7 +284,7 @@ class AskPipeline:
         se a feature está desabilitada, não há índice, ou não há como embeddar (sem chave)."""
         if not config.SEMANTIC_CACHE_ENABLED or self.index.matrix is None:
             return None
-        if not (self.client.available or config.EMBEDDINGS_BACKEND == "local"):
+        if not self.index.can_embed:   # disponibilidade de EMBEDDINGS (independente do chat)
             return None
         try:
             return self._embed_with_cost(q, meter)  # 1 embedding curto, contabilizado; None se falhar
@@ -301,8 +328,8 @@ class AskPipeline:
     def _embed_queries(self, plan: RetrievalPlan, meter: Optional[CostMeter] = None) -> Optional[list]:
         """Embeddings das SUB-QUERIES (para o lado semântico do retriever). None -> BM25-only.
         Contabiliza o custo de cada embedding no meter (COMP-02)."""
-        if not self.client.available and config.EMBEDDINGS_BACKEND != "local":
-            return None  # sem chave e backend remoto -> recuperação cai p/ BM25-only (degradação graciosa)
+        if not self.index.can_embed:
+            return None  # sem como embeddar (chave/backend) -> BM25-only (degradação graciosa)
         try:
             return [self._embed_with_cost(q, meter) for q in (plan.semantic_queries or [])] or None
         except Exception:
@@ -357,18 +384,23 @@ class AskPipeline:
             return (self._degraded_answer(context_books, behavior, computed_facts),
                     [b["id"] for b in context_books], "geração degradada: LLM indisponível (sem chave)")
         try:
+            # ROTEAMENTO INTELIGENTE: o "peso" do modelo segue a complexidade da solicitação
+            # (light p/ narrar fatos prontos/contexto mínimo; heavy p/ síntese longa; senão standard).
+            model, tier = route_generation_model(self.client, behavior, context_books, computed_facts)
             # Monta o prompt: dados do catálogo entram ESCAPADOS/delimitados (anti-injeção) + diretivas.
             prompt = build_answer_prompt(question, context_books, behavior, computed_facts, extra_directive)
             # Structured output (response_schema=AnswerOut): JSON garantido pelo schema, sem json.loads
             # manual — o fallback abaixo fica só p/ falha real de rede/indisponibilidade.
             data, usage = self.client.generate_structured(
-                ANSWER_SYSTEM, prompt, AnswerOut, model=config.GEMINI_MODEL)
+                ANSWER_SYSTEM, prompt, AnswerOut, model=model)
             meter.add(usage)                         # contabiliza tokens/custo da geração
             ans = str(data.get("answer", "")).strip()
             if not ans:                              # NEW-02: answer vazio do schema -> degrada (não entrega em branco)
                 return (self._degraded_answer(context_books, behavior, computed_facts),
                         [b["id"] for b in context_books], "geração degradada: answer vazio do LLM")
-            return ans, _coerce_id_list(data.get("cited_ids", [])), ""
+            # Nota de observabilidade: qual tier/modelo atendeu (e se veio do cache de chamadas).
+            note = f"roteamento: tier={tier} -> {model}" + (" | cache de chamada" if usage.cached else "")
+            return ans, _coerce_id_list(data.get("cited_ids", [])), note
         except Exception as e:
             # LLM falhou (rede/cota/timeout) -> degradação graciosa COM nota (não mascara a falha).
             # Não vazamos a exceção crua: registramos só o TIPO (não a mensagem, que pode ter detalhes).

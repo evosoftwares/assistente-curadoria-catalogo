@@ -145,6 +145,8 @@ contexto por livro → recall@8 0,87→0,89), Structured Outputs na resposta, e 
   gold de 10 perguntas tem variância; juiz é Gemini-avalia-Gemini (mitigado por calibração).
 - **Roadmap:** v1 (hoje) Q&A ancorado → v2 multi-turno + feedback do usuário fechando o loop de avaliação
   + pgvector multi-tenant → v3 gerar listas temáticas e textos de campanha → v4 sinais de venda/estoque.
+  Detalhado com gatilhos medidos e métricas por estágio em [`ROADMAP.md`](ROADMAP.md) — se a banca
+  puxar "priorização/roadmap", abra esse arquivo.
 
 ---
 

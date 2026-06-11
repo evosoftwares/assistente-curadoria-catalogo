@@ -23,9 +23,12 @@ python -m venv .venv
 # Linux/Mac:           source .venv/bin/activate
 pip install -r requirements.txt
 
-# 2) Chave (a geração e os embeddings usam o Gemini)
+# 2) Chave(s) — qualquer uma das duas liga a geração:
 cp .env.example .env          # Windows: copy .env.example .env
-#   edite .env e preencha GEMINI_API_KEY=...   (https://aistudio.google.com/app/apikey)
+#   OPENROUTER_API_KEY=...  -> chat ROTEADO via OpenRouter (https://openrouter.ai/keys)
+#   GEMINI_API_KEY=...      -> chat via Gemini direto E embeddings (https://aistudio.google.com/app/apikey)
+#   (Embeddings sempre usam Gemini/local — p/ regenerar o índice é preciso a GEMINI_API_KEY;
+#    o cache de embeddings commitado dispensa isso p/ rodar.)
 
 # 3) Construir o índice de embeddings (cacheado; roda uma vez)
 #    (Os "cartões de contexto" do Contextual Retrieval já vêm gerados e commitados em
@@ -72,6 +75,15 @@ Várias não são semânticas — são consultas (filtro de ano/gênero/público
 abstenção (livro fora do catálogo) e ambiguidade. Por isso **filtramos por metadado antes de ranquear**
 e usamos **ferramentas determinísticas** para o que o LLM erraria.
 
+**Roteamento e economia:** o lado de chat (planner/geração/juiz) é servido por um cliente
+**roteado** — `LLM_BACKEND=auto` usa o **OpenRouter** (troca de modelo/provedor por `.env`,
+fallback automático entre modelos, juiz de outra família, custo real por chamada) quando há
+`OPENROUTER_API_KEY`; senão, Gemini direto. Embeddings ficam sempre no Gemini/local (o OpenRouter
+não embedda). Em cima disso, um **roteamento inteligente por solicitação** escolhe o peso do
+modelo (light/standard/heavy) pela complexidade real do trabalho, e um **cache de chamadas LLM**
+soma-se aos caches de resposta. Fluxo completo com fluxograma:
+[`docs/economia_de_tokens.md`](docs/economia_de_tokens.md).
+
 ## 4. Principais decisões técnicas e trade-offs
 
 | Decisão | Por quê | Alternativa descartada |
@@ -85,7 +97,10 @@ e usamos **ferramentas determinísticas** para o que o LLM erraria.
 | **Cache de embeddings commitado** | Revisor roda recuperação offline, sem re-embeddar | Re-embeddar sempre |
 | **Verificação de `cited_ids`** | Toda referência é um livro real recuperado (citação não-alucinada) | Confiar no texto livre do modelo |
 | **Abstenção por curto-circuito (Q10)** | Remove a superfície de alucinação em "vocês têm o livro X?" | Deixar o gerador decidir com resultados fuzzy |
-| **`temperature=0`** | Determinismo p/ avaliação e demo ao vivo | Amostragem (resposta instável) |
+| **`temperature=0`** | Determinismo p/ avaliação e demo ao vivo (e torna os caches seguros) | Amostragem (resposta instável) |
+| **Roteamento de modelos (OpenRouter)** | Trocar modelo/provedor sem deploy; fallback automático; juiz de OUTRA família (anti-viés); custo real por chamada | Acoplar o código ao SDK de um único provedor |
+| **Roteamento inteligente por solicitação** | Narrar fatos prontos/contexto mínimo não precisa do modelo caro (tier light ≈ −70% nessas perguntas); decisão em Python, testável | Um modelo único p/ tudo (paga flash p/ reformatar fatos) |
+| **Cache de chamadas LLM** (além do de respostas) | Re-rodar eval/judge e repetições de sub-chamada custam US$ 0 (det. por `temperature=0`) | Pagar de novo por chamadas idênticas |
 
 **Técnicas avançadas (2026) incluídas:** **Contextual Retrieval** (cartões de contexto por livro
 concatenados ao texto indexado — +recall, ataca o dado templado); **Structured Outputs** na geração
@@ -93,9 +108,11 @@ concatenados ao texto indexado — +recall, ataca o dado templado); **Structured
 do exact-match. Reranking/ColBERT/GraphRAG/pgvector foram avaliados e **adiados** como overkill para 200
 livros (gatilhos de migração documentados).
 
-**Modelos (jun/2026, centralizados em `.env`):** geração `gemini-2.5-flash`; planner `gemini-2.5-flash-lite`;
-embeddings `gemini-embedding-001` (768d). ⚠️ `text-embedding-004` (desligado 14/jan/2026) e
-`gemini-2.0-flash` (desligado ~01/jun/2026) **não** são usados.
+**Modelos (jun/2026, centralizados em `.env`):** geração `gemini-2.5-flash`; planner/tier-light
+`gemini-2.5-flash-lite`; embeddings `gemini-embedding-001` (768d). Roteado via OpenRouter, os slugs
+equivalentes são `google/gemini-2.5-flash(-lite)`, com fallback e juiz em `anthropic/claude-haiku-4.5`
+(outra família). ⚠️ `text-embedding-004` (desligado 14/jan/2026) e `gemini-2.0-flash`
+(desligado ~01/jun/2026) **não** são usados.
 
 ## 5. Avaliação
 Detalhes e tabelas em [`eval/RESULTS.md`](eval/RESULTS.md). Três camadas:
@@ -122,8 +139,13 @@ Por `/ask` ≈ 1 chamada de planner + 1 de geração + 1 embedding de consulta (
 `3000/1e6 × US$0,30 + 450/1e6 × US$2,50 ≈ **US$0,002 por requisição** (~R$0,011).`
 
 Indexação (uma vez, cacheada): ~24k tokens × US$0,15/Mtok ≈ **US$0,005**. Repetições são grátis
-(cache de resposta + de embeddings). **Em escala:** ~100k req/dia ≈ ~US$200/dia no Flash; planner no
-Flash-Lite + cache de resposta cortam ~3×. Custo é conversa de **escala/abuso**, não de preço por chamada.
+(caches de resposta exato/semântico + cache de chamadas LLM + cache de embeddings). Com o
+**roteamento inteligente**, perguntas de fatos prontos (Q6/Q8) caem ao tier light: ~US$0,002–0,004 →
+**~US$0,0006–0,001** (≈ −70%). Via OpenRouter o custo deixa de ser estimado: cada resposta traz o
+**custo real** (`usage.cost`) no `retrieval_debug`. **Em escala:** ~100k req/dia ≈ ~US$200/dia no
+Flash; planner no Flash-Lite + caches + tier light cortam ~3–4×. Fluxo completo de economia (com
+fluxograma): [`docs/economia_de_tokens.md`](docs/economia_de_tokens.md). Custo é conversa de
+**escala/abuso**, não de preço por chamada.
 
 ## 6b. Segurança (cibersegurança)
 Modelo de ameaças completo (mapeado ao **OWASP LLM Top 10**) em [`SECURITY.md`](SECURITY.md). Em resumo:
@@ -137,10 +159,13 @@ defesa anti-injeção estrutural (dados do catálogo **escapados/delimitados** +
   insatisfazíveis pelos dados (Q2 só tem 1 faixa etária; Q3 não tem "cidades pequenas"; nenhum livro
   japonês é "sobre cidades"). O sistema **reconhece** isso (limitação/clarify) em vez de inventar.
 - **Gold-set de 10 perguntas** é pequeno → métricas têm variância; em produção, usar feedback real.
-- **LLM-as-judge** é Gemini avaliando Gemini (viés) → mitigado por calibração + κ, mas trocaria por
-  outra família de modelo + amostragem humana.
+- **LLM-as-judge** era Gemini avaliando Gemini (viés) → mitigado por calibração + κ; com o
+  roteamento via OpenRouter o juiz roda por padrão em **outra família** (`anthropic/claude-haiku-4.5`)
+  — resta complementar com amostragem humana.
 - **Com mais tempo:** multi-turno; streaming; pgvector quando o corpus passar de ~50–100k; filtros
   combináveis na UI; reranqueador cross-encoder; sanitização de injeção na ingestão.
+  **Plano de evolução consolidado** (versões v1→v4, gatilhos medidos, métricas por estágio e o que
+  fica de fora com o porquê): [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## 8. Como usei IA assistiva
 Construído com **Claude Code**. A IA gerou e refatorou código sob arquitetura definida por mim; um

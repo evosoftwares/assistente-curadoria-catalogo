@@ -95,7 +95,8 @@ async def lifespan(app: FastAPI):
         embeddings_backend=config.EMBEDDINGS_BACKEND,
         semantic_ready=pipe.index.matrix is not None,
         llm_available=pipe.client.available,
-        model=config.GEMINI_MODEL,
+        llm_backend=pipe.client.backend,             # gemini direto ou roteado via openrouter
+        model=pipe.client.generation_model,
     )
     yield
     _state.clear()
@@ -131,7 +132,11 @@ def health() -> dict:
         "catalog_size": len(pipe.catalog) if pipe else 0,
         "semantic_ready": bool(pipe and pipe.index.matrix is not None),
         "llm_available": bool(pipe and pipe.client.available),
-        "model": config.GEMINI_MODEL,
+        # Backend/modelo vêm do CLIENTE ativo (não de config fixa): com LLM_BACKEND=auto o
+        # health mostra se o chat está roteado (openrouter) ou direto (gemini) — a UI e a
+        # banca enxergam o modo real sem ler logs.
+        "llm_backend": pipe.client.backend if pipe else config.LLM_BACKEND,
+        "model": pipe.client.generation_model if pipe else "?",
         "embeddings_backend": config.EMBEDDINGS_BACKEND,
     }
 

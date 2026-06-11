@@ -28,6 +28,49 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 GEMINI_PLANNER_MODEL = os.getenv("GEMINI_PLANNER_MODEL", "gemini-2.5-flash-lite")
 GEMINI_JUDGE_MODEL = os.getenv("GEMINI_JUDGE_MODEL", "gemini-2.5-flash")
 GEMINI_EMBEDDING_MODEL = os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001")
+# Variantes por PESO p/ o roteamento inteligente (tier light/heavy; vazio -> usa o padrão do papel).
+GEMINI_MODEL_LIGHT = os.getenv("GEMINI_MODEL_LIGHT", "gemini-2.5-flash-lite")
+GEMINI_MODEL_HEAVY = os.getenv("GEMINI_MODEL_HEAVY", "")
+
+# --- Roteamento de modelos (OpenRouter) ---
+# LLM_BACKEND escolhe quem serve o CHAT (planner/geração/juiz):
+#   "auto" (padrão) -> OpenRouter se houver OPENROUTER_API_KEY; senão Gemini direto.
+#   "openrouter" / "gemini" forçam o backend.
+# EMBEDDINGS não passam pelo OpenRouter (não há endpoint de embeddings lá): ficam no Gemini
+# (llm.get_embedder) ou no backend local — ver EMBEDDINGS_BACKEND abaixo.
+LLM_BACKEND = os.getenv("LLM_BACKEND", "auto").lower()
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
+OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+# Slugs "provedor/modelo" do catálogo do OpenRouter; "openrouter/auto" delega a escolha ao roteador.
+OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-flash")
+OPENROUTER_PLANNER_MODEL = os.getenv("OPENROUTER_PLANNER_MODEL", "google/gemini-2.5-flash-lite")
+OPENROUTER_MODEL_LIGHT = os.getenv("OPENROUTER_MODEL_LIGHT", "google/gemini-2.5-flash-lite")
+OPENROUTER_MODEL_HEAVY = os.getenv("OPENROUTER_MODEL_HEAVY", "")
+# Juiz numa FAMÍLIA diferente do gerador — mitiga o viés "Gemini avaliando Gemini" (README §7).
+OPENROUTER_JUDGE_MODEL = os.getenv("OPENROUTER_JUDGE_MODEL", "anthropic/claude-haiku-4.5")
+# FALLBACK de roteamento: lista ordenada de modelos alternativos; se o primário falhar/ficar
+# indisponível, o OpenRouter tenta o próximo — resiliência de provedor sem retry manual nosso.
+OPENROUTER_FALLBACK_MODELS = [
+    m.strip() for m in os.getenv("OPENROUTER_FALLBACK_MODELS", "").split(",") if m.strip()
+]
+# Critério de escolha de PROVEDOR p/ o mesmo modelo: "" (padrão do roteador), price, throughput, latency.
+OPENROUTER_SORT = os.getenv("OPENROUTER_SORT", "").lower()
+OPENROUTER_APP_TITLE = os.getenv("OPENROUTER_APP_TITLE", "Assistente de Curadoria do Catalogo")
+
+# --- Economia de tokens (fluxo completo em docs/economia_de_tokens.md) ---
+# Roteamento INTELIGENTE por solicitação: tarefas de só-narrar (fatos já computados) ou de
+# contexto minúsculo caem no modelo LIGHT (barato); sínteses muito longas podem subir ao HEAVY.
+SMART_ROUTING = os.getenv("SMART_ROUTING", "true").lower() == "true"
+# Teto de SAÍDA por chamada (bound de custo; 0 desliga). A maior resposta real (Q6) usa ~600.
+LLM_MAX_OUTPUT_TOKENS = int(os.getenv("LLM_MAX_OUTPUT_TOKENS", "1024"))
+# Cache de CHAMADAS ao LLM (além dos caches de resposta do pipeline): memória limitada e,
+# opcionalmente, disco (data/llm_cache/, gitignored) p/ reaproveitar entre PROCESSOS (re-rodar
+# eval/judge custa US$ 0). Seguro porque temperature=0 torna a chamada determinística.
+LLM_CACHE_ENABLED = os.getenv("LLM_CACHE_ENABLED", "true").lower() == "true"
+LLM_CACHE_MAX_ENTRIES = int(os.getenv("LLM_CACHE_MAX_ENTRIES", "512"))
+LLM_CACHE_PERSIST = os.getenv("LLM_CACHE_PERSIST", "false").lower() == "true"
+LLM_CACHE_DIR = DATA_DIR / "llm_cache"
+LLM_TIMEOUT_S = float(os.getenv("LLM_TIMEOUT_S", "60"))
 
 # --- Embeddings ---
 # "gemini"  -> usa a API do Gemini (padrão; cacheado em disco)
@@ -77,6 +120,11 @@ PRICING = {
     "gemini-2.5-flash-lite": {"input": 0.10, "output": 0.40},
     "gemini-2.5-pro": {"input": 1.25, "output": 10.00},
     "gemini-embedding-001": {"input": 0.15, "output": 0.0},
+    # Slugs do OpenRouter (mesmos modelos por trás) — usados só como FALLBACK de estimativa:
+    # no caminho roteado o custo REAL vem na própria resposta (usage.cost -> Usage.cost_override).
+    "google/gemini-2.5-flash": {"input": 0.30, "output": 2.50},
+    "google/gemini-2.5-flash-lite": {"input": 0.10, "output": 0.40},
+    "anthropic/claude-haiku-4.5": {"input": 1.00, "output": 5.00},
 }
 
 

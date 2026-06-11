@@ -17,7 +17,6 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from app import config  # noqa: E402
 from app.catalog import get_catalog  # noqa: E402
 from app.embeddings import EmbeddingIndex  # noqa: E402
 from app.llm import get_client  # noqa: E402
@@ -42,10 +41,10 @@ def ranked_clusters(ids: list[str], cluster_of) -> list[str]:
 
 def main() -> int:
     cat = get_catalog()
-    client = get_client()
-    index = EmbeddingIndex(cat, client)
+    client = get_client()              # cliente de CHAT (planner) — pode ser roteado (OpenRouter)
+    index = EmbeddingIndex(cat)        # embedder próprio (get_embedder: Gemini/local, nunca roteado)
     semantic = index.load()
-    if not semantic and (client.available or config.EMBEDDINGS_BACKEND == "local"):
+    if not semantic and index.can_embed:
         index.build(); semantic = True
     retr = HybridRetriever(cat, index)
     planner = Planner(cat, client)

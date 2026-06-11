@@ -9,7 +9,9 @@ Controles anti-carimbo (recomendados pelo red-team):
 5. Reporta concordância (Cohen's κ) entre o veredito do juiz e o rótulo manual humano,
    quando este existir em results_manual.md.
 
-Requer GEMINI_API_KEY.  Uso:  python eval/judge.py
+Requer uma chave de LLM (OPENROUTER_API_KEY ou GEMINI_API_KEY).  Uso:  python eval/judge.py
+Com OpenRouter ativo, o juiz roda em OUTRA família de modelo (OPENROUTER_JUDGE_MODEL,
+padrão anthropic/claude-haiku-4.5) — reduz o viés de "Gemini avaliando Gemini".
 """
 from __future__ import annotations
 
@@ -18,7 +20,6 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from app import config  # noqa: E402
 from app.catalog import get_catalog  # noqa: E402
 from app.llm import get_client  # noqa: E402
 from app.prompts import JUDGE_SYSTEM, build_judge_prompt  # noqa: E402
@@ -29,7 +30,9 @@ EVAL_DIR = Path(__file__).resolve().parent
 def judge_one(client, cat, question, expected_behavior, context_ids, answer, cited_ids) -> dict:
     ctx_books = [cat.get(i) for i in context_ids if cat.get(i)]
     prompt = build_judge_prompt(question, expected_behavior, ctx_books, answer, cited_ids)
-    text, _ = client.generate_text(JUDGE_SYSTEM, prompt, model=config.GEMINI_JUDGE_MODEL, as_json=True)
+    # judge_model do backend ativo: roteado via OpenRouter, o juiz roda por padrão em OUTRA
+    # família de modelo (anthropic/claude-haiku-4.5) — mitiga o viés de auto-avaliação.
+    text, _ = client.generate_text(JUDGE_SYSTEM, prompt, model=client.judge_model, as_json=True)
     try:
         return json.loads(text)
     except Exception:
@@ -110,7 +113,7 @@ def parse_manual_labels() -> dict[int, str]:
 def main() -> int:
     client = get_client()
     if not client.available:
-        print("ERRO: judge.py requer GEMINI_API_KEY.")
+        print("ERRO: judge.py requer uma chave de LLM (OPENROUTER_API_KEY ou GEMINI_API_KEY).")
         return 1
     cat = get_catalog()
 

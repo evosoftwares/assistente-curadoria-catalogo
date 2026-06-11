@@ -9,6 +9,9 @@ venv/
 *.egg-info/
 .pytest_cache/
 
+# Cache de chamadas LLM persistido em disco (opcional, LLM_CACHE_PERSIST=true) — regenerável
+data/llm_cache/
+
 # Saídas de avaliação geradas (dumps brutos grandes — regeneráveis pelos scripts de eval)
 eval/results_manual.json
 eval/results_judge.json

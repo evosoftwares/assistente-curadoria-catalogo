@@ -18,13 +18,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from app import config  # noqa: E402
 from app.catalog import get_catalog  # noqa: E402
 from app.embeddings import EmbeddingIndex  # noqa: E402
-from app.llm import Usage, get_client  # noqa: E402
+from app.llm import Usage, get_embedder  # noqa: E402
 
 
 def main() -> int:
     force = "--force" in sys.argv
     catalog = get_catalog()
-    client = get_client()
+    # get_embedder (não get_client): indexar usa EMBEDDINGS, que ficam no Gemini/local mesmo
+    # quando o chat está roteado pelo OpenRouter (que não tem endpoint de embeddings).
+    client = get_embedder()
     backend = config.EMBEDDINGS_BACKEND
 
     if backend != "local" and not client.available:

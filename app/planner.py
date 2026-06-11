@@ -210,9 +210,10 @@ class Planner:
         if not self.client.available:
             return fallback_plan(question, self.catalog), None
         try:
-            # Caminho primário: LLM extrai a intenção em JSON validado pelo schema (barato: flash-lite).
+            # Caminho primário: LLM extrai a intenção em JSON validado pelo schema. O modelo
+            # vem do BACKEND ativo (planner_model = o mais barato do Gemini ou do OpenRouter).
             data, usage = self.client.generate_structured(
-                self._system, question, PlannerLLMOutput, model=config.GEMINI_PLANNER_MODEL
+                self._system, question, PlannerLLMOutput, model=self.client.planner_model
             )
             out = PlannerLLMOutput.model_validate(data)         # valida a forma (Pydantic)
             plan = _to_plan(out, self.catalog, source="llm")    # resolve datas/enums em Python
