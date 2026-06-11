@@ -21,6 +21,9 @@ QUESTIONS_PATH = DATA_DIR / "questions.txt"
 EMBEDDINGS_PATH = DATA_DIR / "embeddings.npy"
 EMBEDDINGS_META_PATH = DATA_DIR / "embeddings_meta.json"
 CONTEXT_CARDS_PATH = DATA_DIR / "context_cards.json"  # Contextual Retrieval (gerado offline)
+# Feedback humano (👍/👎) por resposta — JSON-lines, gitignored (dado de uso real; vira o
+# gold-set vivo do v2 e, depois, dados de treino). Path trocável p/ testes/volume Docker.
+FEEDBACK_PATH = Path(os.getenv("FEEDBACK_FILE", str(DATA_DIR / "feedback.jsonl")))
 
 # --- Credenciais / modelos ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or ""
@@ -61,8 +64,12 @@ OPENROUTER_APP_TITLE = os.getenv("OPENROUTER_APP_TITLE", "Assistente de Curadori
 # Roteamento INTELIGENTE por solicitação: tarefas de só-narrar (fatos já computados) ou de
 # contexto minúsculo caem no modelo LIGHT (barato); sínteses muito longas podem subir ao HEAVY.
 SMART_ROUTING = os.getenv("SMART_ROUTING", "true").lower() == "true"
-# Teto de SAÍDA por chamada (bound de custo; 0 desliga). A maior resposta real (Q6) usa ~600.
-LLM_MAX_OUTPUT_TOKENS = int(os.getenv("LLM_MAX_OUTPUT_TOKENS", "1024"))
+# Teto de SAÍDA por chamada (bound de custo; 0 desliga). ATENÇÃO ao calibrar: nos modelos
+# Gemini 2.5 o "thinking" (ligado por padrão) CONTA dentro deste orçamento de saída — um teto
+# apertado (ex.: 1024) trunca o JSON da resposta e derruba a geração em JSONDecodeError
+# (visto em produção na Q1). 4096 dá folga p/ thinking + a maior resposta real (~600 tokens)
+# e ainda limita o pior caso a ~US$0,01/chamada no flash.
+LLM_MAX_OUTPUT_TOKENS = int(os.getenv("LLM_MAX_OUTPUT_TOKENS", "4096"))
 # Cache de CHAMADAS ao LLM (além dos caches de resposta do pipeline): memória limitada e,
 # opcionalmente, disco (data/llm_cache/, gitignored) p/ reaproveitar entre PROCESSOS (re-rodar
 # eval/judge custa US$ 0). Seguro porque temperature=0 torna a chamada determinística.

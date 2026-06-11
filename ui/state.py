@@ -19,6 +19,16 @@ def init() -> None:
     st.session_state.setdefault("messages", [])     # [{role, content, references?, debug?}]
     st.session_state.setdefault("pending", None)    # pergunta vinda do hero/atalhos
     st.session_state.setdefault("debug_mode", False)  # telemetria por resposta (toggle da sidebar)
+    st.session_state.setdefault("health_logged", False)  # health já foi logado no console?
+
+
+def health_log_pending() -> bool:
+    """True só na PRIMEIRA chamada da sessão (e marca como feito): o estado do backend
+    deve aparecer UMA vez no console do navegador, não a cada rerun do Streamlit."""
+    if st.session_state.get("health_logged"):
+        return False
+    st.session_state.health_logged = True
+    return True
 
 
 def debug_mode() -> bool:
@@ -35,12 +45,22 @@ def add_user(content: str) -> None:
     st.session_state.messages.append({"role": "user", "content": content})
 
 
-def add_assistant(content: str, references: list[dict], debug: dict) -> dict:
+def add_assistant(content: str, references: list[dict], debug: dict, question: str) -> dict:
     """Anexa a resposta e a DEVOLVE: quem chama renderiza o mesmo dict que foi guardado
-    (histórico e resposta recém-chegada nunca divergem)."""
-    msg = {"role": "assistant", "content": content, "references": references, "debug": debug}
+    (histórico e resposta recém-chegada nunca divergem). Guardamos a PERGUNTA junto da
+    resposta: o feedback precisa do par completo (pergunta+resposta) para virar dataset."""
+    msg = {"role": "assistant", "content": content, "references": references,
+           "debug": debug, "question": question}
     st.session_state.messages.append(msg)
     return msg
+
+
+def set_feedback(index: int, verdict: str) -> None:
+    """Marca que a mensagem `index` já recebeu feedback (esconde os botões — 1 voto por
+    resposta; o registro persistente vive no backend, em data/feedback.jsonl)."""
+    msgs = st.session_state.messages
+    if 0 <= index < len(msgs):
+        msgs[index]["feedback"] = verdict
 
 
 def clear() -> None:

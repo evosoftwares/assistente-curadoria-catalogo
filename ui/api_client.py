@@ -30,3 +30,10 @@ def ask(question: str, timeout: float = 60.0) -> dict:
     r = httpx.post(f"{API_BASE}/ask", json={"question": question}, timeout=timeout)
     r.raise_for_status()
     return r.json()
+
+
+def send_feedback(payload: dict, timeout: float = 10.0) -> None:
+    """POST /feedback — registra 👍/👎 (+comentário) com o contexto completo da resposta.
+    É o que alimenta o gold-set vivo do v2 (e futuros componentes treinados)."""
+    r = httpx.post(f"{API_BASE}/feedback", json=payload, timeout=timeout)
+    r.raise_for_status()

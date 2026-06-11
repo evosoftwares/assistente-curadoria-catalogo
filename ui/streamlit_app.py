@@ -21,6 +21,7 @@ from __future__ import annotations
 import streamlit as st
 
 import api_client
+import browser_log
 import state
 import theme
 from components import chat, sidebar
@@ -42,6 +43,10 @@ except Exception as e:
     st.stop()
 
 sidebar.render(health)
+
+# Estado do backend no console do navegador (F12) — uma vez por sessão, não a cada rerun.
+if state.health_log_pending():
+    browser_log.log_health(health)
 
 # Tela vazia = onboarding por INTENÇÃO (o que dá para pedir); com conversa, só o chat.
 if not state.history() and not st.session_state.pending:

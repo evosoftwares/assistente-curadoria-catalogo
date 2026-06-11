@@ -43,7 +43,7 @@ streamlit run ui/streamlit_app.py     # http://localhost:8501
 
 # 6) Dashboard de KPIs (página web autocontida) + testes
 python scripts/build_dashboard.py     # gera dashboard/index.html (abra no navegador) — também em GET /kpis
-python -m pytest -q                   # 40 testes (núcleo determinístico + segurança + roteamento/cache)
+python -m pytest -q                   # 44 testes (determinístico + segurança + roteamento/cache + feedback)
 python eval/check_facts.py            # asserta a verdade determinística (Q4/Q6/Q8)
 python scripts/ci_gate.py             # GATE de regressão (pytest + check_facts + piso de recall@8); sai !=0 se regredir
 
@@ -128,7 +128,10 @@ Detalhes e tabelas em [`eval/RESULTS.md`](eval/RESULTS.md). Três camadas:
 
 O gold-set ([`eval/gold.json`](eval/gold.json)) é curado de forma **anti-circular** (independente do
 planner de produção) — método documentado em [`eval/build_gold.py`](eval/build_gold.py).
-Há ainda **24 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos + camada de segurança, e
+A UI também coleta **feedback humano por resposta** (👍/👎 + comentário) via `POST /feedback` →
+`data/feedback.jsonl` (1 linha JSON por evento, com pergunta+resposta+plano+ids+custo) — o início
+do **gold-set vivo** do roadmap v2.
+Há ainda **44 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos + segurança + roteamento/cache + feedback, e
 [`eval/check_facts.py`](eval/check_facts.py) que **assere programaticamente** a verdade determinística
 (Q4/Q6/Q8) contra o que o sistema computa. O juiz também reporta **faithfulness** (estilo RAGAS, ~0,93)
 — fração de afirmações com suporte no contexto. Um **gate de regressão** ([`scripts/ci_gate.py`](scripts/ci_gate.py),

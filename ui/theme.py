@@ -51,12 +51,40 @@ header[data-testid="stHeader"] { background: transparent; }
     background: #f4f4f4; border-left: 3px solid #0f62fe;
 }
 
-/* ---------- Entrada do chat: campo Carbon (borda fina; foco = sublinhado Blue 60) ---------- */
-[data-testid="stChatInput"] { border: 1px solid #8d8d8d; background: #ffffff; }
-[data-testid="stChatInput"]:focus-within {
-    border-color: #0f62fe; box-shadow: 0 2px 0 0 #0f62fe;
+/* ---------- Entrada do chat: campo Carbon plano (field-01 sobre divisa, sem sombras).
+     REGRA DE OURO da responsividade: só COR/BORDA/RAIO aqui — largura, posição e overflow
+     ficam com o Streamlit, que sincroniza a barra inferior com a coluna central a cada
+     resize (sobrescrever overflow/posicionamento quebrava esse mecanismo).
+     Foco = OUTLINE interno de 2px Blue 60 (offset negativo não sai do elemento — nada
+     para o container cortar). ---------- */
+[data-testid="stBottom"], [data-testid="stBottom"] > div,
+[data-testid="stChatFloatingInputContainer"] {
+    background: #ffffff; box-shadow: none !important;
 }
-[data-testid="stChatInput"] textarea { background: #ffffff; color: #161616; }
+[data-testid="stBottom"] { border-top: 1px solid #e0e0e0; }   /* divisa fina, em vez de sombra */
+[data-testid="stChatInput"] {
+    background: #f4f4f4;                                       /* Carbon field-01 */
+    border: none; border-bottom: 1px solid #8d8d8d;
+    box-shadow: none !important; max-width: 100%;
+}
+[data-testid="stChatInput"]:focus-within {
+    outline: 2px solid #0f62fe; outline-offset: -2px; border-bottom-color: transparent;
+}
+[data-testid="stChatInput"] > div,
+[data-testid="stChatInput"] div[data-baseweb="textarea"],
+[data-testid="stChatInput"] div[data-baseweb="base-input"] {
+    background: transparent !important; border: none !important; box-shadow: none !important;
+}
+[data-testid="stChatInput"] textarea { background: transparent; color: #161616; }
+[data-testid="stChatInput"] button { color: #0f62fe; }         /* enviar no Blue 60 */
+
+/* ---------- Responsividade dos elementos próprios: nada estoura a coluna ---------- */
+[data-testid="stChatMessage"], .ref-card, .hero { max-width: 100%; }
+/* popover do 👎: painel quadrado, largura confortável que cabe em qualquer tela */
+div[data-baseweb="popover"], div[data-baseweb="popover"] > div { border-radius: 0 !important; }
+[data-testid="stPopoverBody"], div[data-baseweb="popover"] [data-testid="stVerticalBlock"] {
+    min-width: min(340px, 90vw); max-width: 92vw;
+}
 
 /* ---------- Botões NUNCA cortam texto: rótulo quebra linha e a altura acompanha
      (o default do Streamlit ellipsa/clipa rótulos longos — pior que quebrar) ---------- */
@@ -75,13 +103,21 @@ section[data-testid="stSidebar"] .stButton > button {
 }
 section[data-testid="stSidebar"] .stButton > button:hover { background: #e0e0e0; color: #0f62fe; }
 
-/* ---------- Botões da área principal (chips de intenção): tertiary do Carbon ---------- */
+/* ---------- Botões da área principal: tertiary do Carbon. Sem width/altura forçadas:
+     os chips de intenção esticam via use_container_width, e os botões pequenos
+     (👍/👎 de feedback) ficam compactos naturalmente ---------- */
 [data-testid="stMain"] .stButton > button, .main .stButton > button {
     background: #ffffff; border: 1px solid #0f62fe; color: #0f62fe;
-    font-weight: 500; width: 100%; min-height: 3rem; padding: 0.6rem 0.9rem;
+    font-weight: 500; padding: 0.45rem 0.8rem;
 }
 [data-testid="stMain"] .stButton > button:hover, .main .stButton > button:hover {
     background: #0f62fe; color: #ffffff;
+}
+/* o gatilho do popover (👎) segue o mesmo tertiary, alinhado ao 👍 */
+[data-testid="stMain"] [data-testid="stPopover"] > button,
+[data-testid="stMain"] [data-testid="stPopoverButton"] {
+    background: #ffffff; border: 1px solid #0f62fe; color: #0f62fe;
+    border-radius: 0 !important; font-weight: 500;
 }
 
 /* ---------- Expanders e métricas discretos (valores/rótulos quebram, não cortam) ---------- */

@@ -32,7 +32,7 @@ flowchart TD
     ML --> CTX
     MH --> CTX
     MS --> CTX
-    CTX["8· Bounds de chamada: contexto <= 60 livros<br/>+ max_tokens de saída (1.024)"]
+    CTX["8· Bounds de chamada: contexto <= 60 livros<br/>+ max_tokens de saída (4.096)"]
     CTX --> C3{"9· Cache de CHAMADA LLM<br/>backend|modelo|temp|prompt"}
     C3 -- hit --> GEN0["resposta da chamada — US$ 0"]
     C3 -- miss --> GEN["10· GERAÇÃO ancorada<br/>structured output, temperature=0<br/>roteada com FALLBACK de modelos (OpenRouter)"]
@@ -168,7 +168,7 @@ Base medida (RESULTS.md §4, Gemini direto, sem roteamento inteligente):
 | Q8 — mais antigo/recente (fatos prontos → **light**) | ~US$ 0,0020 | **~US$ 0,0006** (≈ −70%) |
 | Q6 — 26 livros por categoria (fatos prontos → **light**) | ~US$ 0,0039 | **~US$ 0,0010** (≈ −74%) |
 | Re-rodar `eval/judge.py` (cache de chamadas + persistência) | ~US$ 0,016 | **~US$ 0** |
-| Pico de saída anômalo | ilimitado | ≤ `LLM_MAX_OUTPUT_TOKENS` (1.024) |
+| Pico de saída anômalo | ilimitado | ≤ `LLM_MAX_OUTPUT_TOKENS` (4.096 — folga p/ o thinking dos 2.5, que conta na saída) |
 
 > Estimativas do tier light usam a tabela flash-lite (US$ 0,10/0,40 por Mtok) sobre os
 > volumes de tokens medidos; com OpenRouter o valor exato vem em `usage.cost` por chamada.

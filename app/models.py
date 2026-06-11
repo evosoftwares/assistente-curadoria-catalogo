@@ -14,9 +14,19 @@ from __future__ import annotations
 
 import unicodedata
 from enum import Enum
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
+
+
+def sanitize_text(v: str) -> str:
+    """Sanitização compartilhada de TEXTO vindo do cliente: NFKC normaliza variantes de
+    compatibilidade; removemos caracteres de CONTROLE (Cc) e FORMATO/invisíveis (Cf:
+    zero-width, bidi overrides como U+202E) — usados p/ esconder instruções e spoofar
+    logs. Preservamos \n e \t. (COMP-06; usada por AskRequest e FeedbackRequest.)"""
+    v = unicodedata.normalize("NFKC", v)
+    cleaned = "".join(ch for ch in v if ch in ("\n", "\t") or unicodedata.category(ch) not in ("Cc", "Cf"))
+    return cleaned.strip()
 
 
 class Aggregation(str, Enum):
@@ -103,13 +113,31 @@ class AskRequest(BaseModel):
     @field_validator("question")
     @classmethod
     def _sanitize(cls, v: str) -> str:
-        # Sanitização de entrada: NFKC normaliza variantes de compatibilidade; depois removemos
-        # caracteres de CONTROLE (categoria Cc) e de FORMATO/invisíveis (Cf: zero-width, bidi
-        # overrides como U+202E) — usados p/ esconder instruções do revisor humano que o LLM ainda
-        # "lê" e p/ spoofar logs. Preservamos \n e \t. Por fim aparamos as bordas. (COMP-06)
-        v = unicodedata.normalize("NFKC", v)
-        cleaned = "".join(ch for ch in v if ch in ("\n", "\t") or unicodedata.category(ch) not in ("Cc", "Cf"))
-        return cleaned.strip()
+        return sanitize_text(v)   # NFKC + remoção de controle/invisíveis (ver sanitize_text)
+
+
+class FeedbackRequest(BaseModel):
+    """Feedback humano por resposta (👍/👎 + comentário) — o INÍCIO do loop do v2: cada
+    registro é matéria-prima do gold-set vivo (e, mais tarde, de componentes treinados:
+    classificador de intenção, reranker). Campos LIMITADOS (anti-DoS, mesma postura do
+    AskRequest); `plan_json` vem serializado pelo cliente p/ manter o corpo bounded."""
+    verdict: Literal["up", "down"]
+    question: str = Field(..., min_length=2, max_length=2000)
+    answer: str = Field("", max_length=8000)
+    comment: Optional[str] = Field(None, max_length=1000)
+    behavior: str = Field("", max_length=40)
+    reference_ids: list[str] = Field(default_factory=list, max_length=100)
+    retrieved_ids: list[str] = Field(default_factory=list, max_length=100)
+    context_ids: list[str] = Field(default_factory=list, max_length=300)
+    plan_json: str = Field("{}", max_length=4000)   # plano serializado (o consumidor parseia)
+    cost_usd: float = 0.0
+    latency_ms: Optional[float] = None
+    from_cache: bool = False
+
+    @field_validator("question", "answer", "comment")
+    @classmethod
+    def _sanitize(cls, v: Optional[str]) -> Optional[str]:
+        return sanitize_text(v) if isinstance(v, str) else v
 
 
 class AnswerOut(BaseModel):

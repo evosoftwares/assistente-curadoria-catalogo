@@ -16,10 +16,12 @@ resposta recém-chegada, para os dois caminhos nunca divergirem.
 from __future__ import annotations
 
 import html
+import json
 
 import streamlit as st
 
 import api_client
+import browser_log
 import state
 
 # Comportamento (taxonomia interna do backend) -> selo na LÍNGUA DO USUÁRIO + cor Carbon.
@@ -70,7 +72,50 @@ def _ref_card(ref: dict) -> str:
             f'<div class="m">{autores} · {ref["ano_publicacao"]}</div>{tags}</div>')
 
 
-def _render_assistant(msg: dict) -> None:
+def _send_feedback(msg: dict, index: int, verdict: str, comment: str | None) -> None:
+    """Monta o payload COMPLETO do par pergunta+resposta (com plano/ids/custo do debug) e
+    envia ao backend — é o registro que vira gold-set vivo. Em erro, avisa sem quebrar o
+    chat (feedback é acessório; a conversa nunca pode travar por causa dele)."""
+    dbg = msg.get("debug") or {}
+    payload = {
+        "verdict": verdict,
+        "question": msg.get("question") or "?",
+        "answer": (msg.get("content") or "")[:8000],
+        "comment": comment or None,
+        "behavior": str(dbg.get("behavior", "")),
+        "reference_ids": [r.get("id") for r in (msg.get("references") or []) if r.get("id")],
+        "retrieved_ids": dbg.get("retrieved_ids") or [],
+        "context_ids": dbg.get("context_ids") or [],
+        "plan_json": json.dumps(dbg.get("plan") or {}, ensure_ascii=False)[:4000],
+        "cost_usd": dbg.get("estimated_cost_usd", 0.0),
+        "latency_ms": (dbg.get("latency_ms") or {}).get("total_ms"),
+        "from_cache": bool(dbg.get("from_cache")),
+    }
+    try:
+        api_client.send_feedback(payload)
+    except Exception as e:
+        st.toast(f"Não consegui registrar o feedback: {e}", icon="⚠️")
+        return
+    state.set_feedback(index, verdict)
+    st.rerun()   # redesenha: os botões viram o "obrigado" (1 voto por resposta)
+
+
+def _feedback_row(msg: dict, index: int) -> None:
+    """👍 envia direto; 👎 abre um popover com comentário OPCIONAL (o motivo do erro é o
+    dado mais valioso do dataset — mas exigi-lo mataria a taxa de resposta)."""
+    if msg.get("feedback"):
+        st.caption("✓ Feedback registrado — obrigado! Ele alimenta a melhoria do assistente.")
+        return
+    c1, c2, _ = st.columns([1, 1, 5])
+    if c1.button("👍 Útil", key=f"fbu{index}"):
+        _send_feedback(msg, index, "up", None)
+    with c2.popover("👎 Não ajudou"):
+        comment = st.text_area("O que faltou? (opcional)", key=f"fbc{index}", max_chars=1000)
+        if st.button("Enviar feedback", key=f"fbs{index}"):
+            _send_feedback(msg, index, "down", comment.strip() or None)
+
+
+def _render_assistant(msg: dict, index: int) -> None:
     dbg = msg["debug"]
     label, color = BADGE.get(dbg["behavior"], (dbg["behavior"], ""))
     st.markdown(f'<span class="cds-tag {color}">{label}</span>', unsafe_allow_html=True)
@@ -106,14 +151,17 @@ def _render_assistant(msg: dict) -> None:
                 st.write("**Notas:**", dbg["notes"])  # inclui o tier do roteamento
             st.caption(f"from_cache={dbg['from_cache']}")
 
+    # Feedback humano por resposta (👍/👎) — alimenta data/feedback.jsonl via POST /feedback.
+    _feedback_row(msg, index)
+
 
 def render_history() -> None:
-    for m in state.history():
+    for i, m in enumerate(state.history()):
         with st.chat_message(m["role"]):
             if m["role"] == "user":
                 st.write(m["content"])
             else:
-                _render_assistant(m)
+                _render_assistant(m, i)
 
 
 def handle_input() -> None:
@@ -137,5 +185,9 @@ def handle_input() -> None:
                 # Erro de rede/API não entra no histórico (não é resposta) — só avisa.
                 st.error(f"Erro ao chamar a API: {e}")
                 return
-        msg = state.add_assistant(data["answer"], data["references"], data["retrieval_debug"])
-        _render_assistant(msg)
+        msg = state.add_assistant(data["answer"], data["references"], data["retrieval_debug"],
+                                  question=prompt)
+        _render_assistant(msg, len(state.history()) - 1)
+    # Log completo no console do navegador (F12): fluxo seguido, referências, custo e o
+    # debug bruto — só quando a resposta É NOVA (re-render de histórico não duplica logs).
+    browser_log.log_qa(prompt, data)

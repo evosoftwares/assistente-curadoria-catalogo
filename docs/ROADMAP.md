@@ -49,7 +49,7 @@ perguntas vira um gold-set vivo, alimentado pelo uso.
 
 | Item | Detalhe | O que já existe que habilita |
 |---|---|---|
-| Feedback 👍/👎 + comentário por resposta | persiste {pergunta, plano, ids, resposta, veredito humano} → vira gold-set REAL e re-calibra o juiz | método anti-circular já documentado em `eval/build_gold.py` |
+| Feedback 👍/👎 + comentário por resposta | **✅ COLETOR JÁ INSTALADO** (UI → `POST /feedback` → `data/feedback.jsonl`, com pergunta+resposta+plano+ids+custo por evento); resta o CONSUMIDOR: gold-set vivo + recalibração do juiz | método anti-circular já documentado em `eval/build_gold.py` |
 | Deploy + autenticação | container + proxy reverso + SSO simples; secrets em vault | CI pronto; config 100% por env; chave já só no servidor |
 | Multi-turno (bônus do PDF) | reescrita de pergunta com histórico (resolução de anáfora) ANTES do planner; cache chaveado pela pergunta **reescrita** | planner já estrutura intenção; caches já têm gate de segurança |
 | Streaming (SSE) | corta latência percebida de ~7s para ~1s até o 1º token | FastAPI suporta; UI Streamlit consome SSE |

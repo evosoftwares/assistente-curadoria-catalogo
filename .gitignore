@@ -12,6 +12,9 @@ venv/
 # Cache de chamadas LLM persistido em disco (opcional, LLM_CACHE_PERSIST=true) — regenerável
 data/llm_cache/
 
+# Feedback de usuários reais (👍/👎 por resposta) — dado de uso, não código; fica fora do repo
+data/feedback.jsonl
+
 # Saídas de avaliação geradas (dumps brutos grandes — regeneráveis pelos scripts de eval)
 eval/results_manual.json
 eval/results_judge.json
