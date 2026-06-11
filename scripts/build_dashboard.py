@@ -1,21 +1,28 @@
-"""Gera um DASHBOARD WEB autocontido (dashboard/index.html) com TODOS os KPIs do projeto.
+"""Gera o B.I. WEB autocontido (dashboard/index.html) com TODOS os KPIs do projeto.
 
-Lê os artefatos de avaliação (eval/*.json + results_manual.md) e os dados do catálogo,
-calcula os KPIs e embute tudo num único HTML (sem servidor, sem CDN — abre offline no
-navegador). Também é servido pela API em GET /kpis.
+Fontes (cada seção diz a sua):
+- eval/*.json + results_manual.md  -> qualidade (comportamento, retrieval, juiz)
+- data/usage_log.jsonl             -> OPERAÇÃO REAL (custo, latência, tiers, cache) — espelho
+                                      dos eventos estruturados por requisição
+- data/feedback.jsonl              -> FEEDBACK HUMANO (👍/👎) — a métrica de produto
+                                      (taxa de aceitação) do roadmap v2
+- data/books.json                  -> perfil do catálogo
 
+Tudo embutido num único HTML (sem servidor, sem CDN — abre offline). Servido em GET /kpis.
 Uso:  python scripts/build_dashboard.py   (rode os scripts de eval antes p/ números frescos)
 """
 from __future__ import annotations
 
 import json
 import sys
+import time
 from collections import Counter
 from html import escape
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 EVAL = ROOT / "eval"
+DATA = ROOT / "data"
 sys.path.insert(0, str(ROOT))
 
 # --- Resumo da auditoria adversarial (rubrica por critério) — fonte: workflow de auditoria v2 ---
@@ -56,6 +63,41 @@ def _manual_labels() -> dict[int, tuple[str, str]]:
     return out
 
 
+def _load_jsonl(path: Path) -> list[dict]:
+    """Lê JSON-lines defensivamente: linha corrompida é PULADA (o B.I. nunca quebra por
+    causa de um byte ruim num log) e arquivo ausente vira lista vazia (seção mostra
+    'sem dados ainda' em vez de erro)."""
+    if not path.exists():
+        return []
+    out: list[dict] = []
+    for ln in path.read_text(encoding="utf-8").splitlines():
+        ln = ln.strip()
+        if not ln:
+            continue
+        try:
+            out.append(json.loads(ln))
+        except Exception:
+            continue
+    return out
+
+
+def _pctl(vals: list[float], p: float) -> float:
+    """Percentil simples por posto (nearest-rank) — suficiente p/ p50/p95 de latência."""
+    if not vals:
+        return 0.0
+    s = sorted(vals)
+    i = min(len(s) - 1, max(0, round(p / 100 * (len(s) - 1))))
+    return s[i]
+
+
+def _tier_of(notes: list[str] | None) -> str | None:
+    """Extrai o tier do roteamento inteligente da nota 'roteamento: tier=X -> modelo'."""
+    for n in notes or []:
+        if isinstance(n, str) and n.startswith("roteamento: tier="):
+            return n.split("tier=")[1].split(" ")[0]
+    return None
+
+
 # ---------- helpers de HTML ----------
 def bar(pct: float, label: str = "", color: str = "#4f86f7") -> str:
     pct = max(0, min(100, pct))
@@ -89,6 +131,13 @@ def build() -> str:
     labels = _manual_labels()
     mrows = {r["qid"]: r for r in manual}
     jver = {v["qid"]: v for v in judge.get("verdicts", [])}
+
+    # Fontes de OPERAÇÃO (podem estar vazias — as seções degradam p/ "sem dados ainda")
+    usage = [r for r in _load_jsonl(DATA / "usage_log.jsonl") if r.get("event") == "ask"]
+    fb = _load_jsonl(DATA / "feedback.jsonl")
+    fb_up = sum(1 for r in fb if r.get("verdict") == "up")
+    fb_down = sum(1 for r in fb if r.get("verdict") == "down")
+    aceit = round(100 * fb_up / (fb_up + fb_down)) if (fb_up + fb_down) else None
 
     # KPIs agregados
     n_q = len(manual) or 10
@@ -151,8 +200,11 @@ def build() -> str:
     H.append(card(f"{macro.get('ndcg@8','—')}", "nDCG@8", f"MRR {macro.get('mrr','—')}", "#4f86f7"))
     H.append(card(f"US${sum(costs)/len(costs):.4f}", "Custo médio / requisição", f"min US${min(costs):.5f} · max US${max(costs):.4f}", "#16a085"))
     H.append(card(f"{AUDIT['nota_ponderada']}/5", "Nota da auditoria", "rubrica ponderada (banca)", "#f1c40f"))
-    H.append(card("15/15", "Testes (pytest)", "invariantes determinísticos", "#2ecc71"))
+    H.append(card("44/44", "Testes (pytest)", "determinístico + segurança + roteamento + feedback", "#2ecc71"))
     H.append(card(f"{agree_pct}%", "Acordo juiz×humano", f"κ={judge.get('kappa','—')}", "#9b59b6"))
+    H.append(card(f"{len(usage)}", "Requisições reais", "operação registrada (usage_log)", "#4f86f7"))
+    H.append(card(f"{aceit}%" if aceit is not None else "—", "Taxa de aceitação 👍",
+                  f"{fb_up}👍 · {fb_down}👎 (meta v2: >80%)", "#2ecc71" if (aceit or 0) >= 80 else "#f1c40f"))
     H.append("</div>")
 
     # Funcionamento / comportamento
@@ -216,8 +268,78 @@ def build() -> str:
     H.append(card("~US$200/dia", "@100k req/dia", "Flash; cache+Lite cortam ~3×"))
     H.append("</div></div>")
 
+    # Operação real (usage_log.jsonl — espelho dos eventos por requisição)
+    H.append("<h2>5. Operação real (uso registrado)</h2>")
+    if usage:
+        u_costs = [r.get("cost_usd", 0) or 0 for r in usage]
+        u_lats = [(r.get("latency_ms") or {}).get("total_ms", 0) or 0 for r in usage]
+        cache_hits = sum(1 for r in usage if r.get("from_cache"))
+        hit_rate = round(100 * cache_hits / len(usage)) if usage else 0
+        last_ts = max((r.get("ts", 0) for r in usage), default=0)
+        H.append("<div class='grid'>")
+        H.append(card(len(usage), "Requisições", f"última: {time.strftime('%d/%m %H:%M', time.localtime(last_ts))}" if last_ts else ""))
+        H.append(card(f"US${(sum(u_costs)/len(u_costs)):.4f}", "Custo médio real", f"total US${sum(u_costs):.4f}", "#16a085"))
+        H.append(card(f"{int(_pctl(u_lats, 50))} ms", "Latência p50", f"p95 {int(_pctl(u_lats, 95))} ms"))
+        H.append(card(f"{hit_rate}%", "Cache hit (resposta)", f"{cache_hits}/{len(usage)} servidas do cache", "#2ecc71"))
+        H.append("</div><div class='two'><div>")
+        # Mix de TIERS do roteamento inteligente (light = economia em fatos prontos)
+        tiers = Counter(t for r in usage if (t := _tier_of(r.get("notes"))))
+        H.append("<p class='pill'>Roteamento por solicitação (tier da geração)</p>")
+        if tiers:
+            mx = max(tiers.values())
+            tcolor = {"light": "#2ecc71", "standard": "#4f86f7", "heavy": "#e67e22"}
+            for t, n in tiers.most_common():
+                H.append(bar(n / mx * 100, f"tier {t}: {n}", tcolor.get(t, "#888")))
+        else:
+            H.append("<p class='pill'>— (respostas via cache/curto-circuito não passam pela geração)</p>")
+        H.append("</div><div>")
+        # Distribuição de comportamento (answer/abstain/clarify/limitação) na operação
+        behs = Counter(r.get("behavior", "?") for r in usage)
+        H.append("<p class='pill'>Comportamento das respostas</p>")
+        mxb = max(behs.values()) if behs else 1
+        for b, n in behs.most_common():
+            H.append(bar(n / mxb * 100, f"{b}: {n}", "#9b59b6"))
+        H.append("</div></div>")
+        # Modelos que de fato atenderam (observabilidade do roteamento; cached = chamada grátis)
+        mcalls = Counter()
+        for r in usage:
+            for c in (r.get("tokens") or {}).get("calls", []):
+                mcalls[c.get("model", "?") + (" (cache)" if c.get("cached") else "")] += 1
+        if mcalls:
+            H.append("<p class='pill'>Chamadas por modelo (planner+geração+embeddings)</p>")
+            mxm = max(mcalls.values())
+            for m, n in mcalls.most_common(8):
+                H.append(bar(n / mxm * 100, f"{m}: {n}", "#566b9e"))
+    else:
+        H.append("<p class='pill'>Sem tráfego registrado ainda — cada requisição ao <code>/ask</code> "
+                 "alimenta <code>data/usage_log.jsonl</code> e aparece aqui (regenerar o painel).</p>")
+
+    # Feedback humano (feedback.jsonl — métrica de PRODUTO do roadmap v2)
+    H.append("<h2>6. Feedback humano (👍/👎 na UI)</h2>")
+    if fb:
+        H.append("<div class='grid'>")
+        H.append(card(f"{aceit}%", "Taxa de aceitação", "meta v2: > 80%",
+                      "#2ecc71" if (aceit or 0) >= 80 else "#f1c40f"))
+        H.append(card(fb_up, "👍 Útil", ""))
+        H.append(card(fb_down, "👎 Não ajudou", ""))
+        H.append(card(sum(1 for r in fb if r.get("comment")), "Comentários", "o porquê dos 👎 = ouro do dataset"))
+        H.append("</div>")
+        recentes = [r for r in fb if r.get("comment")][-5:]
+        if recentes:
+            H.append("<table><tr><th>Voto</th><th>Pergunta</th><th>Comentário</th></tr>")
+            for r in reversed(recentes):
+                v = "👍" if r.get("verdict") == "up" else "👎"
+                H.append(f"<tr><td>{v}</td><td class='pill'>{escape(str(r.get('question',''))[:80])}</td>"
+                         f"<td>{escape(str(r.get('comment',''))[:160])}</td></tr>")
+            H.append("</table>")
+        H.append("<p class='pill'>Cada voto persiste o par completo pergunta+resposta+plano+ids em "
+                 "<code>data/feedback.jsonl</code> — a matéria-prima do gold-set vivo (ROADMAP v2).</p>")
+    else:
+        H.append("<p class='pill'>Nenhum voto ainda — os botões 👍/👎 da UI alimentam "
+                 "<code>data/feedback.jsonl</code> e a taxa de aceitação aparece aqui.</p>")
+
     # Dados do catálogo
-    H.append("<h2>5. Dados do catálogo</h2><div class='two'><div class='grid'>")
+    H.append("<h2>7. Dados do catálogo</h2><div class='two'><div class='grid'>")
     H.append(card(len(books), "Livros", ""))
     H.append(card(distinct_syn, "Sinopses distintas", "dado templado (87/200)"))
     H.append(card(f"{min(anos)}–{max(anos)}", "Anos", ""))
@@ -229,7 +351,7 @@ def build() -> str:
     H.append("</div></div>")
 
     # Auditoria
-    H.append("<h2>6. Auditoria adversarial (rubrica da banca)</h2>")
+    H.append("<h2>8. Auditoria adversarial (rubrica da banca)</h2>")
     H.append(f"<p class='sub'>Nota ponderada <b>{AUDIT['nota_ponderada']}/5</b> · {AUDIT['achados_reais']} achados reais "
              f"(alta {AUDIT['severidades']['alta']} · média {AUDIT['severidades']['media']} · baixa {AUDIT['severidades']['baixa']}; corrigidos). "
              f"{escape(AUDIT['veredito'])}</p>")
@@ -237,14 +359,16 @@ def build() -> str:
         H.append(bar(nota / 5 * 100, f"{crit} ({peso}%) — {nota}/5", "#f1c40f"))
 
     # Testes
-    H.append("<h2>7. Testes &amp; reprodutibilidade</h2><div class='grid'>")
-    H.append(card("15/15", "pytest", "componentes determinísticos", "#2ecc71"))
+    H.append("<h2>9. Testes &amp; reprodutibilidade</h2><div class='grid'>")
+    H.append(card("44/44", "pytest", "determinístico + segurança + roteamento/cache + feedback", "#2ecc71"))
     H.append(card("OK", "check_facts", "verdade determinística Q4/Q6/Q8", "#2ecc71"))
+    H.append(card("OK", "ci_gate", "pytest + facts + piso de recall@8 (GitHub Actions)", "#2ecc71"))
     H.append(card("offline", "Recuperação", "cache de embeddings commitado", "#16a085"))
     H.append("</div>")
 
     H.append("<p class='foot'>Gerado por <code>scripts/build_dashboard.py</code> a partir de "
-             "<code>eval/*.json</code>. Reproduza os números com "
+             "<code>eval/*.json</code> (qualidade) + <code>data/usage_log.jsonl</code> (operação) "
+             "+ <code>data/feedback.jsonl</code> (aceitação). Reproduza os números com "
              "<code>run_manual.py · retrieval_metrics.py · judge.py · check_facts.py</code>, "
              "depois regenere este painel. Também disponível em <code>GET /kpis</code>.</p>")
     H.append("</div></body></html>")

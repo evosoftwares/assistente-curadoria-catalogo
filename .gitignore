@@ -14,6 +14,8 @@ data/llm_cache/
 
 # Feedback de usuários reais (👍/👎 por resposta) — dado de uso, não código; fica fora do repo
 data/feedback.jsonl
+# Espelho em arquivo dos eventos de uso (alimenta o B.I. local em /kpis) — idem
+data/usage_log.jsonl
 
 # Saídas de avaliação geradas (dumps brutos grandes — regeneráveis pelos scripts de eval)
 eval/results_manual.json

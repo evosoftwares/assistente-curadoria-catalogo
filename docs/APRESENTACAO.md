@@ -8,9 +8,14 @@
 
 ## ✅ Checklist pré-demo (faça 10 min antes)
 - [ ] `.env` com `GEMINI_API_KEY` válida (⚠️ rotacione a chave antes, e use uma nova).
-- [ ] Subir API: `uvicorn app.api:app` · subir UI: `streamlit run ui/streamlit_app.py`.
-- [ ] **Pré-aquecer**: rodar Q8, Q4 e Q10 UMA vez antes (popula o cache → na demo saem instantâneas).
-- [ ] Abrir o **dashboard de KPIs** (`GET /kpis` ou `dashboard/index.html`) numa aba.
+      Com `OPENROUTER_API_KEY` preenchida, o chat roteia pelo OpenRouter (mostre no `/health`).
+- [ ] Subir tudo com 1 comando: `powershell -File scripts\run_local.ps1` (ou `docker compose up`).
+- [ ] **Pré-aquecer**: perguntar Q8, Q4 e Q10 UMA vez (expander "Perguntas-exemplo" na sidebar)
+      → popula o cache (na demo saem instantâneas) E o `usage_log` (o B.I. mostra operação real).
+- [ ] **Regenerar e abrir o B.I.**: `python scripts/build_dashboard.py` → aba em `GET /kpis`.
+- [ ] Ligar o **Modo técnico** (toggle na sidebar) e deixar o **console (F12)** aberto numa aba —
+      é onde o fluxo passo a passo de cada resposta aparece para a banca.
+- [ ] Dar um 👍 numa resposta pré-aquecida (a Taxa de Aceitação aparece no B.I. — gancho do v2).
 - [ ] Código aberto no editor em: `app/pipeline.py`, `app/retriever.py`, `eval/RESULTS.md`.
 - [ ] **Plano B**: ter um screen-record das 3 demos caso a internet/API falhe ao vivo.
 - [ ] `temperature=0` já está no `.env` (respostas determinísticas).
@@ -78,12 +83,30 @@ Uma frase por bloco:
   pedindo 'por favor não minta' — é arquitetura: eu checo o título contra o catálogo e nem deixo o
   gerador entrar em cena."*
 
-> **Mostre o painel de debug** (na UI ou no `retrieval_debug`): o plano extraído, os IDs recuperados, a
-> latência por etapa e o custo. *"Mesmo quando a resposta não é perfeita, ela é auditável."*
+> **Mostre o painel de debug** (Modo técnico na sidebar): o plano extraído, os IDs recuperados, a
+> latência por etapa, o custo REAL e o **tier do roteamento**. *"Mesmo quando a resposta não é
+> perfeita, ela é auditável."*
 >
 > Q9 (ambígua) e Q2 (faixas etárias) são as capacidades mais legais, mas as **mais frágeis ao vivo** —
 > descreva-as ("ele pede contexto" / "ele admite que o dado só tem uma faixa") e mostre por uma gravação,
 > não arrisque ao vivo.
+
+### 🔹 Tour de 90 segundos pós-demo (os diferenciais novos — escolha 2 ou 3)
+1. **Roteamento inteligente (na Q8, com Modo técnico ligado):** *"reparem na nota
+   `tier=light`: como a resposta é só narrar um fato já computado, o sistema roteia para o
+   modelo barato — essa pergunta custou ~70% menos, sem perder nada. A decisão é Python
+   puro, testável; nunca pergunto ao LLM qual LLM usar."*
+2. **Fluxo auditável no navegador (F12):** expanda o grupo `[curadoria]` — *"cada resposta
+   loga o caminho inteiro: planner → filtros → recuperação → tier → geração → verificação
+   de citações, com latência e custo de cada etapa. Auditoria sem acesso ao servidor."*
+3. **Feedback fechando o loop (clique 👍):** *"cada voto grava o par
+   pergunta+resposta+plano+ids — é o gold-set VIVO nascendo. No v2, isso substitui as 10
+   perguntas de exemplo por avaliação com dados reais."* Abra o B.I. e mostre a Taxa de Aceitação.
+4. **B.I. (`/kpis`):** qualidade (10/10, recall, juiz) + **operação real** (custo médio, p50/p95,
+   mix de tiers, cache hit) + aceitação — *"o painel já lê a telemetria de produção."*
+5. **Troca de provedor sem deploy (se a chave OpenRouter estiver ativa):** mostre
+   `llm_backend` no `/health` — *"o juiz roda em OUTRA família (Claude) para não se
+   auto-avaliar, e se um modelo cair no meio da demo, o roteador tenta o fallback sozinho."*
 
 ---
 

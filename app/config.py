@@ -24,6 +24,12 @@ CONTEXT_CARDS_PATH = DATA_DIR / "context_cards.json"  # Contextual Retrieval (ge
 # Feedback humano (👍/👎) por resposta — JSON-lines, gitignored (dado de uso real; vira o
 # gold-set vivo do v2 e, depois, dados de treino). Path trocável p/ testes/volume Docker.
 FEEDBACK_PATH = Path(os.getenv("FEEDBACK_FILE", str(DATA_DIR / "feedback.jsonl")))
+# Log de USO persistido (espelho em arquivo dos eventos JSON do stdout): alimenta o B.I.
+# (dashboard /kpis) com operação real — custo, latência, tiers, cache. Gitignored; os testes
+# desligam via conftest.py (senão perguntas de teste poluiriam o painel). Rotação de arquivo
+# é preocupação de produção (coletor real); para o MVP/demo, append-only basta.
+USAGE_LOG_ENABLED = os.getenv("USAGE_LOG_ENABLED", "true").lower() == "true"
+USAGE_LOG_PATH = Path(os.getenv("USAGE_LOG_FILE", str(DATA_DIR / "usage_log.jsonl")))
 
 # --- Credenciais / modelos ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or ""
