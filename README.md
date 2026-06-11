@@ -43,9 +43,15 @@ streamlit run ui/streamlit_app.py     # http://localhost:8501
 
 # 6) Dashboard de KPIs (página web autocontida) + testes
 python scripts/build_dashboard.py     # gera dashboard/index.html (abra no navegador) — também em GET /kpis
-python -m pytest -q                   # 24 testes (núcleo determinístico + camada de segurança)
+python -m pytest -q                   # 40 testes (núcleo determinístico + segurança + roteamento/cache)
 python eval/check_facts.py            # asserta a verdade determinística (Q4/Q6/Q8)
 python scripts/ci_gate.py             # GATE de regressão (pytest + check_facts + piso de recall@8); sai !=0 se regredir
+
+# 7) Atalhos de execução local (alternativas aos passos 4-5)
+#    a) Windows sem Docker — usa a .venv, sobe API+UI minimizados e abre o navegador:
+powershell -ExecutionPolicy Bypass -File scripts\run_local.ps1        # (-Stop derruba)
+#    b) Docker (qualquer SO) — 1 imagem, 2 serviços, sem tocar no Python da máquina:
+docker compose up --build            # UI: http://localhost:8501 · API: http://localhost:8000
 ```
 
 Exemplo de chamada direta:
@@ -173,5 +179,7 @@ Construído com **Claude Code**. A IA gerou e refatorou código sob arquitetura 
 descontinuados). Todas as decisões de RAG/avaliação foram revisadas e validadas manualmente contra os dados.
 
 ## 9. O que NÃO foi feito (escopo)
-Sem autenticação, deploy, CI/CD ou cobertura total de testes (fora do escopo do desafio). UI é
-funcional, não bonita. Sem fine-tuning. Multi-turno e streaming ficaram como evolução.
+Sem autenticação nem deploy em produção (fora do escopo do desafio) — como conveniência há um
+gate de CI (GitHub Actions) e execução local empacotada (Docker Compose / `scripts/run_local.ps1`).
+UI é funcional, não bonita. Sem fine-tuning. Multi-turno e streaming ficaram como evolução
+(plano completo por gatilhos em [`docs/ROADMAP.md`](docs/ROADMAP.md)).

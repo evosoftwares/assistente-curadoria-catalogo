@@ -1,0 +1,20 @@
+# SEGREDOS nunca entram na imagem — entram em runtime via env_file do docker-compose.
+# (Uma imagem com .env dentro vaza a chave p/ qualquer um com acesso à imagem/registry.)
+.env
+
+# Ambiente local e artefatos regeneráveis — inúteis dentro da imagem e/ou enormes (.venv ~GB)
+.venv/
+venv/
+.git/
+.github/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+dashboard/
+data/llm_cache/
+.codex_tmp/
+
+# Os próprios arquivos de container não precisam estar dentro da imagem
+Dockerfile
+docker-compose.yml
+.dockerignore

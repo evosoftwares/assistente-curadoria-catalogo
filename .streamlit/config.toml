@@ -1,0 +1,15 @@
+# Tema base alinhado ao Carbon Design System (IBM) — White theme.
+# Os tokens finos (IBM Plex, cantos retos, tags, cards) entram via CSS em ui/theme.py;
+# aqui ficam só as cores que o Streamlit aceita nativamente.
+[theme]
+base = "light"
+primaryColor = "#0f62fe"             # Carbon Blue 60 (ação primária)
+backgroundColor = "#ffffff"          # Carbon White
+secondaryBackgroundColor = "#f4f4f4" # Carbon Layer 01 (sidebar/camadas)
+textColor = "#161616"                # Carbon Gray 100
+
+[server]
+headless = true                      # não tenta abrir navegador/prompt em servidor
+
+[browser]
+gatherUsageStats = false             # sem telemetria

@@ -1,0 +1,48 @@
+# Execução LOCAL com Docker — 1 imagem, 2 serviços (api + ui).
+#
+#   docker compose up --build
+#   UI:  http://localhost:8501      API: http://localhost:8000/health
+#
+# Pré-requisito: .env criado (copy .env.example .env). As chaves entram em RUNTIME via
+# env_file — o .dockerignore garante que o .env nunca é copiado para DENTRO da imagem
+# (imagem sem segredo pode ser compartilhada/publicada sem risco).
+
+services:
+  api:
+    build: .
+    env_file: .env                 # chaves/knobs só em runtime; a imagem permanece sem segredos
+    ports:
+      - "8000:8000"
+    healthcheck:
+      # Usa o GET /health da própria API. python -c em vez de curl: a imagem slim não tem
+      # curl, e instalar um binário só p/ healthcheck aumentaria a superfície da imagem.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s            # tempo p/ carregar catálogo + índice de embeddings no boot
+    # Para persistir o cache de chamadas LLM entre recriações do container
+    # (LLM_CACHE_PERSIST=true no .env), descomente o volume abaixo e o bloco no fim do arquivo:
+    # volumes:
+    #   - llm_cache:/app/data/llm_cache
+
+  ui:
+    build: .                       # mesma imagem da api; só muda o comando
+    command: ["python", "-m", "streamlit", "run", "ui/streamlit_app.py",
+              "--server.address", "0.0.0.0", "--server.port", "8501",
+              "--server.headless", "true", "--browser.gatherUsageStats", "false"]
+    environment:
+      # A UI fala com a API pelo NOME DO SERVIÇO na rede interna do compose (não localhost —
+      # cada container tem seu próprio localhost). A chamada é server-side (httpx no processo
+      # Streamlit), então CORS nem entra em cena.
+      API_BASE_URL: http://api:8000
+      # Princípio do menor privilégio (SECURITY.md): a UI NÃO recebe o env_file — ela não
+      # precisa de nenhuma chave de LLM, só do endereço da API.
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy # a UI só sobe quando o /health da API responder
+
+# volumes:
+#   llm_cache:

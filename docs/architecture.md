@@ -63,7 +63,7 @@
 | `app/pipeline.py` | Orquestra tudo; abstenção/clarify/limitação; roteamento inteligente (tier); verificação de citações |
 | `app/llm.py` | Clientes de chat (Gemini direto + OpenRouter roteado), cache de chamadas, embedder, contabilidade de tokens/custo |
 | `app/api.py` | FastAPI `POST /ask`, `GET /health`, logs estruturados |
-| `ui/streamlit_app.py` | UI mínima para demo (resposta + referências + debug) |
+| `ui/` | Chat livre p/ demo, estruturado como o backend: `streamlit_app.py` (orquestra) + `api_client.py` (HTTP) + `state.py` (estado) + `components/` (sidebar com status/atalhos, chat com referências+debug) |
 | `eval/` | gold-set, métricas de recuperação, LLM-as-judge, classificação manual |
 
 ## Por que esta forma (e não RAG vetorial puro)
