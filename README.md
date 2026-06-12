@@ -43,7 +43,7 @@ streamlit run ui/streamlit_app.py     # http://localhost:8501
 
 # 6) Dashboard de KPIs (página web autocontida) + testes
 python scripts/build_dashboard.py     # gera dashboard/index.html (abra no navegador) — também em GET /kpis
-python -m pytest -q                   # 44 testes (determinístico + segurança + roteamento/cache + feedback)
+python -m pytest -q                   # 53 testes (determinístico + segurança + roteamento/cache + feedback + MCP)
 python eval/check_facts.py            # asserta a verdade determinística (Q4/Q6/Q8)
 python scripts/ci_gate.py             # GATE de regressão (pytest + check_facts + piso de recall@8); sai !=0 se regredir
 
@@ -90,6 +90,14 @@ modelo (light/standard/heavy) pela complexidade real do trabalho, e um **cache d
 soma-se aos caches de resposta. Fluxo completo com fluxograma:
 [`docs/economia_de_tokens.md`](docs/economia_de_tokens.md).
 
+**Integração (MCP):** o assistente também é consumível como **ferramenta por agentes de IA** —
+[`mcp_server.py`](mcp_server.py) expõe `perguntar_catalogo`, `enviar_feedback` e `kpis_resumo`
+via MCP (JSON-RPC sobre stdio, implementado **sem SDK** — ~100 linhas auditáveis, sem dependência
+nova). O [`.mcp.json`](.mcp.json) conecta automaticamente no Claude Code ao abrir a pasta; o
+feedback enviado por agentes cai no **mesmo dataset** do loop v2. Para sessões de IA assistiva,
+o repo traz [`CLAUDE.md`](CLAUDE.md) (convenções) e skills de projeto (`/demo`, `/eval` em
+`.claude/skills/`).
+
 ## 4. Principais decisões técnicas e trade-offs
 
 | Decisão | Por quê | Alternativa descartada |
@@ -131,7 +139,7 @@ planner de produção) — método documentado em [`eval/build_gold.py`](eval/bu
 A UI também coleta **feedback humano por resposta** (👍/👎 + comentário) via `POST /feedback` →
 `data/feedback.jsonl` (1 linha JSON por evento, com pergunta+resposta+plano+ids+custo) — o início
 do **gold-set vivo** do roadmap v2.
-Há ainda **44 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos + segurança + roteamento/cache + feedback, e
+Há ainda **53 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos + segurança + roteamento/cache + feedback + protocolo MCP, e
 [`eval/check_facts.py`](eval/check_facts.py) que **assere programaticamente** a verdade determinística
 (Q4/Q6/Q8) contra o que o sistema computa. O juiz também reporta **faithfulness** (estilo RAGAS, ~0,93)
 — fração de afirmações com suporte no contexto. Um **gate de regressão** ([`scripts/ci_gate.py`](scripts/ci_gate.py),
@@ -186,3 +194,14 @@ Sem autenticação nem deploy em produção (fora do escopo do desafio) — como
 gate de CI (GitHub Actions) e execução local empacotada (Docker Compose / `scripts/run_local.ps1`).
 UI é funcional, não bonita. Sem fine-tuning. Multi-turno e streaming ficaram como evolução
 (plano completo por gatilhos em [`docs/ROADMAP.md`](docs/ROADMAP.md)).
+
+### O que foi feito ALÉM do pedido (e por quê)
+O **essencial foi entregue e auditado primeiro** — o histórico de commits mostra a ordem
+(núcleo → auditoria adversarial → avaliação → só então os bônus), respeitando a regra do
+enunciado de "não começar pelo bônus". Os itens além do escopo — roteamento de modelos
+(OpenRouter) + tiers por solicitação, coletor de feedback, B.I. de operação e integração
+MCP — são **bônus incrementais** construídos com IA assistiva (cujo uso o desafio pede para
+documentar, ver §8): cada um está amarrado a um critério da rubrica (custo/produto/autocrítica)
+ou a um passo do [`ROADMAP`](docs/ROADMAP.md), todos cobertos pelos 53 testes, e **removíveis
+sem tocar o núcleo**. Qualidade do essencial > quantidade de extras — e a avaliação contínua
+(gate de CI) garante que nenhum extra regrediu o comportamento 10/10.

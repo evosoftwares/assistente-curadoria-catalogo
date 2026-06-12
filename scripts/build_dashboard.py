@@ -200,7 +200,7 @@ def build() -> str:
     H.append(card(f"{macro.get('ndcg@8','—')}", "nDCG@8", f"MRR {macro.get('mrr','—')}", "#4f86f7"))
     H.append(card(f"US${sum(costs)/len(costs):.4f}", "Custo médio / requisição", f"min US${min(costs):.5f} · max US${max(costs):.4f}", "#16a085"))
     H.append(card(f"{AUDIT['nota_ponderada']}/5", "Nota da auditoria", "rubrica ponderada (banca)", "#f1c40f"))
-    H.append(card("44/44", "Testes (pytest)", "determinístico + segurança + roteamento + feedback", "#2ecc71"))
+    H.append(card("53/53", "Testes (pytest)", "determinístico + segurança + roteamento + feedback + MCP", "#2ecc71"))
     H.append(card(f"{agree_pct}%", "Acordo juiz×humano", f"κ={judge.get('kappa','—')}", "#9b59b6"))
     H.append(card(f"{len(usage)}", "Requisições reais", "operação registrada (usage_log)", "#4f86f7"))
     H.append(card(f"{aceit}%" if aceit is not None else "—", "Taxa de aceitação 👍",
@@ -360,7 +360,7 @@ def build() -> str:
 
     # Testes
     H.append("<h2>9. Testes &amp; reprodutibilidade</h2><div class='grid'>")
-    H.append(card("44/44", "pytest", "determinístico + segurança + roteamento/cache + feedback", "#2ecc71"))
+    H.append(card("53/53", "pytest", "determinístico + segurança + roteamento/cache + feedback + MCP", "#2ecc71"))
     H.append(card("OK", "check_facts", "verdade determinística Q4/Q6/Q8", "#2ecc71"))
     H.append(card("OK", "ci_gate", "pytest + facts + piso de recall@8 (GitHub Actions)", "#2ecc71"))
     H.append(card("offline", "Recuperação", "cache de embeddings commitado", "#16a085"))

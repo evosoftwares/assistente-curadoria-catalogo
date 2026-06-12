@@ -6,7 +6,6 @@
 """
 from __future__ import annotations
 
-import json
 import os
 import threading
 import time
@@ -17,7 +16,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 
-from . import config
+from . import config, feedback_store
 from .logging_conf import log_event, new_request_id
 from .models import AskRequest, AskResponse, FeedbackRequest
 from .pipeline import AskPipeline
@@ -35,10 +34,6 @@ _rate: dict[str, deque] = {}
 # Circuit breaker de custo com JANELA DIÁRIA real (achado SEC-01: antes nunca resetava -> 429 eterno).
 _spent_usd = 0.0
 _cost_day: str | None = None
-# Serializa os appends do feedback.jsonl: o endpoint é sync (threadpool) e duas escritas
-# concorrentes no mesmo arquivo poderiam intercalar bytes — uma linha JSONL corrompida
-# invalidaria o dataset (cada linha precisa ser parseável sozinha).
-_fb_lock = threading.Lock()
 
 
 def _account_cost(usd: float) -> None:
@@ -172,31 +167,11 @@ def kpis(request: Request) -> str:
 def feedback(req: FeedbackRequest, request: Request) -> dict:
     """Coletor de FEEDBACK humano (👍/👎 + comentário) — 1º passo do loop do v2: cada
     registro vira matéria-prima do gold-set vivo e de futuros componentes treinados.
-    Persistência em JSON-LINES (1 linha autossuficiente por evento — o formato que os
-    consumidores parseiam sem estado). Nota LGPD: a pergunta é gravada CRUA mesmo com
-    LOG_QUESTIONS=false — feedback é um opt-in explícito do usuário (clique), e sem a
-    pergunta o registro não serve de dataset."""
+    A escrita vive em feedback_store.save (compartilhada com a tool MCP — formato e lock
+    únicos). Nota LGPD: a pergunta é gravada CRUA mesmo com LOG_QUESTIONS=false — feedback
+    é um opt-in explícito do usuário (clique), e sem a pergunta não há dataset."""
     _enforce_limits(request)              # mesmo rate limit do /ask (escrita em disco é recurso)
-    record = {
-        "ts": round(time.time(), 3),
-        "verdict": req.verdict,
-        "question": req.question,
-        "answer": req.answer,
-        "comment": req.comment,
-        "behavior": req.behavior,
-        "reference_ids": req.reference_ids,
-        "retrieved_ids": req.retrieved_ids,
-        "context_ids": req.context_ids,
-        "plan_json": req.plan_json,
-        "cost_usd": req.cost_usd,
-        "latency_ms": req.latency_ms,
-        "from_cache": req.from_cache,
-    }
-    line = json.dumps(record, ensure_ascii=False)
-    with _fb_lock:                        # appends serializados -> nenhuma linha intercalada
-        config.FEEDBACK_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(config.FEEDBACK_PATH, "a", encoding="utf-8") as f:
-            f.write(line + "\n")
+    feedback_store.save(req)
     # Observabilidade sem duplicar payload: o log estruturado registra o evento e o tamanho
     # do dataset; o conteúdo integral está no feedback.jsonl.
     log_event("feedback", verdict=req.verdict, has_comment=bool(req.comment),

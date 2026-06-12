@@ -107,6 +107,10 @@ Uma frase por bloco:
 5. **Troca de provedor sem deploy (se a chave OpenRouter estiver ativa):** mostre
    `llm_backend` no `/health` — *"o juiz roda em OUTRA família (Claude) para não se
    auto-avaliar, e se um modelo cair no meio da demo, o roteador tenta o fallback sozinho."*
+6. **O assistente como ferramenta de agentes (MCP):** abra `mcp_server.py` — *"além da UI e
+   da API, o catálogo é consumível por agentes de IA via MCP: 3 ferramentas (perguntar,
+   dar feedback, ler KPIs), protocolo implementado em ~100 linhas sem SDK — o feedback de
+   um agente cai no MESMO dataset do humano. É o v4 do roadmap nascendo."*
 
 ---
 
@@ -193,6 +197,11 @@ contexto por livro → recall@8 0,87→0,89), Structured Outputs na resposta, e 
 - *"Injeção de prompt?"* → Conteúdo do catálogo é DADO delimitado/escapado + regra explícita de ignorar
   instruções no conteúdo + verificação de citações (não cita livro não-recuperado). Testei injeção na pergunta → abstém.
 - *"Latência?"* → ~7 s (a geração domina); temperature=0 + cache; streaming é o próximo passo de UX.
+- *"Por que tanta coisa além do escopo (roteamento, MCP, B.I.)?"* → *"O essencial foi entregue
+  e auditado primeiro — o histórico de commits mostra a ordem. Os extras são bônus incrementais
+  feitos com IA assistiva (que o desafio pede para documentar): cada um amarrado a um critério
+  da rubrica ou a um passo do roadmap, todos testados (53/53) e removíveis sem tocar o núcleo.
+  A regra 'não comece pelo bônus' foi respeitada — e o gate de CI prova que nada regrediu."*
 
 **Se travar:** *"Não considerei isso a fundo — minha hipótese seria X, mas precisaria medir."* (a banca valoriza honestidade.)
 
