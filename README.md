@@ -43,7 +43,8 @@ streamlit run ui/streamlit_app.py     # http://localhost:8501
 
 # 6) Dashboard de KPIs (página web autocontida) + testes
 python scripts/build_dashboard.py     # gera dashboard/index.html (abra no navegador) — também em GET /kpis
-python -m pytest -q                   # 53 testes (determinístico + segurança + roteamento/cache + feedback + MCP)
+python -m pytest -q                   # 59 testes (determinístico + segurança + roteamento/cache + feedback + MCP + qualidade-de-dado)
+python scripts/audit_catalog.py       # auditoria de qualidade do catálogo (acha conflitos título×sinopse) -> data/quality_report.json
 python eval/check_facts.py            # asserta a verdade determinística (Q4/Q6/Q8)
 python scripts/ci_gate.py             # GATE de regressão (pytest + check_facts + piso de recall@8); sai !=0 se regredir
 
@@ -139,7 +140,10 @@ planner de produção) — método documentado em [`eval/build_gold.py`](eval/bu
 A UI também coleta **feedback humano por resposta** (👍/👎 + comentário) via `POST /feedback` →
 `data/feedback.jsonl` (1 linha JSON por evento, com pergunta+resposta+plano+ids+custo) — o início
 do **gold-set vivo** do roadmap v2.
-Há ainda **53 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos + segurança + roteamento/cache + feedback + protocolo MCP, e
+Há ainda uma **auditoria de qualidade do dado** ([`scripts/audit_catalog.py`](scripts/audit_catalog.py)) que
+quantifica o teto imposto pelo catálogo — acha os conflitos título×sinopse (Q4/Q5), mede a templagem
+(43,5% de sinopses distintas) e dá uma nota; saída em `data/quality_report.json`, exibida no B.I.
+Há ainda **59 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos + segurança + roteamento/cache + feedback + protocolo MCP + qualidade-de-dado, e
 [`eval/check_facts.py`](eval/check_facts.py) que **assere programaticamente** a verdade determinística
 (Q4/Q6/Q8) contra o que o sistema computa. O juiz (agora **cross-família**, `anthropic/claude-haiku-4.5`
 via OpenRouter) também reporta **faithfulness** (estilo RAGAS, ~1,0) — fração de afirmações com suporte

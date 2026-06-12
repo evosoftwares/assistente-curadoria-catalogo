@@ -1,0 +1,350 @@
+{
+  "total_livros": 200,
+  "nota_qualidade": 76.9,
+  "penalidades": {
+    "schema": 0,
+    "contradicoes": 9,
+    "templagem": 14.1,
+    "vocab": 0.0
+  },
+  "resumo": {
+    "erros_schema": 0,
+    "contradicoes_titulo_materia": 3,
+    "sinopses_distintas_pct": 43.5,
+    "clusters_de_edicao": 42
+  },
+  "achados": {
+    "schema": [],
+    "conflito_titulo_materia": [
+      {
+        "id": "BK0074",
+        "titulo": "História do Brasil ensino médio — 1ª série",
+        "materia_no_titulo": "historia do brasil",
+        "materia_na_sinopse": "literatura"
+      },
+      {
+        "id": "BK0100",
+        "titulo": "Física ensino médio — 1ª série",
+        "materia_no_titulo": "fisica",
+        "materia_na_sinopse": "literatura"
+      },
+      {
+        "id": "BK0122",
+        "titulo": "Biologia ensino médio — 1ª série",
+        "materia_no_titulo": "biologia",
+        "materia_na_sinopse": "quimica"
+      }
+    ],
+    "sinopses_duplicadas": {
+      "sinopses_distintas": 87,
+      "total_livros": 200,
+      "distintas_pct": 43.5,
+      "grupos_repetidos": 27,
+      "livros_com_sinopse_repetida": 140,
+      "maior_grupo": 10
+    },
+    "clusters_edicao": [
+      {
+        "cluster": "C0001",
+        "ids": [
+          "BK0002",
+          "BK0087"
+        ]
+      },
+      {
+        "cluster": "C0003",
+        "ids": [
+          "BK0004",
+          "BK0144"
+        ]
+      },
+      {
+        "cluster": "C0008",
+        "ids": [
+          "BK0009",
+          "BK0136"
+        ]
+      },
+      {
+        "cluster": "C0009",
+        "ids": [
+          "BK0010",
+          "BK0057"
+        ]
+      },
+      {
+        "cluster": "C0012",
+        "ids": [
+          "BK0013",
+          "BK0158",
+          "BK0181"
+        ]
+      },
+      {
+        "cluster": "C0013",
+        "ids": [
+          "BK0014",
+          "BK0064"
+        ]
+      },
+      {
+        "cluster": "C0016",
+        "ids": [
+          "BK0017",
+          "BK0163"
+        ]
+      },
+      {
+        "cluster": "C0017",
+        "ids": [
+          "BK0018",
+          "BK0128"
+        ]
+      },
+      {
+        "cluster": "C0022",
+        "ids": [
+          "BK0023",
+          "BK0068"
+        ]
+      },
+      {
+        "cluster": "C0028",
+        "ids": [
+          "BK0029",
+          "BK0153"
+        ]
+      },
+      {
+        "cluster": "C0029",
+        "ids": [
+          "BK0030",
+          "BK0070"
+        ]
+      },
+      {
+        "cluster": "C0031",
+        "ids": [
+          "BK0032",
+          "BK0050"
+        ]
+      },
+      {
+        "cluster": "C0037",
+        "ids": [
+          "BK0038",
+          "BK0091"
+        ]
+      },
+      {
+        "cluster": "C0038",
+        "ids": [
+          "BK0039",
+          "BK0161"
+        ]
+      },
+      {
+        "cluster": "C0042",
+        "ids": [
+          "BK0043",
+          "BK0045"
+        ]
+      },
+      {
+        "cluster": "C0044",
+        "ids": [
+          "BK0046",
+          "BK0062"
+        ]
+      },
+      {
+        "cluster": "C0047",
+        "ids": [
+          "BK0049",
+          "BK0132"
+        ]
+      },
+      {
+        "cluster": "C0049",
+        "ids": [
+          "BK0052",
+          "BK0098"
+        ]
+      },
+      {
+        "cluster": "C0055",
+        "ids": [
+          "BK0059",
+          "BK0183"
+        ]
+      },
+      {
+        "cluster": "C0060",
+        "ids": [
+          "BK0066",
+          "BK0129"
+        ]
+      },
+      {
+        "cluster": "C0061",
+        "ids": [
+          "BK0067",
+          "BK0162"
+        ]
+      },
+      {
+        "cluster": "C0064",
+        "ids": [
+          "BK0072",
+          "BK0106"
+        ]
+      },
+      {
+        "cluster": "C0069",
+        "ids": [
+          "BK0077",
+          "BK0185"
+        ]
+      },
+      {
+        "cluster": "C0071",
+        "ids": [
+          "BK0079",
+          "BK0194"
+        ]
+      },
+      {
+        "cluster": "C0076",
+        "ids": [
+          "BK0084",
+          "BK0166"
+        ]
+      },
+      {
+        "cluster": "C0077",
+        "ids": [
+          "BK0085",
+          "BK0174"
+        ]
+      },
+      {
+        "cluster": "C0078",
+        "ids": [
+          "BK0086",
+          "BK0107",
+          "BK0188"
+        ]
+      },
+      {
+        "cluster": "C0081",
+        "ids": [
+          "BK0090",
+          "BK0164"
+        ]
+      },
+      {
+        "cluster": "C0090",
+        "ids": [
+          "BK0101",
+          "BK0156"
+        ]
+      },
+      {
+        "cluster": "C0091",
+        "ids": [
+          "BK0102",
+          "BK0105"
+        ]
+      },
+      {
+        "cluster": "C0092",
+        "ids": [
+          "BK0103",
+          "BK0182"
+        ]
+      },
+      {
+        "cluster": "C0095",
+        "ids": [
+          "BK0109",
+          "BK0190"
+        ]
+      },
+      {
+        "cluster": "C0104",
+        "ids": [
+          "BK0118",
+          "BK0173"
+        ]
+      },
+      {
+        "cluster": "C0105",
+        "ids": [
+          "BK0119",
+          "BK0151"
+        ]
+      },
+      {
+        "cluster": "C0106",
+        "ids": [
+          "BK0120",
+          "BK0171"
+        ]
+      },
+      {
+        "cluster": "C0109",
+        "ids": [
+          "BK0123",
+          "BK0142",
+          "BK0152"
+        ]
+      },
+      {
+        "cluster": "C0117",
+        "ids": [
+          "BK0134",
+          "BK0187"
+        ]
+      },
+      {
+        "cluster": "C0122",
+        "ids": [
+          "BK0140",
+          "BK0147"
+        ]
+      },
+      {
+        "cluster": "C0123",
+        "ids": [
+          "BK0141",
+          "BK0200"
+        ]
+      },
+      {
+        "cluster": "C0125",
+        "ids": [
+          "BK0145",
+          "BK0168"
+        ]
+      },
+      {
+        "cluster": "C0128",
+        "ids": [
+          "BK0149",
+          "BK0169"
+        ]
+      },
+      {
+        "cluster": "C0130",
+        "ids": [
+          "BK0154",
+          "BK0191"
+        ]
+      }
+    ],
+    "vocab_outliers": {
+      "generos_frequencia_1": [],
+      "publico_frequencia_1": []
+    }
+  }
+}

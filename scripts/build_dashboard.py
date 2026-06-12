@@ -200,7 +200,7 @@ def build() -> str:
     H.append(card(f"{macro.get('ndcg@8','—')}", "nDCG@8", f"MRR {macro.get('mrr','—')}", "#4f86f7"))
     H.append(card(f"US${sum(costs)/len(costs):.4f}", "Custo médio / requisição", f"min US${min(costs):.5f} · max US${max(costs):.4f}", "#16a085"))
     H.append(card(f"{AUDIT['nota_ponderada']}/5", "Nota da auditoria", "rubrica ponderada (banca)", "#f1c40f"))
-    H.append(card("53/53", "Testes (pytest)", "determinístico + segurança + roteamento + feedback + MCP", "#2ecc71"))
+    H.append(card("59/59", "Testes (pytest)", "determinístico + segurança + roteamento + feedback + MCP", "#2ecc71"))
     H.append(card(f"{agree_pct}%", "Acordo juiz×humano", f"κ={judge.get('kappa','—')}", "#9b59b6"))
     H.append(card(f"{len(usage)}", "Requisições reais", "operação registrada (usage_log)", "#4f86f7"))
     H.append(card(f"{aceit}%" if aceit is not None else "—", "Taxa de aceitação 👍",
@@ -268,8 +268,43 @@ def build() -> str:
     H.append(card("~US$200/dia", "@100k req/dia", "Flash; cache+Lite cortam ~3×"))
     H.append("</div></div>")
 
+    # Qualidade do DADO (quality_report.json — auditoria de ingestão). O dado é o TETO da
+    # qualidade do RAG; este painel torna isso visível e quantificado (gold standard = dado limpo).
+    quality = None
+    qp = DATA / "quality_report.json"
+    if qp.exists():
+        try:
+            quality = json.loads(qp.read_text(encoding="utf-8"))
+        except Exception:
+            quality = None
+    H.append("<h2>5. Qualidade do dado (auditoria de ingestão)</h2>")
+    if quality:
+        rs = quality["resumo"]
+        nota = quality["nota_qualidade"]
+        cor = "#2ecc71" if nota >= 85 else ("#f1c40f" if nota >= 70 else "#e74c3c")
+        H.append("<div class='grid'>")
+        H.append(card(f"{nota}/100", "Nota de qualidade do dado", "auditoria determinística", cor))
+        H.append(card(rs["erros_schema"], "Erros de schema", "campos/ids/ISBN/ano", "#2ecc71" if rs["erros_schema"] == 0 else "#e74c3c"))
+        H.append(card(rs["contradicoes_titulo_materia"], "Conflitos título×matéria", "ex.: título Física, sinopse Literatura", "#e67e22"))
+        H.append(card(f"{rs['sinopses_distintas_pct']}%", "Sinopses distintas", "dado templado (ideal ~100%)", "#f1c40f"))
+        H.append("</div>")
+        contras = quality["achados"]["conflito_titulo_materia"]
+        if contras:
+            H.append("<p class='pill'>Conflitos internos detectados (correção = limpeza na ingestão):</p><table>")
+            H.append("<tr><th>ID</th><th>Título</th><th>Matéria no título</th><th>Matéria na sinopse</th></tr>")
+            for c in contras:
+                H.append(f"<tr><td>{escape(c['id'])}</td><td class='pill'>{escape(c['titulo'])}</td>"
+                         f"<td>{escape(c['materia_no_titulo'])}</td><td>{escape(c['materia_na_sinopse'])}</td></tr>")
+            H.append("</table>")
+        H.append("<p class='pill'>O dado é o teto da qualidade do RAG: o sistema já EXPÕE essas "
+                 "contradições na resposta (em vez de escolher um lado); a correção definitiva é "
+                 "limpeza na ingestão. Gerado por <code>scripts/audit_catalog.py</code>.</p>")
+    else:
+        H.append("<p class='pill'>Sem relatório de qualidade — rode "
+                 "<code>python scripts/audit_catalog.py</code> e regenere o painel.</p>")
+
     # Operação real (usage_log.jsonl — espelho dos eventos por requisição)
-    H.append("<h2>5. Operação real (uso registrado)</h2>")
+    H.append("<h2>6. Operação real (uso registrado)</h2>")
     if usage:
         u_costs = [r.get("cost_usd", 0) or 0 for r in usage]
         u_lats = [(r.get("latency_ms") or {}).get("total_ms", 0) or 0 for r in usage]
@@ -315,7 +350,7 @@ def build() -> str:
                  "alimenta <code>data/usage_log.jsonl</code> e aparece aqui (regenerar o painel).</p>")
 
     # Feedback humano (feedback.jsonl — métrica de PRODUTO do roadmap v2)
-    H.append("<h2>6. Feedback humano (👍/👎 na UI)</h2>")
+    H.append("<h2>7. Feedback humano (👍/👎 na UI)</h2>")
     if fb:
         H.append("<div class='grid'>")
         H.append(card(f"{aceit}%", "Taxa de aceitação", "meta v2: > 80%",
@@ -339,7 +374,7 @@ def build() -> str:
                  "<code>data/feedback.jsonl</code> e a taxa de aceitação aparece aqui.</p>")
 
     # Dados do catálogo
-    H.append("<h2>7. Dados do catálogo</h2><div class='two'><div class='grid'>")
+    H.append("<h2>8. Dados do catálogo</h2><div class='two'><div class='grid'>")
     H.append(card(len(books), "Livros", ""))
     H.append(card(distinct_syn, "Sinopses distintas", "dado templado (87/200)"))
     H.append(card(f"{min(anos)}–{max(anos)}", "Anos", ""))
@@ -351,7 +386,7 @@ def build() -> str:
     H.append("</div></div>")
 
     # Auditoria
-    H.append("<h2>8. Auditoria adversarial (rubrica da banca)</h2>")
+    H.append("<h2>9. Auditoria adversarial (rubrica da banca)</h2>")
     H.append(f"<p class='sub'>Nota ponderada <b>{AUDIT['nota_ponderada']}/5</b> · {AUDIT['achados_reais']} achados reais "
              f"(alta {AUDIT['severidades']['alta']} · média {AUDIT['severidades']['media']} · baixa {AUDIT['severidades']['baixa']}; corrigidos). "
              f"{escape(AUDIT['veredito'])}</p>")
@@ -359,8 +394,8 @@ def build() -> str:
         H.append(bar(nota / 5 * 100, f"{crit} ({peso}%) — {nota}/5", "#f1c40f"))
 
     # Testes
-    H.append("<h2>9. Testes &amp; reprodutibilidade</h2><div class='grid'>")
-    H.append(card("53/53", "pytest", "determinístico + segurança + roteamento/cache + feedback + MCP", "#2ecc71"))
+    H.append("<h2>10. Testes &amp; reprodutibilidade</h2><div class='grid'>")
+    H.append(card("59/59", "pytest", "determinístico + segurança + roteamento/cache + feedback + MCP", "#2ecc71"))
     H.append(card("OK", "check_facts", "verdade determinística Q4/Q6/Q8", "#2ecc71"))
     H.append(card("OK", "ci_gate", "pytest + facts + piso de recall@8 (GitHub Actions)", "#2ecc71"))
     H.append(card("offline", "Recuperação", "cache de embeddings commitado", "#16a085"))

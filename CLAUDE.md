@@ -10,6 +10,7 @@ técnico de Eng. de IA — a banca lê este repo: qualidade e honestidade valem 
 .venv\Scripts\python.exe -m pytest -q              # suíte completa (100% offline — nunca exige rede/chave)
 .venv\Scripts\python.exe scripts\ci_gate.py        # gate: pytest + check_facts + piso de recall@8
 powershell -ExecutionPolicy Bypass -File scripts\run_local.ps1   # sobe API (:8000) + UI (:8501); -Stop derruba
+.venv\Scripts\python.exe scripts\audit_catalog.py  # auditoria de qualidade do dado -> data/quality_report.json
 .venv\Scripts\python.exe scripts\build_dashboard.py # regenera o B.I. (servido em GET /kpis)
 docker compose up --build                          # alternativa containerizada (1 imagem, 2 serviços)
 ```
