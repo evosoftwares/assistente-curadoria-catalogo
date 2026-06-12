@@ -149,10 +149,11 @@ section[data-testid="stSidebar"] .stButton > button:hover { background: #e0e0e0;
                 font-size: 0.72rem; margin-left: 0.35rem; }
 .ref-card .m  { color: #525252; font-size: 0.8rem; margin: 0.15rem 0 0.4rem; }
 
-/* ---------- Estado vazio (boas-vindas orientadas à intenção) ---------- */
-.hero { padding: 1.25rem 0 0.5rem; }
-.hero h3 { font-weight: 400; color: #161616; margin-bottom: 0.25rem; }
-.hero p  { color: #525252; font-size: 0.95rem; }
+/* ---------- Estado vazio (boas-vindas acolhedoras) ---------- */
+.hero { padding: 1.5rem 0 0.75rem; }
+.hero h3 { font-weight: 600; color: #161616; font-size: 1.25rem; margin-bottom: 0.5rem; }
+.hero p  { color: #393939; font-size: 0.97rem; line-height: 1.6; margin: 0.35rem 0; }
+.hero .hero-cta { color: #525252; font-size: 0.9rem; margin-top: 0.9rem; }
 </style>
 """
 

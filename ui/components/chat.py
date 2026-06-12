@@ -24,12 +24,13 @@ import api_client
 import browser_log
 import state
 
-# Comportamento (taxonomia interna do backend) -> selo na LÍNGUA DO USUÁRIO + cor Carbon.
+# Comportamento (taxonomia interna do backend) -> selo na LÍNGUA DO USUÁRIO, em tom de colega
+# (não de status técnico) + cor Carbon. As fontes aparecem nos cards logo abaixo do selo.
 BADGE = {
-    "answer": ("Resposta com fontes", "green"),
-    "abstain": ("Não consta no catálogo", "red"),
-    "clarify": ("Preciso de mais contexto", "blue"),
-    "acknowledge_limitation": ("Limitação do dado", "yellow"),
+    "answer": ("Encontrei no acervo", "green"),
+    "abstain": ("Esse a gente não tem", "red"),
+    "clarify": ("Me conta um pouco mais?", "blue"),
+    "acknowledge_limitation": ("O catálogo não detalha isso", "yellow"),
 }
 
 # Intenções típicas do dia a dia da editora (mapeiam 1:1 aos caminhos do pipeline:
@@ -47,10 +48,14 @@ _MAX_CARDS = 4   # cards visíveis por resposta; o resto vai num expander (Q6 tr
 def render_empty_state() -> None:
     """Boas-vindas quando não há conversa: comunica O QUE o assistente sabe fazer.
     Clicar numa intenção envia a pergunta (set_pending + rerun p/ a tela já nascer limpa)."""
+    # Tom de COLEGA (não de manual): saudação em 1ª pessoa + promessa de confiança ("não invento").
+    # Copy é o principal lever de "parecer amigável" — Carbon dá a casca limpa, o texto dá o calor.
     st.markdown(
-        '<div class="hero"><h3>Como posso ajudar com o catálogo?</h3>'
-        "<p>Pergunte como você falaria com um colega que conhece os 200 livros de cor — "
-        "eu respondo em segundos, sempre mostrando as fontes.</p></div>",
+        '<div class="hero"><h3>Oi! 👋 Sou seu assistente de curadoria</h3>'
+        "<p>Pode falar comigo com naturalidade, do seu jeito. Conheço os 200 livros do nosso "
+        "acervo de cor e respondo na hora — sempre te mostrando em quais livros me baseei. "
+        "E se a gente não tiver o que você procura, eu digo na lata: <b>não invento</b>. 🙂</p>"
+        '<p class="hero-cta">Não sabe por onde começar? É só tocar numa ideia:</p></div>',
         unsafe_allow_html=True,
     )
     cols = st.columns(2)
@@ -94,7 +99,7 @@ def _send_feedback(msg: dict, index: int, verdict: str, comment: str | None) -> 
     try:
         api_client.send_feedback(payload)
     except Exception as e:
-        st.toast(f"Não consegui registrar o feedback: {e}", icon="⚠️")
+        st.toast(f"Ih, não consegui salvar seu feedback agora. Tenta de novo? ({e})", icon="⚠️")
         return
     state.set_feedback(index, verdict)
     st.rerun()   # redesenha: os botões viram o "obrigado" (1 voto por resposta)
@@ -178,12 +183,13 @@ def handle_input() -> None:
     with st.chat_message("user"):
         st.write(prompt)
     with st.chat_message("assistant"):
-        with st.spinner("Consultando o catálogo…"):
+        with st.spinner("Deixa eu procurar nos nossos livros…"):
             try:
                 data = api_client.ask(prompt)
             except Exception as e:
-                # Erro de rede/API não entra no histórico (não é resposta) — só avisa.
-                st.error(f"Erro ao chamar a API: {e}")
+                # Erro de rede/API não entra no histórico (não é resposta) — só avisa, com calma.
+                st.error(f"Ops, tropecei aqui e não consegui responder agora. Tenta de novo em "
+                         f"instantes? (detalhe técnico: {e})")
                 return
         msg = state.add_assistant(data["answer"], data["references"], data["retrieval_debug"],
                                   question=prompt)
