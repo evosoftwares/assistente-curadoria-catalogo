@@ -3,9 +3,19 @@
 Três camadas: (1) classificação **manual** das 10 perguntas, (2) **métricas de recuperação**
 (recall@k/precision@k/MRR/nDCG, dedup por edição), (3) **LLM-as-judge** cético com calibração.
 
-> Rodado com `gemini-2.5-flash` (geração/juiz), `gemini-2.5-flash-lite` (planner),
-> `gemini-embedding-001` (768d). Reproduza com:
+> Rodado com geração roteada via **OpenRouter** (`google/gemini-2.5-flash` / `-lite` no planner),
+> **juiz em outra família** (`anthropic/claude-haiku-4.5`) e `gemini-embedding-001` (768d, embeddings).
+> Reproduza com:
 > `python scripts/build_index.py && python eval/run_manual.py && python eval/retrieval_metrics.py && python eval/judge.py`
+
+> **Atualização (jun/2026) — roteamento via OpenRouter + juiz cross-família.** A geração passou a
+> ser roteada pelo OpenRouter e o **juiz migrou para outra família** (`anthropic/claude-haiku-4.5`)
+> para eliminar o viés "Gemini avalia Gemini". Efeitos **medidos**: (1) **comportamento das 10
+> inalterado — 10/10**; (2) o juiz cross-família é **mais severo** — **7 CORRETA / 2 PARCIAL / 1
+> ERRADA** (vs. 9/1 do juiz Gemini), confirmando que a auto-avaliação anterior era otimista; (3)
+> recuperação macro recall@8 **0,89 → 0,85** (o planner roteado gera sub-queries ligeiramente
+> diferentes — Q1 é o mais sensível). Os números abaixo refletem a configuração ATUAL (roteada).
+> Trocar para Gemini direto (`LLM_BACKEND=gemini`) reproduz os números anteriores. Honestidade > número bonito.
 
 ## Metodologia
 - **Gold-set anti-circular** ([`gold.json`](gold.json) via [`build_gold.py`](build_gold.py)): candidatos
@@ -22,11 +32,15 @@ Macro-médias (8 perguntas pontuáveis):
 | Modo | MRR | nDCG@8 | recall@5 | recall@8 | recall@20 | prec@5 |
 |------|-----|--------|----------|----------|-----------|--------|
 | BM25-only (sem chave) | 0.89 | 0.86 | 0.67 | 0.77 | 0.94 | 0.80 |
-| Híbrido (sem.+BM25+RRF) | 1.00 | 0.96 | 0.76 | 0.87 | 0.97 | 0.90 |
-| **Híbrido + Contextual Retrieval** | **1.00** | **0.97** | **0.76** | **0.89** | **0.97** | **0.90** |
+| Híbrido (Gemini direto) | 1.00 | 0.96 | 0.76 | 0.87 | 0.97 | 0.90 |
+| Híbrido + Contextual (Gemini direto) | 1.00 | 0.97 | 0.76 | 0.89 | 0.97 | 0.90 |
+| **Híbrido + Contextual (planner roteado OpenRouter — ATUAL)** | **1.00** | **0.946** | **0.713** | **0.851** | **0.943** | **0.85** |
 
-(Contextual Retrieval = "cartões de contexto" gerados por LLM e concatenados ao texto indexado;
-maior ganho em Q1 "IA ou sistemas distribuídos": recall@8 0,67→0,78 e prec@8 0,75→0,88.)
+(Contextual Retrieval = "cartões de contexto" gerados por LLM e concatenados ao texto indexado.
+Com o planner **roteado pelo OpenRouter**, as sub-queries mudam um pouco e a macro recua de
+recall@8 0,89→0,85; o mais sensível é **Q1** "IA ou sistemas distribuídos" — sub-queries
+diferentes derrubam seu recall@8 para 0,67. MRR e nDCG@8 permanecem altíssimos — a ordem dos
+relevantes recuperados continua excelente.)
 
 **O híbrido fecha a lacuna semântica.** O maior ganho é **Q3** (romances de "memória familiar"),
 a armadilha das cidades pequenas, onde o lexical falha porque os termos da pergunta não aparecem
@@ -59,21 +73,32 @@ respostas completas em [`results_manual.md`](results_manual.md).
 | 9 | ambiguous | clarify | CORRETA | Lista os 2 candidatos JP, nota que nenhum é "sobre cidades", pede contexto. |
 | 10 | out_of_catalog | abstain | CORRETA | Abstém-se sem inventar edição/ISBN. |
 
-## 3. LLM-as-judge (bônus)
+## 3. LLM-as-judge (bônus) — agora cross-família (Claude Haiku 4.5)
 - **Calibração: 4/4** respostas propositalmente ruins (alucinação de título, citação de id
   inexistente, falha em abster, resposta irrelevante) foram **reprovadas** → juiz **CONFIÁVEL**.
-- Vereditos: **9 CORRETA, 1 PARCIAL** (Q10), com groundedness=3 em Q1-Q8 (Q9=2). Notas 0-3 por dimensão em [`results_judge.json`](results_judge.json).
-- **Faithfulness (estilo RAGAS) = 0,93** macro: fração das afirmações da resposta com CITAÇÃO de
-  suporte no contexto (decomposição em *claims* + verificação de *entailment* por citação verbatim;
-  abstenção excluída por não ter afirmação factual). Complementa o groundedness 0-3 com um número
-  contínuo de fidelidade. (Alternativa offline mais robusta: cross-encoder NLI multilíngue.)
-- **Concordância com o humano:** acordo bruto **90% (9/10)** — a única divergência é Q10. **κ de Cohen = 0,0**,
-  porém é um caso **degenerado**: como os rótulos humanos ficaram todos CORRETA (sem variância), o κ colapsa
-  por construção mesmo com 90% de acordo. É exatamente a limitação do κ que documentamos — por isso reporto
-  o **acordo bruto** como métrica primária. (Antes das melhorias de Q4/Q5 a distribuição era 7/3 e o κ dava 0,41.)
-- **Limitação conhecida:** no Q10 o juiz dá `behavior_match=0` porque a abstenção é por
-  **curto-circuito** (contexto vazio) — o juiz, cego ao catálogo, não tem como validar "não consta".
-  Correção futura: passar ao juiz a evidência de que o título foi checado contra o catálogo inteiro.
+- Vereditos: **7 CORRETA, 2 PARCIAL (Q2, Q9), 1 ERRADA (Q10)**. Notas 0-3 por dimensão em
+  [`results_judge.json`](results_judge.json). O juiz de **outra família** é mais rigoroso que o
+  juiz Gemini anterior (9/1): é o efeito esperado e desejado de remover o viés de auto-avaliação —
+  o 7/10 do Claude é uma estimativa **mais confiável** que o 9/10 otimista do Gemini.
+- **Por que cada não-CORRETA (e por que NÃO é falha do RAG):**
+  - **Q10 → ERRADA** (`behavior_match=0`, `grounded=0`): é a **limitação do juiz** já documentada —
+    a abstenção é por **curto-circuito** (contexto vazio), e o juiz, cego ao catálogo, não tem como
+    validar "não consta". O comportamento do sistema é o IDEAL (abstém sem inventar); o juiz é que
+    não consegue pontuá-lo. Correção futura: passar ao juiz a evidência de que o título foi checado.
+  - **Q2 → PARCIAL** (`answer_relevance=1`): o catálogo só tem 1 faixa etária, então o sistema
+    entrega 5 livros e **explicita a limitação** (comportamento correto, `behavior_match=3`); o juiz
+    penaliza a relevância porque o pedido ("faixas diferentes") é insatisfazível pelos dados.
+  - **Q9 → PARCIAL** (`groundedness=1`): pergunta ambígua; o sistema pede contexto e lista candidatos
+    (`behavior_match=3`), mas grande parte da resposta é o pedido de esclarecimento, que o juiz não
+    consegue ancorar em citação — fragilidade inerente do "clarify", não alucinação.
+- **Faithfulness (estilo RAGAS) = 1,0** macro: toda afirmação factual das respostas teve citação de
+  suporte no contexto (decomposição em *claims* + *entailment* por citação verbatim; abstenção
+  excluída). (Alternativa offline mais robusta: cross-encoder NLI multilíngue.)
+- **Concordância com o humano:** acordo bruto **70% (7/10)** — as 3 divergências (Q2/Q9/Q10) são os
+  casos acima, onde o humano (com acesso ao catálogo e ao comportamento) classifica CORRETA e o juiz
+  (cego ao catálogo, mais estrito em grounding) reprova. **κ de Cohen = 0,0** — caso **degenerado**:
+  os rótulos humanos são todos CORRETA (sem variância), então o κ colapsa por construção; por isso
+  reporto o **acordo bruto** como métrica primária e trato o juiz como sinal **secundário e cético**.
 
 ## 3c. Conflito título×sinopse no dado (Q4/Q5) — tratado, não escondido
 O catálogo sintético tem **contradições internas**: o título diz "Física" mas a sinopse diz "currículo de
@@ -136,10 +161,12 @@ vem do *title-lookup* (Q10) e da **geração ancorada**, que já respondeu "não
 nas 3 consultas fora de escopo testadas. `top_cosine` permanece exposto apenas para observabilidade.
 
 ## 6. Conclusão
-O comportamento das 10 perguntas (incl. as 4 armadilhas) está correto (10/10), com recuperação
-forte no modo híbrido + Contextual Retrieval (macro recall@8 = 0,89; MRR = 1,0; nDCG@8 = 0,97) e
-geração ancorada com citações verificadas. O juiz confiável aponta 9/10 CORRETA; a única não-CORRETA
-é Q10 (PARCIAL — a abstenção por curto-circuito não é validável pelo juiz, cego ao catálogo; ver §3).
-Q4 ficou CORRETA (groundedness=3) após a regra que expõe o conflito título×sinopse — **inconsistência
-do dado**, não falha do RAG. Custo ~US$0,0016/req (medido) e latência ~7 s, com abstenção barata e instantânea
-via curto-circuito.
+O comportamento das 10 perguntas (incl. as 4 armadilhas) está correto (**10/10**), com recuperação
+forte no modo híbrido + Contextual Retrieval (macro recall@8 = **0,85**; MRR = **1,0**; nDCG@8 =
+**0,946** com o planner roteado via OpenRouter) e geração ancorada com citações verificadas
+(faithfulness = 1,0). O **juiz cross-família** (Claude Haiku 4.5, confiável por calibração 4/4)
+aponta **7/10 CORRETA** — mais severo e mais honesto que o juiz Gemini anterior (9/10): as 3
+não-CORRETA são **limitação do juiz** (Q10, abstenção por curto-circuito que ele não valida) e
+**dado insatisfazível/ambíguo** (Q2/Q9), não alucinação do sistema (ver §3). Q4 ficou CORRETA após
+a regra que expõe o conflito título×sinopse — **inconsistência do dado**, não falha do RAG. Custo
+~US$0,001/req (medido, roteado) e latência ~7 s, com abstenção barata e instantânea via curto-circuito.

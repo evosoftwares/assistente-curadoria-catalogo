@@ -140,15 +140,21 @@ contexto por livro → recall@8 0,87→0,89), Structured Outputs na resposta, e 
 
 ## 5. Avaliação e autocrítica (o diferencial — 15% da nota)
 *"Não basta 'parece que funciona'. Montei 3 camadas:"*
-1. **Classificação manual** das 10 (correta/parcial/errada) → **10/10 corretas**.
-2. **Métricas de recuperação** (recall@k, MRR, nDCG) com gold-set **anti-circular** → macro recall@8 **0,89**, MRR **1,0**.
-3. **LLM-as-judge** com **conjunto de calibração** (4 respostas ruins que ele tem que reprovar — e reprova 4/4) → 9/10 corretas.
+1. **Classificação manual** das 10 (correta/parcial/errada) → **10/10 corretas** (comportamento).
+2. **Métricas de recuperação** (recall@k, MRR, nDCG) com gold-set **anti-circular** → macro recall@8 **0,85**, MRR **1,0**, nDCG@8 **0,95**.
+3. **LLM-as-judge cross-família** (`claude-haiku-4.5`, calibração 4/4) → **7/10 corretas**.
 
 **Honestidade intelectual (diga isto, ganha pontos):**
-- *"O acordo juiz×humano é 90%, mas o coeficiente κ deu 0 — porque meus rótulos ficaram todos 'correto',
-  e o κ colapsa sem variância. Reporto o acordo bruto e explico a limitação, em vez de fingir um número bonito."*
-- *"A única falha que o juiz aponta (Q10) é uma limitação do **próprio juiz**, não do sistema: como a
-  abstenção é por curto-circuito, o contexto chega vazio e ele não tem como validar 'não consta'."*
+- *"Troquei o juiz para OUTRA família de modelo (Claude avaliando Gemini) justamente para não me
+  auto-avaliar. Ele ficou mais severo — caiu de 9/10 para 7/10 — e isso é exatamente o ponto: o
+  juiz anterior, Gemini avaliando Gemini, era otimista. Prefiro o 7/10 mais honesto."*
+- *"As 3 não-CORRETA não são alucinação: Q10 é limitação do PRÓPRIO juiz (a abstenção é por
+  curto-circuito, o contexto chega vazio e ele, cego ao catálogo, não valida 'não consta'); Q2 e Q9
+  são pedidos insatisfazíveis pelos dados (uma faixa etária só / pergunta ambígua), onde o
+  comportamento do sistema está certo (behavior_match=3) mas o juiz penaliza a relevância."*
+- *"O acordo juiz×humano é 70%, e o κ deu 0 — caso degenerado, meus rótulos humanos são todos
+  'correto' (sem variância). Reporto o acordo bruto e trato o juiz como sinal cético secundário,
+  em vez de fingir um número bonito."*
 - *"E passei o código por uma auditoria adversarial que achou 15 pontos de melhoria — todos corrigidos,
   com 15 testes automatizados para não regredir."*
 

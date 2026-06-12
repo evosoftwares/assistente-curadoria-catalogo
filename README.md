@@ -141,8 +141,9 @@ A UI também coleta **feedback humano por resposta** (👍/👎 + comentário) v
 do **gold-set vivo** do roadmap v2.
 Há ainda **53 testes** (`pytest`, em [`tests/`](tests/)) dos invariantes determinísticos + segurança + roteamento/cache + feedback + protocolo MCP, e
 [`eval/check_facts.py`](eval/check_facts.py) que **assere programaticamente** a verdade determinística
-(Q4/Q6/Q8) contra o que o sistema computa. O juiz também reporta **faithfulness** (estilo RAGAS, ~0,93)
-— fração de afirmações com suporte no contexto. Um **gate de regressão** ([`scripts/ci_gate.py`](scripts/ci_gate.py),
+(Q4/Q6/Q8) contra o que o sistema computa. O juiz (agora **cross-família**, `anthropic/claude-haiku-4.5`
+via OpenRouter) também reporta **faithfulness** (estilo RAGAS, ~1,0) — fração de afirmações com suporte
+no contexto. Um **gate de regressão** ([`scripts/ci_gate.py`](scripts/ci_gate.py),
 também em [`.github/workflows/ci.yml`](.github/workflows/ci.yml)) roda pytest + check_facts + piso de recall@8 e falha o build se algo regredir. Todos os indicadores são consolidados num **dashboard web**
 ([`scripts/build_dashboard.py`](scripts/build_dashboard.py) → `dashboard/index.html`, também em `GET /kpis`).
 
