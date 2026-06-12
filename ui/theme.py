@@ -93,6 +93,17 @@ div[data-baseweb="popover"], div[data-baseweb="popover"] > div { border-radius: 
     white-space: normal !important; overflow: visible !important;
     text-overflow: clip !important; word-break: break-word;
 }
+/* EXCEÇÃO — botões de feedback (👍 Sim / 👎 Não): rótulo curto, o emoji fica AO LADO do
+   texto (nowrap). Escopado pela classe st-key-fbrowN do container, p/ não reabrir o corte
+   dos rótulos longos (chips de intenção / perguntas da sidebar, que precisam quebrar). */
+[class*="st-key-fbrow"] .stButton > button,
+[class*="st-key-fbrow"] [data-testid="stPopover"] > button {
+    white-space: nowrap !important;
+}
+[class*="st-key-fbrow"] .stButton > button p,
+[class*="st-key-fbrow"] [data-testid="stPopover"] > button p {
+    white-space: nowrap !important; word-break: normal !important;
+}
 
 /* ---------- Sidebar: camada cinza com divisa; botões "ghost" (lista, não pílulas) ---------- */
 section[data-testid="stSidebar"] { background: #f4f4f4; border-right: 1px solid #e0e0e0; }
@@ -102,6 +113,27 @@ section[data-testid="stSidebar"] .stButton > button {
     padding: 0.35rem 0.5rem; font-size: 0.85rem; width: 100%;
 }
 section[data-testid="stSidebar"] .stButton > button:hover { background: #e0e0e0; color: #0f62fe; }
+
+/* ---------- Cartão de identidade do agente (coerência com o "Oi!" do chat) ---------- */
+.agent-card { display: flex; align-items: center; gap: 0.65rem; padding: 0.4rem 0 0.2rem; }
+.agent-avatar { width: 44px; height: 44px; flex: 0 0 auto; display: flex; align-items: center;
+    justify-content: center; background: #d0e2ff; font-size: 1.5rem; }   /* quadrado Carbon (sem raio) */
+.agent-name { font-weight: 600; font-size: 0.98rem; color: #161616; line-height: 1.2; }
+.agent-role { font-size: 0.76rem; color: #525252; line-height: 1.3; margin-top: 0.1rem; }
+.agent-status { display: flex; align-items: center; gap: 0.45rem; font-size: 0.85rem;
+    color: #161616; margin: 0.7rem 0 0.1rem; font-weight: 500; }
+.agent-status .dot { width: 9px; height: 9px; border-radius: 50%; background: #24a148; }  /* online */
+.agent-status.basic .dot { background: #f1c40f; }                                          /* degradado */
+.agent-sub { font-size: 0.78rem; color: #525252; margin-bottom: 0.2rem; }
+
+/* "Nova conversa" = ação PRIMÁRIA (filled Carbon), destacada dos itens-lista ghost.
+   Escopada pela classe st-key-newchat do botão. */
+section[data-testid="stSidebar"] [class*="st-key-newchat"] button {
+    background: #0f62fe !important; color: #ffffff !important; border: none !important;
+    justify-content: center !important; text-align: center !important;
+    font-weight: 500; padding: 0.6rem !important;
+}
+section[data-testid="stSidebar"] [class*="st-key-newchat"] button:hover { background: #0353e9 !important; }
 
 /* ---------- Botões da área principal: tertiary do Carbon. Sem width/altura forçadas:
      os chips de intenção esticam via use_container_width, e os botões pequenos
@@ -113,11 +145,15 @@ section[data-testid="stSidebar"] .stButton > button:hover { background: #e0e0e0;
 [data-testid="stMain"] .stButton > button:hover, .main .stButton > button:hover {
     background: #0f62fe; color: #ffffff;
 }
-/* o gatilho do popover (👎) segue o mesmo tertiary, alinhado ao 👍 */
+/* o gatilho do popover (👎) é IDÊNTICO ao botão 👍 (mesmo padding/altura) — par alinhado */
 [data-testid="stMain"] [data-testid="stPopover"] > button,
 [data-testid="stMain"] [data-testid="stPopoverButton"] {
     background: #ffffff; border: 1px solid #0f62fe; color: #0f62fe;
-    border-radius: 0 !important; font-weight: 500;
+    border-radius: 0 !important; font-weight: 500; padding: 0.45rem 0.8rem;
+}
+[data-testid="stMain"] [data-testid="stPopover"] > button:hover,
+[data-testid="stMain"] [data-testid="stPopoverButton"]:hover {
+    background: #0f62fe; color: #ffffff;
 }
 
 /* ---------- Expanders e métricas discretos (valores/rótulos quebram, não cortam) ---------- */

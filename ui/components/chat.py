@@ -107,17 +107,31 @@ def _send_feedback(msg: dict, index: int, verdict: str, comment: str | None) -> 
 
 def _feedback_row(msg: dict, index: int) -> None:
     """👍 envia direto; 👎 abre um popover com comentário OPCIONAL (o motivo do erro é o
-    dado mais valioso do dataset — mas exigi-lo mataria a taxa de resposta)."""
+    dado mais valioso do dataset — mas exigi-lo mataria a taxa de resposta).
+    Layout: rótulo-guia + par de botões de LARGURA IGUAL (use_container_width em colunas
+    iguais e estreitas) — alinhados como um par, não soltos/ragged."""
     if msg.get("feedback"):
-        st.caption("✓ Feedback registrado — obrigado! Ele alimenta a melhoria do assistente.")
+        marca = "👍" if msg["feedback"] == "up" else "👎"
+        st.caption(f"{marca} Valeu pelo retorno! Ele ajuda a deixar o assistente cada vez melhor.")
         return
-    c1, c2, _ = st.columns([1, 1, 5])
-    if c1.button("👍 Útil", key=f"fbu{index}"):
-        _send_feedback(msg, index, "up", None)
-    with c2.popover("👎 Não ajudou"):
-        comment = st.text_area("O que faltou? (opcional)", key=f"fbc{index}", max_chars=1000)
-        if st.button("Enviar feedback", key=f"fbs{index}"):
-            _send_feedback(msg, index, "down", comment.strip() or None)
+    st.caption("Esta resposta te ajudou?")
+    # Container COM KEY -> ganha a classe `st-key-fbrowN`, que o tema usa para forçar o emoji
+    # AO LADO do texto (nowrap) SÓ aqui — sem reabrir o corte dos rótulos longos (chips/sidebar).
+    # Colunas iguais e estreitas; o espaçador (4) empurra o par 👍/👎 para a esquerda.
+    with st.container(key=f"fbrow{index}"):
+        c1, c2, _ = st.columns([1, 1, 4])
+        # icon= (nativo do Streamlit): renderiza o emoji AO LADO do texto pelo layout do
+        # próprio framework — não depende de CSS e nunca empilha (o "👍 Sim" no label quebrava
+        # na coluna estreita; com icon separado do rótulo, fica sempre na horizontal).
+        if c1.button("Sim", icon="👍", key=f"fbu{index}", use_container_width=True):
+            _send_feedback(msg, index, "up", None)
+        with c2.popover("Não", icon="👎", use_container_width=True):
+            st.markdown("**O que faltou?** _(opcional, mas ajuda muito)_")
+            comment = st.text_area(
+                "comentário", key=f"fbc{index}", max_chars=1000, label_visibility="collapsed",
+                placeholder="Ex.: faltou o público-alvo, ou a resposta ficou genérica demais…")
+            if st.button("Enviar", key=f"fbs{index}", use_container_width=True):
+                _send_feedback(msg, index, "down", comment.strip() or None)
 
 
 def _render_assistant(msg: dict, index: int) -> None:

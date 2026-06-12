@@ -33,8 +33,6 @@ theme.inject()
 state.init()
 
 st.title("📚 Assistente de Curadoria do Catálogo")
-st.caption("Seu colega de catálogo — pergunte em português, do seu jeito. Respondo com as fontes e, "
-           "quando não tenho, aviso sem inventar.")
 
 # Gate do backend: sem API não há o que conversar — erro acionável em vez de tela quebrada.
 try:
