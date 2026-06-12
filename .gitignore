@@ -16,6 +16,8 @@ data/llm_cache/
 data/feedback.jsonl
 # Espelho em arquivo dos eventos de uso (alimenta o B.I. local em /kpis) — idem
 data/usage_log.jsonl
+# Gold-set vivo derivado do feedback (contém perguntas de usuários) — dado, não código
+eval/gold_live.json
 
 # Saídas de avaliação geradas (dumps brutos grandes — regeneráveis pelos scripts de eval)
 eval/results_manual.json

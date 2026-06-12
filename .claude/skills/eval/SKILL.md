@@ -19,7 +19,9 @@ Da RAIZ, com a venv (`.venv\Scripts\python.exe`), NESTA ordem:
 4. `eval\retrieval_metrics.py` — recall@k / precision@k / MRR / nDCG por pergunta.
 5. `eval\check_facts.py` — asserções da verdade determinística (Q4/Q6/Q8).
 6. `scripts\ci_gate.py` — o gate consolidado deve PASSAR (exit 0).
-7. `scripts\build_dashboard.py` — atualiza o B.I. (`GET /kpis`).
+7. `scripts\audit_catalog.py` — auditoria de qualidade do dado (nota + conflitos título×sinopse).
+8. `eval\build_gold_from_feedback.py` — agrega o feedback real em gold-set vivo (se houver votos).
+9. `scripts\build_dashboard.py` — atualiza o B.I. (`GET /kpis`).
 
 Ao final, resuma em UMA tabela: comportamentos corretos (X/10) · vereditos do juiz (C·P·E)
 · faithfulness macro · macro recall@8 (vs piso 0,7) · custo total da rodada · **o que mudou**

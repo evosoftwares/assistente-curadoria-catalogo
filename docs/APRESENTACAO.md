@@ -211,6 +211,10 @@ contexto por livro → recall@8 0,87→0,89), Structured Outputs na resposta, e 
 
 **Se travar:** *"Não considerei isso a fundo — minha hipótese seria X, mas precisaria medir."* (a banca valoriza honestidade.)
 
+> 📋 **Banco COMPLETO de perguntas e respostas** (44 perguntas por ângulo — produto, engenharia,
+> avaliação, processo/escopo, curveballs) em [`PERGUNTAS_BANCA.md`](PERGUNTAS_BANCA.md). Revise na
+> véspera; aqui ficam só as essenciais para ensaiar em voz alta.
+
 ---
 
 ## 9. Encerramento (30 s)
